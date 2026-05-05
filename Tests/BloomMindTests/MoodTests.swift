@@ -10,6 +10,10 @@ import Testing
     #expect(Mood.unsure.growthAction == "Write one question you want to understand better.")
 }
 
+@Test func moodAccessibilityHintDescribesSelection() {
+    #expect(Mood.stressed.accessibilityHint == "Selects stressed as your current mood.")
+}
+
 @Test func checkInCompletionResetsCurrentEntry() {
     var state = CheckInState(
         selectedMood: .happy,

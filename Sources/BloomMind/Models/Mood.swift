@@ -53,4 +53,8 @@ enum Mood: String, CaseIterable, Identifiable {
             "Write one question you want to understand better."
         }
     }
+
+    var accessibilityHint: String {
+        "Selects \(rawValue.lowercased()) as your current mood."
+    }
 }

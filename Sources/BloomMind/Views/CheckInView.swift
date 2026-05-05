@@ -128,6 +128,7 @@ private struct MoodButton: View {
         .buttonStyle(.plain)
         .accessibilityLabel(mood.rawValue)
         .accessibilityValue(isSelected ? "Selected" : "Not selected")
+        .accessibilityHint(mood.accessibilityHint)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
