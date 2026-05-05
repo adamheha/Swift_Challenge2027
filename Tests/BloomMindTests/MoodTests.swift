@@ -33,6 +33,15 @@ import Testing
     #expect(state.reflectionText.isEmpty)
 }
 
+@Test func checkInCompletionNormalizesNegativeProgress() {
+    var state = CheckInState(completedCheckIns: -2)
+
+    state.completeCheckIn()
+
+    #expect(state.completedCheckIns == 1)
+    #expect(state.completedCheckInsThisWeek == 1)
+}
+
 @Test func checkInCanContinueRequiresMoodAndReflection() {
     var state = CheckInState()
     #expect(!state.canContinueToAction)

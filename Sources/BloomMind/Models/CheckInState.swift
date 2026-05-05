@@ -103,7 +103,7 @@ struct CheckInState {
     }
 
     mutating func completeCheckIn(on date: Date = Date()) {
-        completedCheckIns += 1
+        completedCheckIns = max(completedCheckIns, 0) + 1
         lastCompletedAt = date
         selectedMood = nil
         reflectionText = ""
