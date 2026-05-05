@@ -28,6 +28,14 @@ struct CheckInState {
         hasCompletedCheckInToday() ? "Check In Again" : "Start Check-In"
     }
 
+    var todayStatusTitle: String {
+        hasCompletedCheckInToday() ? "Today's check-in is complete" : "Ready for today's check-in"
+    }
+
+    var todayStatusDetail: String {
+        hasCompletedCheckInToday() ? "Your reflection stays local in this prototype." : "One minute is enough to notice what is here."
+    }
+
     var bloomEncouragement: String {
         if hasCompletedCheckInToday() {
             return "Today's check-in is complete. Let that small action count."

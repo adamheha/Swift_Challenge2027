@@ -29,6 +29,12 @@ struct HomeView: View {
             )
                 .padding(.vertical, 8)
 
+            TodayStatusView(
+                isComplete: checkInState.hasCompletedCheckInToday(),
+                title: checkInState.todayStatusTitle,
+                detail: checkInState.todayStatusDetail
+            )
+
             Button(action: onStartCheckIn) {
                 Label(
                     checkInState.primaryActionTitle,
@@ -43,6 +49,34 @@ struct HomeView: View {
         .padding(32)
         .frame(maxWidth: 520)
         .navigationTitle("Today")
+    }
+}
+
+private struct TodayStatusView: View {
+    let isComplete: Bool
+    let title: String
+    let detail: String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: isComplete ? "checkmark.circle.fill" : "lock.shield")
+                .font(.title3)
+                .foregroundStyle(isComplete ? .green : .blue)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.headline)
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+        }
+        .padding(14)
+        .background((isComplete ? Color.green : Color.blue).opacity(0.1), in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement(children: .combine)
     }
 }
 

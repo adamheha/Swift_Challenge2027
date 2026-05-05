@@ -96,10 +96,13 @@ import Testing
     let notCompleted = CheckInState()
     #expect(notCompleted.todayPrompt == "What feeling wants your attention today?")
     #expect(notCompleted.primaryActionTitle == "Start Check-In")
+    #expect(notCompleted.todayStatusTitle == "Ready for today's check-in")
+    #expect(notCompleted.todayStatusDetail == "One minute is enough to notice what is here.")
 
     var completed = CheckInState()
     completed.completeCheckIn()
     #expect(completed.todayPrompt == "Today's bloom is already growing.")
     #expect(completed.primaryActionTitle == "Check In Again")
+    #expect(completed.todayStatusTitle == "Today's check-in is complete")
+    #expect(completed.todayStatusDetail == "Your reflection stays local in this prototype.")
 }
-
