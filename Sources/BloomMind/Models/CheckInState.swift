@@ -20,6 +20,14 @@ struct CheckInState {
         Int((bloomProgress * 100).rounded())
     }
 
+    var todayPrompt: String {
+        hasCompletedCheckInToday() ? "Today's bloom is already growing." : "What feeling wants your attention today?"
+    }
+
+    var primaryActionTitle: String {
+        hasCompletedCheckInToday() ? "Check In Again" : "Start Check-In"
+    }
+
     var bloomEncouragement: String {
         if hasCompletedCheckInToday() {
             return "Today's check-in is complete. Let that small action count."

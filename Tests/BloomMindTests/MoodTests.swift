@@ -91,3 +91,15 @@ import Testing
     #expect(!state.isReflectionWithinLimit)
     #expect(!state.canContinueToAction)
 }
+
+@Test func homeCopyReflectsTodayCompletion() {
+    let notCompleted = CheckInState()
+    #expect(notCompleted.todayPrompt == "What feeling wants your attention today?")
+    #expect(notCompleted.primaryActionTitle == "Start Check-In")
+
+    var completed = CheckInState()
+    completed.completeCheckIn()
+    #expect(completed.todayPrompt == "Today's bloom is already growing.")
+    #expect(completed.primaryActionTitle == "Check In Again")
+}
+

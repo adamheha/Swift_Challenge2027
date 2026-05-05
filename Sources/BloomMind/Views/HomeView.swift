@@ -15,7 +15,7 @@ struct HomeView: View {
                 Text("BloomMind")
                     .font(.largeTitle.bold())
 
-                Text(checkInState.hasCompletedCheckInToday() ? "Today's bloom is already growing." : "What feeling wants your attention today?")
+                Text(checkInState.todayPrompt)
                     .font(.title3)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
@@ -31,7 +31,7 @@ struct HomeView: View {
 
             Button(action: onStartCheckIn) {
                 Label(
-                    checkInState.hasCompletedCheckInToday() ? "Check In Again" : "Start Check-In",
+                    checkInState.primaryActionTitle,
                     systemImage: "sparkles"
                 )
                     .font(.headline)
