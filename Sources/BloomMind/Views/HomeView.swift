@@ -25,11 +25,15 @@ struct HomeView: View {
                 progress: checkInState.bloomProgress,
                 percent: checkInState.bloomProgressPercent,
                 completedCount: checkInState.completedCheckInsThisWeek,
+                goalCount: CheckInState.weeklyCheckInGoal,
                 encouragement: checkInState.bloomEncouragement
             )
             .bloomPanel(padding: 22)
 
-            GardenPreviewView(completedCount: checkInState.completedCheckInsThisWeek)
+            GardenPreviewView(
+                completedCount: checkInState.completedCheckInsThisWeek,
+                totalPlots: CheckInState.weeklyCheckInGoal
+            )
 
             TodayStatusView(
                 isComplete: checkInState.hasCompletedCheckInToday(),
@@ -55,8 +59,7 @@ struct HomeView: View {
 
 private struct GardenPreviewView: View {
     let completedCount: Int
-
-    private let totalPlots = 7
+    let totalPlots: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -144,6 +147,7 @@ private struct BloomProgressView: View {
     let progress: Double
     let percent: Int
     let completedCount: Int
+    let goalCount: Int
     let encouragement: String
 
     var body: some View {
@@ -169,7 +173,7 @@ private struct BloomProgressView: View {
             .accessibilityLabel("Weekly bloom progress")
             .accessibilityValue("\(percent) percent")
 
-            Text("\(completedCount) of 7 check-ins complete")
+            Text("\(completedCount) of \(goalCount) check-ins complete")
                 .font(.headline)
 
             Text(encouragement)

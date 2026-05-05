@@ -42,7 +42,7 @@ import Testing
 @Test func bloomProgressCapsAtSevenCheckIns() {
     let state = CheckInState(completedCheckIns: 12)
 
-    #expect(state.completedCheckInsThisWeek == 7)
+    #expect(state.completedCheckInsThisWeek == CheckInState.weeklyCheckInGoal)
     #expect(state.bloomProgress == 1.0)
     #expect(state.bloomProgressPercent == 100)
 }
@@ -51,7 +51,10 @@ import Testing
     #expect(CheckInState(completedCheckIns: 0).bloomEncouragement == "Start with one honest check-in today.")
     #expect(CheckInState(completedCheckIns: 2).bloomEncouragement == "Your bloom is beginning to take shape.")
     #expect(CheckInState(completedCheckIns: 5).bloomEncouragement == "A steady reflection habit is growing.")
-    #expect(CheckInState(completedCheckIns: 7).bloomEncouragement == "Your weekly bloom is full. Take a quiet moment to notice it.")
+    #expect(
+        CheckInState(completedCheckIns: CheckInState.weeklyCheckInGoal).bloomEncouragement
+            == "Your weekly bloom is full. Take a quiet moment to notice it."
+    )
 }
 
 @Test func completedCheckInTracksToday() {

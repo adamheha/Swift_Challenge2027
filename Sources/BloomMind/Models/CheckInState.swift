@@ -2,6 +2,7 @@ import Foundation
 
 struct CheckInState {
     static let reflectionCharacterLimit = 160
+    static let weeklyCheckInGoal = 7
 
     var selectedMood: Mood?
     var reflectionText = ""
@@ -9,11 +10,11 @@ struct CheckInState {
     var lastCompletedAt: Date?
 
     var completedCheckInsThisWeek: Int {
-        min(completedCheckIns, 7)
+        min(completedCheckIns, Self.weeklyCheckInGoal)
     }
 
     var bloomProgress: Double {
-        Double(completedCheckInsThisWeek) / 7.0
+        Double(completedCheckInsThisWeek) / Double(Self.weeklyCheckInGoal)
     }
 
     var bloomProgressPercent: Int {
