@@ -3,7 +3,7 @@ import SwiftUI
 struct StepProgressView: View {
     let currentStep: Int
 
-    let steps = ["Mood", "Reflect", "Action"]
+    private let steps = ["Mood", "Reflect", "Action"]
 
     var clampedCurrentStep: Int {
         min(max(currentStep, 1), steps.count)
