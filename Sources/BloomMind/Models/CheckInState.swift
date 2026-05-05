@@ -11,7 +11,7 @@ struct CheckInState {
     var lastCompletedAt: Date?
 
     var completedCheckInsThisWeek: Int {
-        min(completedCheckIns, Self.weeklyCheckInGoal)
+        min(max(completedCheckIns, 0), Self.weeklyCheckInGoal)
     }
 
     var bloomProgress: Double {

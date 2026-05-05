@@ -55,6 +55,14 @@ import Testing
     #expect(state.bloomProgressPercent == 100)
 }
 
+@Test func bloomProgressClampsNegativeCheckIns() {
+    let state = CheckInState(completedCheckIns: -2)
+
+    #expect(state.completedCheckInsThisWeek == 0)
+    #expect(state.bloomProgress == 0.0)
+    #expect(state.bloomProgressPercent == 0)
+}
+
 @Test func bloomEncouragementReflectsProgressRange() {
     #expect(CheckInState(completedCheckIns: 0).bloomEncouragement == "Start with one honest check-in today.")
     #expect(CheckInState(completedCheckIns: 2).bloomEncouragement == "Your bloom is beginning to take shape.")
