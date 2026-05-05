@@ -192,16 +192,25 @@ private struct BloomProgressView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            HomeView(
-                checkInState: .constant(
-                    CheckInState(
-                        completedCheckIns: 3,
-                        lastCompletedAt: Date()
-                    )
-                ),
-                onStartCheckIn: {}
-            )
+        Group {
+            NavigationStack {
+                HomeView(
+                    checkInState: .constant(CheckInState()),
+                    onStartCheckIn: {}
+                )
+            }
+
+            NavigationStack {
+                HomeView(
+                    checkInState: .constant(
+                        CheckInState(
+                            completedCheckIns: 3,
+                            lastCompletedAt: Date()
+                        )
+                    ),
+                    onStartCheckIn: {}
+                )
+            }
         }
     }
 }
