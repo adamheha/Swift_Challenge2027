@@ -21,11 +21,11 @@ Stage 3: polish the local SwiftUI MVP flow.
 
 - SwiftUI app shell with a typed navigation flow.
 - Home screen with BloomMind identity, weekly bloom progress, garden preview, and today-completion feedback.
-- Check-in screen with mood selection, required reflection input, and a three-step progress indicator.
-- Growth action screen with mood-matched suggested actions.
+- Check-in screen with mood selection, selected-state checkmark, required reflection input, and a three-step progress indicator.
+- Growth action screen with mood-matched suggested actions and a trimmed reflection summary.
 - Local-only state for the active check-in, weekly progress, and latest completion time.
 - Accessibility polish for mood selection, reflection entry, step progress, and completion actions.
-- Unit tests for mood actions, check-in completion, progress capping, and today-completion logic.
+- Unit tests for mood actions, check-in completion, progress capping, accessibility copy, and edge-case step state.
 
 ## Run and Verify
 
