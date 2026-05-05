@@ -100,7 +100,7 @@ import Testing
     state.reflectionText = "A short check-in."
 
     #expect(state.reflectionAccessibilityValue == "17 of 160 characters")
-    #expect(state.reflectionAccessibilityHint == "Write one or two sentences about what is here right now.")
+    #expect(state.reflectionAccessibilityHint == CheckInState.reflectionPromptText)
 
     state.reflectionText = String(repeating: "a", count: CheckInState.reflectionCharacterLimit + 1)
 

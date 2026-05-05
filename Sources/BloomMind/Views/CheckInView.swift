@@ -58,11 +58,12 @@ struct CheckInView: View {
                     }
                     .overlay {
                         if checkInState.reflectionText.isEmpty {
-                            Text("Write one or two sentences about what is here right now.")
+                            Text(CheckInState.reflectionPromptText)
                                 .foregroundStyle(.tertiary)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                                 .padding(16)
                                 .allowsHitTesting(false)
+                                .accessibilityHidden(true)
                         }
                     }
 

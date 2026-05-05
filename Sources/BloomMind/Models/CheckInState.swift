@@ -3,6 +3,7 @@ import Foundation
 struct CheckInState {
     static let reflectionCharacterLimit = 160
     static let weeklyCheckInGoal = 7
+    static let reflectionPromptText = "Write one or two sentences about what is here right now."
 
     var selectedMood: Mood?
     var reflectionText = ""
@@ -72,7 +73,7 @@ struct CheckInState {
 
     var reflectionAccessibilityHint: String {
         if isReflectionWithinLimit {
-            return "Write one or two sentences about what is here right now."
+            return Self.reflectionPromptText
         }
 
         return "Shorten your reflection before continuing."
