@@ -142,7 +142,9 @@ private struct TodayStatusView: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke((isComplete ? Color.green : Color.blue).opacity(0.28), lineWidth: 1)
         }
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(title)
+        .accessibilityValue(detail)
     }
 }
 
