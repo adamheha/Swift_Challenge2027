@@ -14,6 +14,10 @@ import Testing
     #expect(Mood.stressed.accessibilityHint == "Selects stressed as your current mood.")
 }
 
+@Test func moodGrowthActionTitleMatchesMood() {
+    #expect(Mood.tired.growthActionTitle == "A small action for tired")
+}
+
 @Test func checkInCompletionResetsCurrentEntry() {
     var state = CheckInState(
         selectedMood: .happy,

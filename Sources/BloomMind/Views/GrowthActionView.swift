@@ -19,7 +19,7 @@ struct GrowthActionView: View {
                     .foregroundStyle(selectedMood.tint.gradient)
                     .accessibilityHidden(true)
 
-                Text("A small action for \(selectedMood.rawValue.lowercased())")
+                Text(selectedMood.growthActionTitle)
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
 

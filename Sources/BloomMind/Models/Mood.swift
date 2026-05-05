@@ -54,6 +54,10 @@ enum Mood: String, CaseIterable, Identifiable {
         }
     }
 
+    var growthActionTitle: String {
+        "A small action for \(rawValue.lowercased())"
+    }
+
     var accessibilityHint: String {
         "Selects \(rawValue.lowercased()) as your current mood."
     }
