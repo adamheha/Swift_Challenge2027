@@ -7,6 +7,7 @@ struct CheckInView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             StepProgressView(currentStep: 2)
+                .bloomPanel(padding: 12)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Choose your mood")
@@ -42,7 +43,12 @@ struct CheckInView: View {
                 TextEditor(text: $checkInState.reflectionText)
                     .frame(minHeight: 140)
                     .padding(8)
-                    .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
+                    .scrollContentBackground(.hidden)
+                    .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(.green.opacity(0.2), lineWidth: 1)
+                    }
                     .overlay {
                         if checkInState.reflectionText.isEmpty {
                             Text("Write one or two sentences about what is here right now.")
@@ -70,7 +76,7 @@ struct CheckInView: View {
             .controlSize(.large)
             .disabled(!checkInState.canContinueToAction)
         }
-        .padding(24)
+        .bloomPage(maxWidth: 620)
         .navigationTitle("Check-In")
     }
 }
@@ -90,7 +96,11 @@ private struct MoodButton: View {
             }
             .frame(maxWidth: .infinity, minHeight: 92)
             .foregroundStyle(isSelected ? .white : mood.tint)
-            .background(isSelected ? mood.tint : mood.tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+            .background(isSelected ? mood.tint.gradient : mood.tint.opacity(0.12).gradient, in: RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(isSelected ? .white.opacity(0.7) : mood.tint.opacity(0.22), lineWidth: 1)
+            }
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? .isSelected : [])

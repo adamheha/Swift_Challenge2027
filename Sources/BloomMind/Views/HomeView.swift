@@ -9,7 +9,7 @@ struct HomeView: View {
             VStack(spacing: 10) {
                 Image(systemName: "camera.macro")
                     .font(.system(size: 58, weight: .regular))
-                    .foregroundStyle(.green)
+                    .foregroundStyle(.green.gradient)
                     .accessibilityHidden(true)
 
                 Text("BloomMind")
@@ -27,7 +27,7 @@ struct HomeView: View {
                 completedCount: checkInState.completedCheckInsThisWeek,
                 encouragement: checkInState.bloomEncouragement
             )
-                .padding(.vertical, 8)
+            .bloomPanel(padding: 22)
 
             TodayStatusView(
                 isComplete: checkInState.hasCompletedCheckInToday(),
@@ -46,8 +46,7 @@ struct HomeView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
         }
-        .padding(32)
-        .frame(maxWidth: 520)
+        .bloomPage(maxWidth: 520, padding: 32)
         .navigationTitle("Today")
     }
 }
@@ -75,7 +74,11 @@ private struct TodayStatusView: View {
             Spacer()
         }
         .padding(14)
-        .background((isComplete ? Color.green : Color.blue).opacity(0.1), in: RoundedRectangle(cornerRadius: 8))
+        .background(.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke((isComplete ? Color.green : Color.blue).opacity(0.28), lineWidth: 1)
+        }
         .accessibilityElement(children: .combine)
     }
 }
@@ -90,11 +93,11 @@ private struct BloomProgressView: View {
         VStack(spacing: 12) {
             ZStack {
                 Circle()
-                    .stroke(.green.opacity(0.18), lineWidth: 18)
+                    .stroke(.green.opacity(0.16), lineWidth: 18)
 
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(.green, style: StrokeStyle(lineWidth: 18, lineCap: .round))
+                    .stroke(.green.gradient, style: StrokeStyle(lineWidth: 18, lineCap: .round))
                     .rotationEffect(.degrees(-90))
 
                 VStack(spacing: 4) {

@@ -11,11 +11,12 @@ struct GrowthActionView: View {
     var body: some View {
         VStack(spacing: 26) {
             StepProgressView(currentStep: 3)
+                .bloomPanel(padding: 12)
 
             VStack(spacing: 12) {
                 Image(systemName: selectedMood.symbolName)
                     .font(.system(size: 54, weight: .regular))
-                    .foregroundStyle(selectedMood.tint)
+                    .foregroundStyle(selectedMood.tint.gradient)
                     .accessibilityHidden(true)
 
                 Text("A small action for \(selectedMood.rawValue.lowercased())")
@@ -28,6 +29,7 @@ struct GrowthActionView: View {
                     .foregroundStyle(.secondary)
                     .padding(.horizontal)
             }
+            .bloomPanel(padding: 22)
 
             if !checkInState.reflectionText.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
@@ -38,7 +40,11 @@ struct GrowthActionView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding()
-                .background(.quaternary.opacity(0.45), in: RoundedRectangle(cornerRadius: 8))
+                .background(.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(selectedMood.tint.opacity(0.22), lineWidth: 1)
+                }
             }
 
             Spacer()
@@ -53,7 +59,7 @@ struct GrowthActionView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
         }
-        .padding(24)
+        .bloomPage()
         .navigationTitle("Growth Action")
     }
 }
