@@ -1,6 +1,8 @@
 import Foundation
 
 struct CheckInState {
+    static let reflectionCharacterLimit = 160
+
     var selectedMood: Mood?
     var reflectionText = ""
     var completedCheckIns = 0
@@ -39,8 +41,16 @@ struct CheckInState {
         reflectionText.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    var reflectionCharacterCount: Int {
+        reflectionText.count
+    }
+
+    var isReflectionWithinLimit: Bool {
+        reflectionCharacterCount <= Self.reflectionCharacterLimit
+    }
+
     var canContinueToAction: Bool {
-        selectedMood != nil && !trimmedReflectionText.isEmpty
+        selectedMood != nil && !trimmedReflectionText.isEmpty && isReflectionWithinLimit
     }
 
     func hasCompletedCheckInToday(

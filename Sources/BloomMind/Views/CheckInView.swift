@@ -28,8 +28,16 @@ struct CheckInView: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Reflection")
-                    .font(.headline)
+                HStack {
+                    Text("Reflection")
+                        .font(.headline)
+
+                    Spacer()
+
+                    Text("\(checkInState.reflectionCharacterCount)/\(CheckInState.reflectionCharacterLimit)")
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(checkInState.isReflectionWithinLimit ? Color.secondary : Color.red)
+                }
 
                 TextEditor(text: $checkInState.reflectionText)
                     .frame(minHeight: 140)
@@ -44,6 +52,12 @@ struct CheckInView: View {
                                 .allowsHitTesting(false)
                         }
                     }
+
+                if !checkInState.isReflectionWithinLimit {
+                    Label("Keep this reflection short enough for a one-minute check-in.", systemImage: "exclamationmark.circle")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
             }
 
             Spacer()

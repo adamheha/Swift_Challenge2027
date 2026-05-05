@@ -77,3 +77,17 @@ import Testing
     #expect(state.hasCompletedCheckInToday())
     #expect(state.bloomEncouragement == "Today's check-in is complete. Let that small action count.")
 }
+
+
+@Test func reflectionLimitKeepsCheckInShort() {
+    var state = CheckInState(selectedMood: .calm)
+
+    state.reflectionText = String(repeating: "a", count: CheckInState.reflectionCharacterLimit)
+    #expect(state.reflectionCharacterCount == CheckInState.reflectionCharacterLimit)
+    #expect(state.isReflectionWithinLimit)
+    #expect(state.canContinueToAction)
+
+    state.reflectionText += "a"
+    #expect(!state.isReflectionWithinLimit)
+    #expect(!state.canContinueToAction)
+}
