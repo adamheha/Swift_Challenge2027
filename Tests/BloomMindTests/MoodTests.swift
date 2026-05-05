@@ -122,3 +122,14 @@ import Testing
     #expect(completed.todayStatusTitle == "Today's check-in is complete")
     #expect(completed.todayStatusDetail == "Your reflection stays local in this prototype.")
 }
+
+@MainActor
+@Test func stepProgressAccessibilityClampsOutOfRangeSteps() {
+    let beforeFirstStep = StepProgressView(currentStep: 0)
+    #expect(beforeFirstStep.displayedStepNumber == 1)
+    #expect(beforeFirstStep.accessibilitySummary == "Check-in step 1 of 3, Mood")
+
+    let afterLastStep = StepProgressView(currentStep: 4)
+    #expect(afterLastStep.displayedStepNumber == 3)
+    #expect(afterLastStep.accessibilitySummary == "Check-in step 3 of 3, Action")
+}

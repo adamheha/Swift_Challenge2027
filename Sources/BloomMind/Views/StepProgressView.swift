@@ -3,9 +3,18 @@ import SwiftUI
 struct StepProgressView: View {
     let currentStep: Int
 
-    private let steps = ["Mood", "Reflect", "Action"]
-    private var currentStepTitle: String {
-        steps[min(max(currentStep - 1, 0), steps.count - 1)]
+    let steps = ["Mood", "Reflect", "Action"]
+
+    var displayedStepNumber: Int {
+        min(max(currentStep, 1), steps.count)
+    }
+
+    var currentStepTitle: String {
+        steps[displayedStepNumber - 1]
+    }
+
+    var accessibilitySummary: String {
+        "Check-in step \(displayedStepNumber) of \(steps.count), \(currentStepTitle)"
     }
 
     var body: some View {
@@ -31,7 +40,7 @@ struct StepProgressView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Check-in step \(currentStep) of \(steps.count), \(currentStepTitle)")
+        .accessibilityLabel(accessibilitySummary)
     }
 }
 
