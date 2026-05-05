@@ -30,6 +30,7 @@ struct GrowthActionView: View {
                     .padding(.horizontal)
             }
             .bloomPanel(padding: 22)
+            .accessibilityElement(children: .combine)
 
             if !checkInState.trimmedReflectionText.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
