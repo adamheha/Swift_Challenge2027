@@ -4,6 +4,9 @@ struct StepProgressView: View {
     let currentStep: Int
 
     private let steps = ["Mood", "Reflect", "Action"]
+    private var currentStepTitle: String {
+        steps[min(max(currentStep - 1, 0), steps.count - 1)]
+    }
 
     var body: some View {
         HStack(spacing: 8) {
@@ -28,7 +31,7 @@ struct StepProgressView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Check-in step \(currentStep) of \(steps.count)")
+        .accessibilityLabel("Check-in step \(currentStep) of \(steps.count), \(currentStepTitle)")
     }
 }
 
