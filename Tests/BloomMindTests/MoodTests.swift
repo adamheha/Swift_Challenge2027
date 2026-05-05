@@ -133,3 +133,16 @@ import Testing
     #expect(afterLastStep.displayedStepNumber == 3)
     #expect(afterLastStep.accessibilitySummary == "Check-in step 3 of 3, Action")
 }
+
+@MainActor
+@Test func stepProgressVisualStateAlsoClampsOutOfRangeSteps() {
+    let beforeFirstStep = StepProgressView(currentStep: 0)
+    #expect(beforeFirstStep.isCurrent(stepNumber: 1))
+    #expect(beforeFirstStep.isCompleted(stepNumber: 1))
+    #expect(!beforeFirstStep.isCompleted(stepNumber: 2))
+
+    let afterLastStep = StepProgressView(currentStep: 4)
+    #expect(afterLastStep.isCurrent(stepNumber: 3))
+    #expect(afterLastStep.isCompleted(stepNumber: 3))
+    #expect(!afterLastStep.isCurrent(stepNumber: 2))
+}

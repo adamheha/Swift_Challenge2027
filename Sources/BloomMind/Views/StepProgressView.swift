@@ -5,8 +5,12 @@ struct StepProgressView: View {
 
     let steps = ["Mood", "Reflect", "Action"]
 
-    var displayedStepNumber: Int {
+    var clampedCurrentStep: Int {
         min(max(currentStep, 1), steps.count)
+    }
+
+    var displayedStepNumber: Int {
+        clampedCurrentStep
     }
 
     var currentStepTitle: String {
@@ -17,6 +21,14 @@ struct StepProgressView: View {
         "Check-in step \(displayedStepNumber) of \(steps.count), \(currentStepTitle)"
     }
 
+    func isCompleted(stepNumber: Int) -> Bool {
+        stepNumber <= clampedCurrentStep
+    }
+
+    func isCurrent(stepNumber: Int) -> Bool {
+        stepNumber == clampedCurrentStep
+    }
+
     var body: some View {
         HStack(spacing: 8) {
             ForEach(Array(steps.enumerated()), id: \.offset) { index, title in
@@ -24,17 +36,17 @@ struct StepProgressView: View {
 
                 HStack(spacing: 6) {
                     Circle()
-                        .fill(stepNumber <= currentStep ? .green : .secondary.opacity(0.25))
+                        .fill(isCompleted(stepNumber: stepNumber) ? .green : .secondary.opacity(0.25))
                         .frame(width: 22, height: 22)
                         .overlay {
                             Text("\(stepNumber)")
                                 .font(.caption.bold())
-                                .foregroundStyle(stepNumber <= currentStep ? .white : .secondary)
+                                .foregroundStyle(isCompleted(stepNumber: stepNumber) ? .white : .secondary)
                         }
 
                     Text(title)
                         .font(.caption.bold())
-                        .foregroundStyle(stepNumber == currentStep ? .primary : .secondary)
+                        .foregroundStyle(isCurrent(stepNumber: stepNumber) ? .primary : .secondary)
                 }
                 .frame(maxWidth: .infinity)
             }
