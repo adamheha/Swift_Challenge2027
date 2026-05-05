@@ -115,6 +115,15 @@ private struct MoodButton: View {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(isSelected ? .white.opacity(0.7) : mood.tint.opacity(0.22), lineWidth: 1)
             }
+            .overlay(alignment: .topTrailing) {
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.caption.bold())
+                        .foregroundStyle(.white)
+                        .padding(8)
+                        .accessibilityHidden(true)
+                }
+            }
         }
         .buttonStyle(.plain)
         .accessibilityLabel(mood.rawValue)
