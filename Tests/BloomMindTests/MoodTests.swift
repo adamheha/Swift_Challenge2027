@@ -151,6 +151,9 @@ import Testing
 }
 
 @Test func gardenAccessibilityValueReflectsWeeklyProgress() {
+    let floor = CheckInState(completedCheckIns: -2)
+    #expect(floor.gardenAccessibilityValue == "0 of 7 plants grown")
+
     let partial = CheckInState(completedCheckIns: 3)
     #expect(partial.gardenAccessibilityValue == "3 of 7 plants grown")
 
