@@ -123,6 +123,14 @@ import Testing
     #expect(completed.todayStatusDetail == "Your reflection stays local in this prototype.")
 }
 
+@Test func gardenAccessibilityValueReflectsWeeklyProgress() {
+    let partial = CheckInState(completedCheckIns: 3)
+    #expect(partial.gardenAccessibilityValue == "3 of 7 plants grown")
+
+    let capped = CheckInState(completedCheckIns: 12)
+    #expect(capped.gardenAccessibilityValue == "7 of 7 plants grown")
+}
+
 @MainActor
 @Test func stepProgressAccessibilityClampsOutOfRangeSteps() {
     let beforeFirstStep = StepProgressView(currentStep: 0)

@@ -79,6 +79,10 @@ struct CheckInState {
         return "Shorten your reflection before continuing."
     }
 
+    var gardenAccessibilityValue: String {
+        "\(completedCheckInsThisWeek) of \(Self.weeklyCheckInGoal) plants grown"
+    }
+
     var canContinueToAction: Bool {
         selectedMood != nil && !trimmedReflectionText.isEmpty && isReflectionWithinLimit
     }

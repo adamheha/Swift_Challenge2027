@@ -32,7 +32,8 @@ struct HomeView: View {
 
             GardenPreviewView(
                 completedCount: checkInState.completedCheckInsThisWeek,
-                totalPlots: CheckInState.weeklyCheckInGoal
+                totalPlots: CheckInState.weeklyCheckInGoal,
+                accessibilityValue: checkInState.gardenAccessibilityValue
             )
 
             TodayStatusView(
@@ -60,6 +61,7 @@ struct HomeView: View {
 private struct GardenPreviewView: View {
     let completedCount: Int
     let totalPlots: Int
+    let accessibilityValue: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -81,7 +83,7 @@ private struct GardenPreviewView: View {
             }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Garden preview")
-            .accessibilityValue("\(completedCount) of \(totalPlots) plants grown")
+            .accessibilityValue(accessibilityValue)
         }
         .bloomPanel(padding: 16)
     }
