@@ -73,6 +73,7 @@ import Testing
 }
 
 @Test func bloomEncouragementReflectsProgressRange() {
+    #expect(CheckInState(completedCheckIns: -2).bloomEncouragement == "Start with one honest check-in today.")
     #expect(CheckInState(completedCheckIns: 0).bloomEncouragement == "Start with one honest check-in today.")
     #expect(CheckInState(completedCheckIns: 2).bloomEncouragement == "Your bloom is beginning to take shape.")
     #expect(CheckInState(completedCheckIns: 5).bloomEncouragement == "A steady reflection habit is growing.")
