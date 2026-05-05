@@ -135,11 +135,25 @@ private struct MoodButton: View {
 
 struct CheckInView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            CheckInView(
-                checkInState: .constant(CheckInState()),
-                onContinue: {}
-            )
+        Group {
+            NavigationStack {
+                CheckInView(
+                    checkInState: .constant(CheckInState()),
+                    onContinue: {}
+                )
+            }
+
+            NavigationStack {
+                CheckInView(
+                    checkInState: .constant(
+                        CheckInState(
+                            selectedMood: .calm,
+                            reflectionText: "I feel steady enough to start small."
+                        )
+                    ),
+                    onContinue: {}
+                )
+            }
         }
     }
 }
