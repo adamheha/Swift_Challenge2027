@@ -95,6 +95,19 @@ import Testing
     #expect(!state.canContinueToAction)
 }
 
+@Test func reflectionAccessibilityCopyTracksLimitState() {
+    var state = CheckInState()
+    state.reflectionText = "A short check-in."
+
+    #expect(state.reflectionAccessibilityValue == "17 of 160 characters")
+    #expect(state.reflectionAccessibilityHint == "Write one or two sentences about what is here right now.")
+
+    state.reflectionText = String(repeating: "a", count: CheckInState.reflectionCharacterLimit + 1)
+
+    #expect(state.reflectionAccessibilityValue == "161 of 160 characters")
+    #expect(state.reflectionAccessibilityHint == "Shorten your reflection before continuing.")
+}
+
 @Test func homeCopyReflectsTodayCompletion() {
     let notCompleted = CheckInState()
     #expect(notCompleted.todayPrompt == "What feeling wants your attention today?")

@@ -39,12 +39,17 @@ struct CheckInView: View {
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(checkInState.isReflectionWithinLimit ? Color.secondary : Color.red)
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Reflection")
+                .accessibilityValue(checkInState.reflectionAccessibilityValue)
+                .accessibilityHint(checkInState.reflectionAccessibilityHint)
 
                 TextEditor(text: $checkInState.reflectionText)
                     .frame(minHeight: 140)
                     .padding(8)
                     .accessibilityLabel("Reflection")
-                    .accessibilityHint("Write one or two sentences about what is here right now.")
+                    .accessibilityValue(checkInState.reflectionAccessibilityValue)
+                    .accessibilityHint(checkInState.reflectionAccessibilityHint)
                     .scrollContentBackground(.hidden)
                     .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
                     .overlay {
@@ -65,6 +70,7 @@ struct CheckInView: View {
                     Label("Keep this reflection short enough for a one-minute check-in.", systemImage: "exclamationmark.circle")
                         .font(.caption)
                         .foregroundStyle(.red)
+                        .accessibilityHint("Shorten your reflection before continuing.")
                 }
             }
 

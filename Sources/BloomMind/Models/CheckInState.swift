@@ -66,6 +66,18 @@ struct CheckInState {
         reflectionCharacterCount <= Self.reflectionCharacterLimit
     }
 
+    var reflectionAccessibilityValue: String {
+        "\(reflectionCharacterCount) of \(Self.reflectionCharacterLimit) characters"
+    }
+
+    var reflectionAccessibilityHint: String {
+        if isReflectionWithinLimit {
+            return "Write one or two sentences about what is here right now."
+        }
+
+        return "Shorten your reflection before continuing."
+    }
+
     var canContinueToAction: Bool {
         selectedMood != nil && !trimmedReflectionText.isEmpty && isReflectionWithinLimit
     }
