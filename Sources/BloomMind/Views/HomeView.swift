@@ -173,6 +173,7 @@ private struct BloomProgressView: View {
                 }
             }
             .frame(width: 190, height: 190)
+            .accessibilityElement(children: .ignore)
             .accessibilityLabel("Weekly bloom progress")
             .accessibilityValue("\(percent) percent, \(completedCount) of \(goalCount) check-ins complete")
 
