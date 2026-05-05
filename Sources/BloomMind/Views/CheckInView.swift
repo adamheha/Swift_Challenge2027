@@ -103,6 +103,8 @@ private struct MoodButton: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(mood.rawValue)
+        .accessibilityValue(isSelected ? "Selected" : "Not selected")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
