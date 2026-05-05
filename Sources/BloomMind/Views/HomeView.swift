@@ -52,6 +52,7 @@ struct HomeView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
+            .accessibilityHint(checkInState.primaryActionAccessibilityHint)
         }
         .bloomPage(maxWidth: 520, padding: 32)
         .navigationTitle("Today")

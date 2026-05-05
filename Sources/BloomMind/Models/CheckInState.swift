@@ -30,6 +30,10 @@ struct CheckInState {
         hasCompletedCheckInToday() ? "Check In Again" : "Start Check-In"
     }
 
+    var primaryActionAccessibilityHint: String {
+        hasCompletedCheckInToday() ? "Starts another check-in for today." : "Starts today's check-in."
+    }
+
     var todayStatusTitle: String {
         hasCompletedCheckInToday() ? "Today's check-in is complete" : "Ready for today's check-in"
     }
