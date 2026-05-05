@@ -43,6 +43,8 @@ struct CheckInView: View {
                 TextEditor(text: $checkInState.reflectionText)
                     .frame(minHeight: 140)
                     .padding(8)
+                    .accessibilityLabel("Reflection")
+                    .accessibilityHint("Write one or two sentences about what is here right now.")
                     .scrollContentBackground(.hidden)
                     .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
                     .overlay {
