@@ -31,11 +31,11 @@ struct GrowthActionView: View {
             }
             .bloomPanel(padding: 22)
 
-            if !checkInState.reflectionText.isEmpty {
+            if !checkInState.trimmedReflectionText.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Your reflection")
                         .font(.headline)
-                    Text(checkInState.reflectionText)
+                    Text(checkInState.trimmedReflectionText)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
