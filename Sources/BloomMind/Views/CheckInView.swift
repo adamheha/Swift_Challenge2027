@@ -77,6 +77,11 @@ struct CheckInView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .disabled(!checkInState.canContinueToAction)
+            .accessibilityHint(
+                checkInState.canContinueToAction
+                    ? "Shows a small growth action."
+                    : "Select a mood and write a short reflection to continue."
+            )
         }
         .bloomPage(maxWidth: 620)
         .navigationTitle("Check-In")
