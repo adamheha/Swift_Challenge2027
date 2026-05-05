@@ -45,6 +45,7 @@ struct GrowthActionView: View {
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(selectedMood.tint.opacity(0.22), lineWidth: 1)
                 }
+                .accessibilityElement(children: .combine)
             }
 
             Spacer()
