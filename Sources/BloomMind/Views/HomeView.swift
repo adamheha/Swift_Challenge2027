@@ -82,11 +82,11 @@ private struct GardenPreviewView: View {
                     GardenPlotView(isGrown: index < completedCount)
                 }
             }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Garden preview")
-            .accessibilityValue(accessibilityValue)
         }
         .bloomPanel(padding: 16)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Garden preview")
+        .accessibilityValue(accessibilityValue)
     }
 }
 
