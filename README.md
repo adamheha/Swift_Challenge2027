@@ -25,7 +25,7 @@ Stage 3: polish the local SwiftUI MVP flow.
 - Growth action screen with mood-matched suggested actions and a trimmed reflection summary.
 - Local-only state for the active check-in, weekly progress, and latest completion time.
 - Accessibility polish for mood selection, reflection entry, step progress, and completion actions.
-- Unit tests for mood actions, check-in completion, progress capping, accessibility copy, and edge-case step state.
+- Unit tests for mood actions, check-in completion, progress floors/capping, accessibility copy, and edge-case step state.
 
 ## Run and Verify
 
