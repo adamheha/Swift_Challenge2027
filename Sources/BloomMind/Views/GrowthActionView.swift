@@ -55,7 +55,7 @@ struct GrowthActionView: View {
                 checkInState.completeCheckIn()
                 onComplete()
             } label: {
-                Label("Complete Check-In", systemImage: "checkmark")
+                Label("Complete Check-In", systemImage: "checkmark.circle.fill")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
