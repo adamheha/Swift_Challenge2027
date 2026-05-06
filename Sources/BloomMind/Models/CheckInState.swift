@@ -5,6 +5,7 @@ struct CheckInState {
     static let weeklyCheckInGoal = 7
     static let reflectionPromptText = "Write one or two sentences about what is here right now."
     static let localPrivacyDetailText = "Your reflection stays local in this prototype."
+    static let completeActionAccessibilityHint = "Saves this check-in and returns to Today."
 
     var selectedMood: Mood?
     var reflectionText = ""

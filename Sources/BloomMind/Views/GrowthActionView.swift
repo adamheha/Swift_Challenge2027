@@ -60,7 +60,7 @@ struct GrowthActionView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .accessibilityHint("Saves this check-in and returns to Today.")
+            .accessibilityHint(CheckInState.completeActionAccessibilityHint)
         }
         .bloomPage()
         .navigationTitle("Growth Action")
