@@ -151,20 +151,28 @@ Definition of done:
 
 ## Stage 8 - Final Demo and Submission Package
 
-Status: Not Started
+Status: Complete
 
 Goal: Prepare the final version for Apple submission.
 
-Planned work:
+Completed:
 
 - Create the final one-minute demo path.
 - Finalize written responses.
 - Update README with final run and review instructions.
 - Verify package size and resource requirements against the latest official rules.
 - Run final tests.
+- Add a final demo-path unit test for the local action output.
+- Commit and push the final Stage 8 branch.
 
 Definition of done:
 
 - The app can be opened, understood, and completed quickly.
 - The written response clearly connects personal motivation, creativity, and technical work.
 - The final branch is committed and pushed.
+
+Rules check:
+
+- Checked on May 6, 2026.
+- Apple had not published Swift Student Challenge 2027 rules yet.
+- The package is aligned with the latest official 2026 requirements: `.swiftpm` ZIP, offline behavior, 25 MB ZIP limit, Swift Playgrounds 4.6 or Xcode 26 or later, English content, individual work, and AI usage disclosure.

@@ -220,6 +220,16 @@ import Testing
     #expect(ready.continueActionAccessibilityHint == "Shows a small growth action.")
 }
 
+@Test func finalDemoPathKeepsOneMinuteActionStable() {
+    let reflection = "I have a project due today and feel pressure to finish everything."
+    let suggestion = LocalActionEngine.suggestion(for: .stressed, reflectionText: reflection)
+
+    #expect(suggestion.theme == .pressure)
+    #expect(suggestion.title == "A tiny pressure step for stressed")
+    #expect(suggestion.action == "Make it tiny: choose one thing that can wait, then start only the next tiny step.")
+    #expect(!suggestion.explanation.contains(reflection))
+}
+
 @Test func homeCopyReflectsIncompleteAndCompleteStates() {
     let notCompleted = CheckInState()
     #expect(notCompleted.todayPrompt == "What feeling wants your attention today?")

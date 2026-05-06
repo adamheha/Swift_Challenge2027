@@ -13,14 +13,15 @@ The project starts with a clear concept document, then grows into a small, polis
 - `Package.swift`: SwiftPM package for the local SwiftUI prototype.
 - `Sources/BloomMind`: SwiftUI app entry, MVP screens, local state, and mood model.
 - `Tests/BloomMindTests`: lightweight behavior checks for the MVP model.
+- `BloomMind_SubmissionPackage.md`: final demo path, submission response drafts, rules check, and packaging checklist.
 
 ## Current Stage
 
-Stage 7: accessibility, polish, and submission safety - complete.
+Stage 8: final demo and submission package - complete.
 
-Active branch: `codex/bloommind-stage-7`
+Active branch: `codex/bloommind-stage-8`
 
-Stage 0 research, Stage 1 concept, Stage 2 SwiftUI MVP, Stage 4 product repositioning, Stage 5 interactive emotion garden, Stage 6 local action engine, and Stage 7 accessibility/submission polish are complete. Stage 3 MVP polish is mostly complete. The next stage is Stage 8, final demo and submission package.
+Stage 0 research, Stage 1 concept, Stage 2 SwiftUI MVP, Stage 4 product repositioning, Stage 5 interactive emotion garden, Stage 6 local action engine, Stage 7 accessibility/submission polish, and Stage 8 final submission packaging are complete. Stage 3 MVP polish is mostly complete.
 
 ## Implemented MVP Pieces
 
@@ -57,7 +58,21 @@ BloomMind should become more than a mood tracker. The strongest version should d
 - Stage 5: Interactive emotion garden - complete.
 - Stage 6: Local action engine - complete.
 - Stage 7: Accessibility, polish, and submission safety - complete.
-- Stage 8: Final demo and submission package - not started.
+- Stage 8: Final demo and submission package - complete.
+
+## Final Demo And Submission Review
+
+Use `BloomMind_SubmissionPackage.md` as the final review guide. The recommended one-minute demo path is:
+
+1. Open BloomMind on the Today screen.
+2. Start a check-in.
+3. Select Stressed.
+4. Enter: `I have a project due today and feel pressure to finish everything.`
+5. Continue to the Growth Action screen.
+6. Confirm the local pressure-themed action appears.
+7. Complete the check-in and confirm the emotion garden grows.
+
+Latest official rules check: on May 6, 2026, Apple had not published Swift Student Challenge 2027 rules yet. The final package is aligned with the latest official 2026 requirements: `.swiftpm` ZIP, offline behavior, 25 MB ZIP limit, Swift Playgrounds 4.6 or Xcode 26 or later, English content, individual work, and disclosed AI assistance.
 
 ## Run and Verify
 
@@ -79,3 +94,12 @@ Manual smoke check:
 - Large text sizes keep the main flow scrollable, the garden wraps when needed, and VoiceOver labels describe progress without exposing reflection text.
 
 Note: opening/running the app in Xcode requires a full Xcode installation selected with `xcode-select`. Command Line Tools alone can build package code but may not provide the full Xcode app workflow.
+
+Final packaging check:
+
+```sh
+git archive --format=zip -o /tmp/BloomMind-source.zip HEAD
+du -h /tmp/BloomMind-source.zip
+```
+
+For the actual Apple submission, create and ZIP an app playground directory named `BloomMind.swiftpm`, then verify the ZIP is under 25 MB and opens offline in Swift Playgrounds 4.6 or Xcode 26, or later.
