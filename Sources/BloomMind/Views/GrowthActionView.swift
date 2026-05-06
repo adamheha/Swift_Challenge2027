@@ -69,17 +69,31 @@ struct GrowthActionView: View {
 
 struct GrowthActionView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            GrowthActionView(
-                checkInState: .constant(
-                    CheckInState(
-                        selectedMood: .stressed,
-                        reflectionText: "I have a lot to finish, but I can start with one clear step.",
-                        completedCheckIns: 2
-                    )
-                ),
-                onComplete: {}
-            )
+        Group {
+            NavigationStack {
+                GrowthActionView(
+                    checkInState: .constant(
+                        CheckInState(
+                            selectedMood: .stressed,
+                            reflectionText: "I have a lot to finish, but I can start with one clear step.",
+                            completedCheckIns: 2
+                        )
+                    ),
+                    onComplete: {}
+                )
+            }
+
+            NavigationStack {
+                GrowthActionView(
+                    checkInState: .constant(
+                        CheckInState(
+                            selectedMood: .calm,
+                            completedCheckIns: 2
+                        )
+                    ),
+                    onComplete: {}
+                )
+            }
         }
     }
 }
