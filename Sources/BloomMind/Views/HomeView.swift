@@ -219,6 +219,16 @@ struct HomeView_Previews: PreviewProvider {
                 )
             }
             .previewDisplayName("Home - Completed Today")
+
+            NavigationStack {
+                HomeView(
+                    checkInState: .constant(
+                        CheckInState(completedCheckIns: CheckInState.weeklyCheckInGoal)
+                    ),
+                    onStartCheckIn: {}
+                )
+            }
+            .previewDisplayName("Home - Full Garden")
         }
     }
 }
