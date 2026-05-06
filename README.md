@@ -4,20 +4,23 @@
 
 BloomMind is a SwiftUI app concept for the Swift Student Challenge 2027.
 
-The project starts with a clear concept document, then grows into a small, polished, reviewable app experience.
+The project starts with a clear concept document, then grows into a small, polished, reviewable app experience. The award-level direction is a privacy-first interactive reflection garden that helps students turn overwhelming school emotions into one tiny, doable next step.
 
 ## Current Files
 
 - `BloomMind_Concept.md`: product concept, MVP scope, user experience goals, and implementation direction.
+- `BloomMind_Roadmap.md`: stage plan, current status, and remaining work.
 - `Package.swift`: SwiftPM package for the local SwiftUI prototype.
 - `Sources/BloomMind`: SwiftUI app entry, MVP screens, local state, and mood model.
 - `Tests/BloomMindTests`: lightweight behavior checks for the MVP model.
 
 ## Current Stage
 
-Stage 3: polish the local SwiftUI MVP flow.
+Stage 4: award-level product repositioning - complete.
 
-Active branch: `codex/bloommind-stage-3`
+Active branch: `codex/bloommind-stage-4`
+
+Stage 0 research, Stage 1 concept, Stage 2 SwiftUI MVP, and Stage 4 product repositioning are complete. Stage 3 MVP polish is mostly complete. The next stage is Stage 5, the interactive emotion garden.
 
 ## Implemented MVP Pieces
 
@@ -29,6 +32,29 @@ Active branch: `codex/bloommind-stage-3`
 - Accessibility polish for mood selection, reflection entry, step progress, and completion actions.
 - Xcode previews for key empty, selected, completed, full-garden, and summary states.
 - Unit tests for mood actions, check-in completion, progress floors/capping, accessibility copy, and edge-case step state.
+
+## Award-Level Direction
+
+BloomMind should become more than a mood tracker. The strongest version should demonstrate:
+
+- A memorable interactive emotion garden.
+- Mood-specific plant visuals and completion animation.
+- Local-only reflection theme detection.
+- Tiny growth actions generated from mood plus theme.
+- Accessibility and privacy as core product features.
+- Non-clinical, student-centered language.
+
+## Stage Roadmap
+
+- Stage 0: Award research - complete.
+- Stage 1: Original concept - complete.
+- Stage 2: SwiftUI MVP - complete.
+- Stage 3: MVP polish - mostly complete.
+- Stage 4: Award-level product repositioning - complete.
+- Stage 5: Interactive emotion garden - not started.
+- Stage 6: Local action engine - not started.
+- Stage 7: Accessibility, polish, and submission safety - not started.
+- Stage 8: Final demo and submission package - not started.
 
 ## Run and Verify
 
