@@ -137,6 +137,10 @@ import Testing
     #expect(CheckInState.completeActionAccessibilityHint == "Saves this check-in and returns to Today.")
 }
 
+@Test func reflectionSummaryTitleMatchesGrowthActionCopy() {
+    #expect(CheckInState.reflectionSummaryTitle == "Your reflection")
+}
+
 @Test func continueActionAccessibilityHintReflectsReadiness() {
     let empty = CheckInState()
     #expect(empty.continueActionAccessibilityHint == "Select a mood and write a short reflection to continue.")

@@ -7,6 +7,7 @@ struct CheckInState {
     static let localPrivacyDetailText = "Your reflection stays local in this prototype."
     static let completeActionAccessibilityHint = "Saves this check-in and returns to Today."
     static let gardenPreviewTitle = "Garden preview"
+    static let reflectionSummaryTitle = "Your reflection"
 
     var selectedMood: Mood?
     var reflectionText = ""

@@ -34,7 +34,7 @@ struct GrowthActionView: View {
 
             if !checkInState.trimmedReflectionText.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Your reflection")
+                    Text(CheckInState.reflectionSummaryTitle)
                         .font(.headline)
                     Text(checkInState.trimmedReflectionText)
                         .foregroundStyle(.secondary)
