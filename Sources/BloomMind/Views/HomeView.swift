@@ -199,6 +199,7 @@ struct HomeView_Previews: PreviewProvider {
                     onStartCheckIn: {}
                 )
             }
+            .previewDisplayName("Home - Fresh")
 
             NavigationStack {
                 HomeView(
@@ -211,6 +212,7 @@ struct HomeView_Previews: PreviewProvider {
                     onStartCheckIn: {}
                 )
             }
+            .previewDisplayName("Home - Completed Today")
         }
     }
 }

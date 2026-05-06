@@ -82,6 +82,7 @@ struct GrowthActionView_Previews: PreviewProvider {
                     onComplete: {}
                 )
             }
+            .previewDisplayName("Growth Action - With Reflection")
 
             NavigationStack {
                 GrowthActionView(
@@ -94,6 +95,7 @@ struct GrowthActionView_Previews: PreviewProvider {
                     onComplete: {}
                 )
             }
+            .previewDisplayName("Growth Action - No Reflection")
         }
     }
 }

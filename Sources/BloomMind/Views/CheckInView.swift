@@ -142,6 +142,7 @@ struct CheckInView_Previews: PreviewProvider {
                     onContinue: {}
                 )
             }
+            .previewDisplayName("Check-In - Empty")
 
             NavigationStack {
                 CheckInView(
@@ -154,6 +155,7 @@ struct CheckInView_Previews: PreviewProvider {
                     onContinue: {}
                 )
             }
+            .previewDisplayName("Check-In - Selected")
         }
     }
 }
