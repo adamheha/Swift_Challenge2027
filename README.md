@@ -38,4 +38,10 @@ swift test
 swift run BloomMind
 ```
 
+Manual smoke check:
+
+- Home shows weekly bloom progress, garden preview, and today's status.
+- Check-In lets a mood be selected and shows the selected-state checkmark.
+- Growth Action shows the mood-matched action and can complete back to Home.
+
 Note: opening/running the app in Xcode requires a full Xcode installation selected with `xcode-select`. Command Line Tools alone can build package code but may not provide the full Xcode app workflow.
