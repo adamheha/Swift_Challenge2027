@@ -133,7 +133,7 @@ import Testing
     #expect(state.reflectionAccessibilityHint == "Shorten your reflection before continuing.")
 }
 
-@Test func homeCopyReflectsTodayCompletion() {
+@Test func homeCopyReflectsIncompleteAndCompleteStates() {
     let notCompleted = CheckInState()
     #expect(notCompleted.todayPrompt == "What feeling wants your attention today?")
     #expect(notCompleted.primaryActionTitle == "Start Check-In")
