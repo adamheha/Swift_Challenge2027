@@ -4,6 +4,9 @@ struct GrowthActionView: View {
     @Binding var checkInState: CheckInState
     let onComplete: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .largeTitle) private var moodIconSize: CGFloat = 54
+
     private var selectedMood: Mood {
         checkInState.selectedMood ?? .unsure
     }
@@ -15,26 +18,32 @@ struct GrowthActionView: View {
         )
     }
 
+    private var pageSpacing: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 22 : 26
+    }
+
     var body: some View {
-        VStack(spacing: 26) {
+        VStack(spacing: pageSpacing) {
             StepProgressView(currentStep: 3)
                 .bloomPanel(padding: 12)
 
             VStack(spacing: 12) {
                 Image(systemName: selectedMood.symbolName)
-                    .font(.system(size: 54, weight: .regular))
+                    .font(.system(size: min(moodIconSize, 72), weight: .regular))
                     .foregroundStyle(selectedMood.tint.gradient)
                     .accessibilityHidden(true)
 
                 Text(suggestion.title)
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(suggestion.action)
                     .font(.title3)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
                     .padding(.horizontal)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .bloomPanel(padding: 22)
             .accessibilityElement(children: .combine)
@@ -51,6 +60,8 @@ struct GrowthActionView: View {
                 onComplete()
             } label: {
                 Label("Complete Check-In", systemImage: "checkmark.circle.fill")
+                    .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -74,11 +85,13 @@ private struct LocalActionExplanationView: View {
             Label(suggestion.theme.displayName, systemImage: suggestion.theme.symbolName)
                 .font(.subheadline.bold())
                 .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
 
             Text(suggestion.explanation)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
         .background(.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 8))
@@ -87,6 +100,8 @@ private struct LocalActionExplanationView: View {
                 .stroke(tint.opacity(0.22), lineWidth: 1)
         }
         .accessibilityElement(children: .combine)
+        .accessibilityLabel("Why this action")
+        .accessibilityValue("\(suggestion.theme.displayName). \(suggestion.explanation)")
     }
 }
 

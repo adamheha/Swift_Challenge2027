@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. Each stage sho
 
 ## Current Status
 
-Current stage: Stage 6 - Local Action Engine Complete
+Current stage: Stage 7 - Accessibility, Polish, and Submission Safety Complete
 
-Current branch: `codex/bloommind-stage-6`
+Current branch: `codex/bloommind-stage-7`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: Stage 7 - Accessibility, Polish, and Submission Safety
+Next stage: Stage 8 - Final Demo and Submission Package
 
 ## Stage 0 - Award Research
 
@@ -130,11 +130,11 @@ Definition of done:
 
 ## Stage 7 - Accessibility, Polish, and Submission Safety
 
-Status: Not Started
+Status: Complete
 
 Goal: Raise the project to submission quality.
 
-Planned work:
+Completed:
 
 - Improve Dynamic Type behavior.
 - Verify VoiceOver labels and values.

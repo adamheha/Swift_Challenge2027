@@ -4,21 +4,31 @@ struct HomeView: View {
     @Binding var checkInState: CheckInState
     let onStartCheckIn: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .largeTitle) private var heroIconSize: CGFloat = 58
+
+    private var pageSpacing: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 22 : 28
+    }
+
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: pageSpacing) {
             VStack(spacing: 10) {
                 Image(systemName: "camera.macro")
-                    .font(.system(size: 58, weight: .regular))
+                    .font(.system(size: min(heroIconSize, 74), weight: .regular))
                     .foregroundStyle(.green.gradient)
                     .accessibilityHidden(true)
 
                 Text("BloomMind")
                     .font(.largeTitle.bold())
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
 
                 Text(checkInState.todayPrompt)
                     .font(.title3)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             BloomProgressView(
@@ -51,6 +61,8 @@ struct HomeView: View {
                     systemImage: "sparkles"
                 )
                     .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -67,20 +79,25 @@ private struct TodayStatusView: View {
     let title: String
     let detail: String
 
+    @ScaledMetric(relativeTo: .title3) private var iconSize: CGFloat = 22
+
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .top, spacing: 12) {
             Image(systemName: isComplete ? "checkmark.circle.fill" : "lock.shield")
-                .font(.title3)
+                .font(.system(size: iconSize, weight: .regular))
                 .foregroundStyle(isComplete ? .green : .blue)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            .layoutPriority(1)
 
             Spacer()
         }
@@ -104,37 +121,56 @@ private struct BloomProgressView: View {
     let accessibilityValue: String
     let encouragement: String
 
+    @ScaledMetric(relativeTo: .title) private var ringSize: CGFloat = 190
+    @ScaledMetric(relativeTo: .body) private var ringLineWidth: CGFloat = 18
+
+    private var displayedRingSize: CGFloat {
+        min(ringSize, 230)
+    }
+
+    private var displayedRingLineWidth: CGFloat {
+        min(ringLineWidth, 24)
+    }
+
     var body: some View {
         VStack(spacing: 12) {
             ZStack {
                 Circle()
-                    .stroke(.green.opacity(0.16), lineWidth: 18)
+                    .stroke(.green.opacity(0.16), lineWidth: displayedRingLineWidth)
 
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(.green.gradient, style: StrokeStyle(lineWidth: 18, lineCap: .round))
+                    .stroke(.green.gradient, style: StrokeStyle(lineWidth: displayedRingLineWidth, lineCap: .round))
                     .rotationEffect(.degrees(-90))
 
                 VStack(spacing: 4) {
                     Text("\(percent)%")
                         .font(.title.bold())
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                     Text("weekly bloom")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                 }
             }
-            .frame(width: 190, height: 190)
+            .frame(width: displayedRingSize, height: displayedRingSize)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Weekly bloom progress")
             .accessibilityValue(accessibilityValue)
+            .accessibilityHint("Updates after each completed local check-in.")
 
             Text("\(completedCount) of \(goalCount) check-ins complete")
                 .font(.headline)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
 
             Text(encouragement)
                 .font(.subheadline)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

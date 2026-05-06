@@ -16,11 +16,11 @@ The project starts with a clear concept document, then grows into a small, polis
 
 ## Current Stage
 
-Stage 6: local action engine - complete.
+Stage 7: accessibility, polish, and submission safety - complete.
 
-Active branch: `codex/bloommind-stage-6`
+Active branch: `codex/bloommind-stage-7`
 
-Stage 0 research, Stage 1 concept, Stage 2 SwiftUI MVP, Stage 4 product repositioning, Stage 5 interactive emotion garden, and Stage 6 local action engine are complete. Stage 3 MVP polish is mostly complete. The next stage is Stage 7, accessibility, polish, and submission safety.
+Stage 0 research, Stage 1 concept, Stage 2 SwiftUI MVP, Stage 4 product repositioning, Stage 5 interactive emotion garden, Stage 6 local action engine, and Stage 7 accessibility/submission polish are complete. Stage 3 MVP polish is mostly complete. The next stage is Stage 8, final demo and submission package.
 
 ## Implemented MVP Pieces
 
@@ -31,7 +31,8 @@ Stage 0 research, Stage 1 concept, Stage 2 SwiftUI MVP, Stage 4 product repositi
 - Mood-specific SwiftUI plant visuals that grow from completed local check-ins.
 - Local-only reflection theme detection for school, friendship, rest, pressure, and uncertainty.
 - Local-only state for the active check-in, weekly progress, latest completion time, and garden mood history.
-- Accessibility polish for mood selection, reflection entry, step progress, garden state, and completion actions.
+- Accessibility polish for Dynamic Type, Reduce Motion, VoiceOver labels and values, mood selection, reflection entry, step progress, garden state, and completion actions.
+- Submission-safe product boundaries: no accounts, no analytics, no network calls, no medical claims, and no diagnostic language in the app flow.
 - Xcode previews for key empty, selected, completed, full-garden, and summary states.
 - Unit tests for mood actions, check-in completion, garden mood state, progress floors/capping, accessibility copy, and edge-case step state.
 
@@ -55,7 +56,7 @@ BloomMind should become more than a mood tracker. The strongest version should d
 - Stage 4: Award-level product repositioning - complete.
 - Stage 5: Interactive emotion garden - complete.
 - Stage 6: Local action engine - complete.
-- Stage 7: Accessibility, polish, and submission safety - not started.
+- Stage 7: Accessibility, polish, and submission safety - complete.
 - Stage 8: Final demo and submission package - not started.
 
 ## Run and Verify
@@ -75,5 +76,6 @@ Manual smoke check:
 - Home previews include a full-garden state for checking the completed weekly garden.
 - Check-In lets a mood be selected and shows the selected-state checkmark.
 - Growth Action shows the locally generated mood-and-theme action without repeating the private reflection text, then completes back to Home where the newest plant visibly grows.
+- Large text sizes keep the main flow scrollable, the garden wraps when needed, and VoiceOver labels describe progress without exposing reflection text.
 
 Note: opening/running the app in Xcode requires a full Xcode installation selected with `xcode-select`. Command Line Tools alone can build package code but may not provide the full Xcode app workflow.

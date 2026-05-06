@@ -8,43 +8,30 @@ struct EmotionGardenView: View {
     let accessibilityValue: String
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var newestPlantIsGrown = true
 
+    private var safeTotalPlots: Int {
+        max(totalPlots, 0)
+    }
+
     private var visibleMoods: [Mood] {
-        Array(moods.prefix(totalPlots))
+        Array(moods.prefix(safeTotalPlots))
     }
 
     private var newestMoodIndex: Int? {
-        guard !visibleMoods.isEmpty else {
-            return nil
-        }
+        visibleMoods.indices.last
+    }
 
-        return visibleMoods.count - 1
+    private var wrappedColumns: [GridItem] {
+        [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 82 : 66), spacing: 8)]
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Label(title, systemImage: "camera.macro")
-                    .font(.headline)
+            header
 
-                Spacer()
-
-                Text(progressText)
-                    .font(.caption.bold())
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
-            }
-
-            HStack(spacing: 8) {
-                ForEach(0..<totalPlots, id: \.self) { index in
-                    EmotionGardenPlotView(
-                        mood: visibleMoods.indices.contains(index) ? visibleMoods[index] : nil,
-                        isNewest: newestMoodIndex == index,
-                        newestPlantIsGrown: newestPlantIsGrown || reduceMotion
-                    )
-                }
-            }
+            plotLayout
         }
         .bloomPanel(padding: 16)
         .accessibilityElement(children: .ignore)
@@ -71,12 +58,85 @@ struct EmotionGardenView: View {
             newestPlantIsGrown = true
         }
     }
+
+    @ViewBuilder
+    private var header: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack {
+                gardenTitle
+
+                Spacer()
+
+                progressBadge
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                gardenTitle
+                progressBadge
+            }
+        }
+    }
+
+    private var gardenTitle: some View {
+        Label(title, systemImage: "camera.macro")
+            .font(.headline)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var progressBadge: some View {
+        Text(progressText)
+            .font(.caption.bold())
+            .foregroundStyle(.secondary)
+            .monospacedDigit()
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+    }
+
+    @ViewBuilder
+    private var plotLayout: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            wrappedPlots
+        } else {
+            ViewThatFits(in: .horizontal) {
+                horizontalPlots
+                wrappedPlots
+            }
+        }
+    }
+
+    private var horizontalPlots: some View {
+        HStack(spacing: 8) {
+            ForEach(0..<safeTotalPlots, id: \.self) { index in
+                plot(at: index)
+            }
+        }
+    }
+
+    private var wrappedPlots: some View {
+        LazyVGrid(columns: wrappedColumns, spacing: 8) {
+            ForEach(0..<safeTotalPlots, id: \.self) { index in
+                plot(at: index)
+            }
+        }
+    }
+
+    private func plot(at index: Int) -> some View {
+        EmotionGardenPlotView(
+            mood: visibleMoods.indices.contains(index) ? visibleMoods[index] : nil,
+            isNewest: newestMoodIndex == index,
+            newestPlantIsGrown: newestPlantIsGrown || reduceMotion
+        )
+    }
 }
 
 private struct EmotionGardenPlotView: View {
     let mood: Mood?
     let isNewest: Bool
     let newestPlantIsGrown: Bool
+
+    @ScaledMetric(relativeTo: .body) private var plotMinWidth: CGFloat = 58
+    @ScaledMetric(relativeTo: .body) private var plotMinHeight: CGFloat = 104
+    @ScaledMetric(relativeTo: .body) private var plantFrameHeight: CGFloat = 78
 
     private var isGrown: Bool {
         mood != nil
@@ -101,13 +161,13 @@ private struct EmotionGardenPlotView: View {
                     EmptyPlotSeedView()
                 }
             }
-            .frame(height: 78)
+            .frame(height: plantFrameHeight)
 
             RoundedRectangle(cornerRadius: 4)
                 .fill(soilColor)
                 .frame(height: 9)
         }
-        .frame(maxWidth: .infinity, minHeight: 104)
+        .frame(minWidth: plotMinWidth, maxWidth: .infinity, minHeight: plotMinHeight)
         .padding(.vertical, 8)
         .background(backgroundColor, in: RoundedRectangle(cornerRadius: 8))
         .overlay {
@@ -116,6 +176,7 @@ private struct EmotionGardenPlotView: View {
         }
         .accessibilityLabel(accessibilityLabel)
         .accessibilityValue(accessibilityValue)
+        .accessibilityHint(accessibilityHint)
     }
 
     private var backgroundColor: Color {
@@ -147,7 +208,12 @@ private struct EmotionGardenPlotView: View {
             return "Ready for a future check-in."
         }
 
-        return "Represents \(mood.rawValue.lowercased())."
+        let newestPrefix = isNewest ? "Newest plant. " : ""
+        return "\(newestPrefix)Represents \(mood.rawValue.lowercased())."
+    }
+
+    private var accessibilityHint: String {
+        isGrown ? "Part of this week's local emotion garden." : "Completing a check-in grows a plant here."
     }
 }
 

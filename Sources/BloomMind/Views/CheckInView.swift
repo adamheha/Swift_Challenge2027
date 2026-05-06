@@ -4,6 +4,17 @@ struct CheckInView: View {
     @Binding var checkInState: CheckInState
     let onContinue: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .body) private var reflectionMinHeight: CGFloat = 140
+
+    private var moodButtonMinimumWidth: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 180 : 130
+    }
+
+    private var moodGridColumns: [GridItem] {
+        [GridItem(.adaptive(minimum: moodButtonMinimumWidth), spacing: 12)]
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             StepProgressView(currentStep: 2)
@@ -15,9 +26,10 @@ struct CheckInView: View {
 
                 Text("Pick the closest feeling. It does not need to be perfect.")
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 12)], spacing: 12) {
+            LazyVGrid(columns: moodGridColumns, spacing: 12) {
                 ForEach(Mood.allCases) { mood in
                     MoodButton(
                         mood: mood,
@@ -38,6 +50,8 @@ struct CheckInView: View {
                     Text("\(checkInState.reflectionCharacterCount)/\(CheckInState.reflectionCharacterLimit)")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(checkInState.isReflectionWithinLimit ? Color.secondary : Color.red)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Reflection")
@@ -45,7 +59,7 @@ struct CheckInView: View {
                 .accessibilityHint(checkInState.reflectionAccessibilityHint)
 
                 TextEditor(text: $checkInState.reflectionText)
-                    .frame(minHeight: 140)
+                    .frame(minHeight: reflectionMinHeight)
                     .padding(8)
                     .accessibilityLabel("Reflection")
                     .accessibilityValue(checkInState.reflectionAccessibilityValue)
@@ -71,6 +85,7 @@ struct CheckInView: View {
                     Label("Keep this reflection short enough for a one-minute check-in.", systemImage: "exclamationmark.circle")
                         .font(.caption)
                         .foregroundStyle(.red)
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityHint("Shorten your reflection before continuing.")
                 }
             }
@@ -79,6 +94,8 @@ struct CheckInView: View {
 
             Button(action: onContinue) {
                 Label("Continue", systemImage: "arrow.right")
+                    .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -96,15 +113,21 @@ private struct MoodButton: View {
     let isSelected: Bool
     let action: () -> Void
 
+    @ScaledMetric(relativeTo: .body) private var buttonMinHeight: CGFloat = 92
+    @ScaledMetric(relativeTo: .title2) private var iconSize: CGFloat = 24
+
     var body: some View {
         Button(action: action) {
             VStack(spacing: 10) {
                 Image(systemName: mood.symbolName)
-                    .font(.title2)
+                    .font(.system(size: iconSize, weight: .regular))
                 Text(mood.rawValue)
                     .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
             }
-            .frame(maxWidth: .infinity, minHeight: 92)
+            .frame(maxWidth: .infinity, minHeight: buttonMinHeight)
             .foregroundStyle(isSelected ? .white : mood.tint)
             .background(isSelected ? mood.tint.gradient : mood.tint.opacity(0.12).gradient, in: RoundedRectangle(cornerRadius: 8))
             .overlay {
