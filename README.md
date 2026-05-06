@@ -27,7 +27,7 @@ Active branch: `codex/bloommind-stage-3`
 - Growth action screen with mood-matched suggested actions and a trimmed reflection summary.
 - Local-only state for the active check-in, weekly progress, and latest completion time.
 - Accessibility polish for mood selection, reflection entry, step progress, and completion actions.
-- Xcode previews for key empty, selected, completed, and summary states.
+- Xcode previews for key empty, selected, completed, full-garden, and summary states.
 - Unit tests for mood actions, check-in completion, progress floors/capping, accessibility copy, and edge-case step state.
 
 ## Run and Verify
@@ -44,6 +44,7 @@ open Package.swift
 Manual smoke check:
 
 - Home shows weekly bloom progress, garden preview, and today's status.
+- Home previews include a full-garden state for checking the completed weekly garden.
 - Check-In lets a mood be selected and shows the selected-state checkmark.
 - Growth Action shows the mood-matched action and can complete back to Home.
 
