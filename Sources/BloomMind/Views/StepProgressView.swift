@@ -60,5 +60,6 @@ struct StepProgressView_Previews: PreviewProvider {
     static var previews: some View {
         StepProgressView(currentStep: 2)
             .padding()
+            .previewDisplayName("Step Progress - Reflect")
     }
 }
