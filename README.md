@@ -36,6 +36,7 @@ This repo is set up as a Swift Package with a macOS SwiftUI executable target.
 swift build
 swift test
 swift run BloomMind
+open Package.swift
 ```
 
 Manual smoke check:
