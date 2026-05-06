@@ -17,6 +17,8 @@ The project starts with a clear concept document, then grows into a small, polis
 
 Stage 3: polish the local SwiftUI MVP flow.
 
+Active branch: `codex/bloommind-stage-3`
+
 ## Implemented MVP Pieces
 
 - SwiftUI app shell with a typed navigation flow.
