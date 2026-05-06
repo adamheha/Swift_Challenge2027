@@ -98,6 +98,12 @@ struct CheckInState {
         "\(completedCheckInsThisWeek)/\(Self.weeklyCheckInGoal)"
     }
 
+    var continueActionAccessibilityHint: String {
+        canContinueToAction
+            ? "Shows a small growth action."
+            : "Select a mood and write a short reflection to continue."
+    }
+
     var canContinueToAction: Bool {
         selectedMood != nil && !trimmedReflectionText.isEmpty && isReflectionWithinLimit
     }
