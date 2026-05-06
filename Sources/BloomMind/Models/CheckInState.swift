@@ -22,6 +22,10 @@ struct CheckInState {
         Int((bloomProgress * 100).rounded())
     }
 
+    var weeklyProgressAccessibilityValue: String {
+        "\(bloomProgressPercent) percent, \(completedCheckInsThisWeek) of \(Self.weeklyCheckInGoal) check-ins complete"
+    }
+
     var todayPrompt: String {
         hasCompletedCheckInToday() ? "Today's bloom is already growing." : "What feeling wants your attention today?"
     }

@@ -59,6 +59,7 @@ import Testing
     #expect(state.completedCheckInsThisWeek == CheckInState.weeklyCheckInGoal)
     #expect(state.bloomProgress == 1.0)
     #expect(state.bloomProgressPercent == 100)
+    #expect(state.weeklyProgressAccessibilityValue == "100 percent, 7 of 7 check-ins complete")
 }
 
 @Test func bloomProgressClampsNegativeCheckIns() {
@@ -67,6 +68,7 @@ import Testing
     #expect(state.completedCheckInsThisWeek == 0)
     #expect(state.bloomProgress == 0.0)
     #expect(state.bloomProgressPercent == 0)
+    #expect(state.weeklyProgressAccessibilityValue == "0 percent, 0 of 7 check-ins complete")
 }
 
 @Test func bloomEncouragementReflectsProgressRange() {

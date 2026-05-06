@@ -26,6 +26,7 @@ struct HomeView: View {
                 percent: checkInState.bloomProgressPercent,
                 completedCount: checkInState.completedCheckInsThisWeek,
                 goalCount: CheckInState.weeklyCheckInGoal,
+                accessibilityValue: checkInState.weeklyProgressAccessibilityValue,
                 encouragement: checkInState.bloomEncouragement
             )
             .bloomPanel(padding: 22)
@@ -153,6 +154,7 @@ private struct BloomProgressView: View {
     let percent: Int
     let completedCount: Int
     let goalCount: Int
+    let accessibilityValue: String
     let encouragement: String
 
     var body: some View {
@@ -177,7 +179,7 @@ private struct BloomProgressView: View {
             .frame(width: 190, height: 190)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Weekly bloom progress")
-            .accessibilityValue("\(percent) percent, \(completedCount) of \(goalCount) check-ins complete")
+            .accessibilityValue(accessibilityValue)
 
             Text("\(completedCount) of \(goalCount) check-ins complete")
                 .font(.headline)
