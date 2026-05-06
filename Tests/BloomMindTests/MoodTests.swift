@@ -171,6 +171,10 @@ import Testing
     #expect(CheckInState(completedCheckIns: 12).gardenProgressText == "7/7")
 }
 
+@Test func gardenPreviewTitleMatchesHomeCopy() {
+    #expect(CheckInState.gardenPreviewTitle == "Garden preview")
+}
+
 @MainActor
 @Test func stepProgressAccessibilityClampsOutOfRangeSteps() {
     let beforeFirstStep = StepProgressView(currentStep: 0)

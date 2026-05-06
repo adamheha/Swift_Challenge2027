@@ -32,6 +32,7 @@ struct HomeView: View {
             .bloomPanel(padding: 22)
 
             GardenPreviewView(
+                title: CheckInState.gardenPreviewTitle,
                 completedCount: checkInState.completedCheckInsThisWeek,
                 totalPlots: CheckInState.weeklyCheckInGoal,
                 progressText: checkInState.gardenProgressText,
@@ -62,6 +63,7 @@ struct HomeView: View {
 }
 
 private struct GardenPreviewView: View {
+    let title: String
     let completedCount: Int
     let totalPlots: Int
     let progressText: String
@@ -70,7 +72,7 @@ private struct GardenPreviewView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Label("Garden preview", systemImage: "leaf")
+                Label(title, systemImage: "leaf")
                     .font(.headline)
 
                 Spacer()
@@ -88,7 +90,7 @@ private struct GardenPreviewView: View {
         }
         .bloomPanel(padding: 16)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Garden preview")
+        .accessibilityLabel(title)
         .accessibilityValue(accessibilityValue)
     }
 }
