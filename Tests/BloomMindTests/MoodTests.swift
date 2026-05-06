@@ -2,17 +2,67 @@ import Foundation
 import Testing
 @testable import BloomMind
 
-@Test func moodActionsMatchConceptScope() {
-    #expect(Mood.calm.growthAction == "Write down one thing you want to protect today.")
-    #expect(Mood.happy.growthAction == "Share one kind sentence with someone.")
-    #expect(Mood.tired.growthAction == "Take three slow breaths and lower one expectation.")
-    #expect(Mood.stressed.growthAction == "Choose the smallest next step and do only that.")
-    #expect(Mood.unsure.growthAction == "Write one question you want to understand better.")
-}
-
 @Test func moodSupportCopyMatchesMood() {
     #expect(Mood.stressed.accessibilityHint == "Selects stressed as your current mood.")
-    #expect(Mood.tired.growthActionTitle == "A small action for tired")
+    #expect(Mood.tired.symbolName == "moon")
+}
+
+@Test func reflectionThemeDetectionMatchesSimpleStudentThemes() {
+    #expect(LocalActionEngine.detectTheme(in: "I have a math test and homework tonight.") == .school)
+    #expect(LocalActionEngine.detectTheme(in: "My friend and I had an argument at lunch.") == .friendship)
+    #expect(LocalActionEngine.detectTheme(in: "I slept badly and need a real break.") == .rest)
+    #expect(LocalActionEngine.detectTheme(in: "Everything is due today and I feel too much pressure.") == .pressure)
+    #expect(LocalActionEngine.detectTheme(in: "I am not sure what choice makes sense.") == .uncertainty)
+}
+
+@Test func reflectionThemeDetectionFallsBackToGeneral() {
+    #expect(LocalActionEngine.detectTheme(in: "") == .general)
+    #expect(LocalActionEngine.detectTheme(in: "The afternoon feels kind of ordinary.") == .general)
+}
+
+@Test func localActionEngineCombinesMoodAndTheme() {
+    let tiredSchool = LocalActionEngine.suggestion(
+        for: .tired,
+        reflectionText: "I have homework and a quiz tomorrow."
+    )
+    let calmSchool = LocalActionEngine.suggestion(
+        for: .calm,
+        reflectionText: "I have homework and a quiz tomorrow."
+    )
+    let tiredRest = LocalActionEngine.suggestion(
+        for: .tired,
+        reflectionText: "I am exhausted and need sleep."
+    )
+
+    #expect(tiredSchool.theme == .school)
+    #expect(tiredSchool.title == "A tiny school step for tired")
+    #expect(tiredSchool.action == "Make it gentle: write the school task that matters most, then do the first two minutes.")
+    #expect(calmSchool.action == "Keep it steady: write the school task that matters most, then do the first two minutes.")
+    #expect(tiredRest.action == "Make it gentle: take a real pause with water, a stretch, or two minutes with your eyes closed.")
+}
+
+@Test func localActionEngineExplanationKeepsReflectionPrivate() {
+    let reflection = "My friend Maya ignored my message and I felt left out."
+    let suggestion = LocalActionEngine.suggestion(
+        for: .unsure,
+        reflectionText: reflection
+    )
+
+    #expect(suggestion.theme == .friendship)
+    #expect(!suggestion.action.contains(reflection))
+    #expect(!suggestion.explanation.contains(reflection))
+    #expect(suggestion.explanation.contains("The reflection stays on this device."))
+}
+
+@Test func moodPlantAccessibilityNamesAreDistinct() {
+    let plantNames = Mood.allCases.map(\.plantAccessibilityName)
+
+    #expect(Set(plantNames).count == Mood.allCases.count)
+    #expect(Mood.calm.plantAccessibilityName == "Calm sprout")
+    #expect(Mood.happy.plantAccessibilityName == "Sun bloom")
+    #expect(Mood.tired.plantAccessibilityName == "Moon bell")
+    #expect(Mood.stressed.plantAccessibilityName == "Wind grass")
+    #expect(Mood.unsure.plantAccessibilityName == "Question bud")
 }
 
 @Test func checkInCompletionResetsCurrentEntry() {
@@ -28,6 +78,28 @@ import Testing
     #expect(state.lastCompletedAt != nil)
     #expect(state.selectedMood == nil)
     #expect(state.reflectionText.isEmpty)
+}
+
+@Test func checkInCompletionAddsSelectedMoodToGarden() {
+    var state = CheckInState(
+        selectedMood: .stressed,
+        reflectionText: "I have a lot to finish.",
+        completedCheckIns: 1
+    )
+
+    state.completeCheckIn()
+
+    #expect(state.gardenMoods == [.stressed])
+    #expect(state.gardenMoodsThisWeek == [.calm, .stressed])
+}
+
+@Test func checkInCompletionUsesUnsurePlantWhenMoodIsMissing() {
+    var state = CheckInState()
+
+    state.completeCheckIn()
+
+    #expect(state.gardenMoods == [.unsure])
+    #expect(state.gardenMoodsThisWeek == [.unsure])
 }
 
 @Test func checkInCompletionNormalizesNegativeProgress() {
@@ -137,10 +209,6 @@ import Testing
     #expect(CheckInState.completeActionAccessibilityHint == "Saves this check-in and returns to Today.")
 }
 
-@Test func reflectionSummaryTitleMatchesGrowthActionCopy() {
-    #expect(CheckInState.reflectionSummaryTitle == "Your reflection")
-}
-
 @Test func continueActionAccessibilityHintReflectsReadiness() {
     let empty = CheckInState()
     #expect(empty.continueActionAccessibilityHint == "Select a mood and write a short reflection to continue.")
@@ -171,13 +239,16 @@ import Testing
 
 @Test func gardenAccessibilityValueReflectsWeeklyProgress() {
     let floor = CheckInState(completedCheckIns: -2)
-    #expect(floor.gardenAccessibilityValue == "0 of 7 plants grown")
+    #expect(floor.gardenAccessibilityValue == "0 of 7 plants grown. The garden is ready for today's first seed.")
 
     let partial = CheckInState(completedCheckIns: 3)
-    #expect(partial.gardenAccessibilityValue == "3 of 7 plants grown")
+    #expect(partial.gardenAccessibilityValue == "3 of 7 plants grown: Calm sprout, Sun bloom, Moon bell")
 
     let capped = CheckInState(completedCheckIns: 12)
-    #expect(capped.gardenAccessibilityValue == "7 of 7 plants grown")
+    #expect(
+        capped.gardenAccessibilityValue
+            == "7 of 7 plants grown: Calm sprout, Sun bloom, Moon bell, Wind grass, Question bud, Calm sprout, Sun bloom"
+    )
 }
 
 @Test func gardenProgressTextReflectsClampedWeeklyProgress() {
@@ -187,7 +258,29 @@ import Testing
 }
 
 @Test func gardenPreviewTitleMatchesHomeCopy() {
-    #expect(CheckInState.gardenPreviewTitle == "Garden preview")
+    #expect(CheckInState.gardenPreviewTitle == "Emotion garden")
+}
+
+@Test func gardenMoodsThisWeekUsesFallbackForLegacyProgress() {
+    let state = CheckInState(completedCheckIns: 4)
+
+    #expect(state.gardenMoodsThisWeek == [.calm, .happy, .tired, .stressed])
+}
+
+@Test func gardenMoodsThisWeekKeepsMostRecentPlantsWithinGoal() {
+    let moods: [Mood] = [
+        .calm,
+        .happy,
+        .tired,
+        .stressed,
+        .unsure,
+        .calm,
+        .happy,
+        .tired
+    ]
+    let state = CheckInState(completedCheckIns: 8, gardenMoods: moods)
+
+    #expect(state.gardenMoodsThisWeek == Array(moods.suffix(CheckInState.weeklyCheckInGoal)))
 }
 
 @MainActor

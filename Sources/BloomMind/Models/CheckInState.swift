@@ -6,13 +6,13 @@ struct CheckInState {
     static let reflectionPromptText = "Write one or two sentences about what is here right now."
     static let localPrivacyDetailText = "Your reflection stays local in this prototype."
     static let completeActionAccessibilityHint = "Saves this check-in and returns to Today."
-    static let gardenPreviewTitle = "Garden preview"
-    static let reflectionSummaryTitle = "Your reflection"
+    static let gardenPreviewTitle = "Emotion garden"
 
     var selectedMood: Mood?
     var reflectionText = ""
     var completedCheckIns = 0
     var lastCompletedAt: Date?
+    var gardenMoods: [Mood] = []
 
     var completedCheckInsThisWeek: Int {
         min(max(completedCheckIns, 0), Self.weeklyCheckInGoal)
@@ -92,11 +92,36 @@ struct CheckInState {
     }
 
     var gardenAccessibilityValue: String {
-        "\(completedCheckInsThisWeek) of \(Self.weeklyCheckInGoal) plants grown"
+        let grownMoods = gardenMoodsThisWeek
+
+        guard !grownMoods.isEmpty else {
+            return "0 of \(Self.weeklyCheckInGoal) plants grown. The garden is ready for today's first seed."
+        }
+
+        let plantNames = grownMoods
+            .map(\.plantAccessibilityName)
+            .joined(separator: ", ")
+
+        return "\(grownMoods.count) of \(Self.weeklyCheckInGoal) plants grown: \(plantNames)"
     }
 
     var gardenProgressText: String {
         "\(completedCheckInsThisWeek)/\(Self.weeklyCheckInGoal)"
+    }
+
+    var gardenMoodsThisWeek: [Mood] {
+        let visibleCount = completedCheckInsThisWeek
+
+        guard visibleCount > 0 else {
+            return []
+        }
+
+        if gardenMoods.count >= visibleCount {
+            return Array(gardenMoods.suffix(visibleCount))
+        }
+
+        let missingCount = visibleCount - gardenMoods.count
+        return Self.fallbackGardenMoods(count: missingCount) + gardenMoods
     }
 
     var continueActionAccessibilityHint: String {
@@ -121,9 +146,22 @@ struct CheckInState {
     }
 
     mutating func completeCheckIn(on date: Date = Date()) {
+        let completedMood = selectedMood ?? .unsure
         completedCheckIns = max(completedCheckIns, 0) + 1
         lastCompletedAt = date
+        gardenMoods.append(completedMood)
         selectedMood = nil
         reflectionText = ""
+    }
+
+    private static func fallbackGardenMoods(count: Int) -> [Mood] {
+        guard count > 0 else {
+            return []
+        }
+
+        let moods = Mood.allCases
+        return (0..<count).map { index in
+            moods[index % moods.count]
+        }
     }
 }

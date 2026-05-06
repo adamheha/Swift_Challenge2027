@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. Each stage sho
 
 ## Current Status
 
-Current stage: Stage 4 - Award-Level Product Repositioning Complete
+Current stage: Stage 6 - Local Action Engine Complete
 
-Current branch: `codex/bloommind-stage-4`
+Current branch: `codex/bloommind-stage-6`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: Stage 5 - Interactive Emotion Garden
+Next stage: Stage 7 - Accessibility, Polish, and Submission Safety
 
 ## Stage 0 - Award Research
 
@@ -91,11 +91,11 @@ Definition of done:
 
 ## Stage 5 - Interactive Emotion Garden
 
-Status: Not Started
+Status: Complete
 
 Goal: Make the garden the memorable core experience.
 
-Planned work:
+Completed:
 
 - Replace the simple garden preview with mood-specific plant visuals.
 - Add SwiftUI Shape or Canvas-based plants.
@@ -111,11 +111,11 @@ Definition of done:
 
 ## Stage 6 - Local Action Engine
 
-Status: Not Started
+Status: Complete
 
 Goal: Make growth actions feel personal without using a server.
 
-Planned work:
+Completed:
 
 - Add a local reflection theme parser.
 - Detect simple themes such as school, friendship, rest, pressure, and uncertainty.

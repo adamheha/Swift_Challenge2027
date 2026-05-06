@@ -8,6 +8,13 @@ struct GrowthActionView: View {
         checkInState.selectedMood ?? .unsure
     }
 
+    private var suggestion: GrowthActionSuggestion {
+        LocalActionEngine.suggestion(
+            for: selectedMood,
+            reflectionText: checkInState.trimmedReflectionText
+        )
+    }
+
     var body: some View {
         VStack(spacing: 26) {
             StepProgressView(currentStep: 3)
@@ -19,11 +26,11 @@ struct GrowthActionView: View {
                     .foregroundStyle(selectedMood.tint.gradient)
                     .accessibilityHidden(true)
 
-                Text(selectedMood.growthActionTitle)
+                Text(suggestion.title)
                     .font(.title.bold())
                     .multilineTextAlignment(.center)
 
-                Text(selectedMood.growthAction)
+                Text(suggestion.action)
                     .font(.title3)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
@@ -32,22 +39,10 @@ struct GrowthActionView: View {
             .bloomPanel(padding: 22)
             .accessibilityElement(children: .combine)
 
-            if !checkInState.trimmedReflectionText.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(CheckInState.reflectionSummaryTitle)
-                        .font(.headline)
-                    Text(checkInState.trimmedReflectionText)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding()
-                .background(.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 8))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(selectedMood.tint.opacity(0.22), lineWidth: 1)
-                }
-                .accessibilityElement(children: .combine)
-            }
+            LocalActionExplanationView(
+                suggestion: suggestion,
+                tint: selectedMood.tint
+            )
 
             Spacer()
 
@@ -64,6 +59,34 @@ struct GrowthActionView: View {
         }
         .bloomPage()
         .navigationTitle("Growth Action")
+    }
+}
+
+private struct LocalActionExplanationView: View {
+    let suggestion: GrowthActionSuggestion
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Why this action")
+                .font(.headline)
+
+            Label(suggestion.theme.displayName, systemImage: suggestion.theme.symbolName)
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+
+            Text(suggestion.explanation)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding()
+        .background(.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.22), lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 

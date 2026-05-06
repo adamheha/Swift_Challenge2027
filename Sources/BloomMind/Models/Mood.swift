@@ -39,26 +39,22 @@ enum Mood: String, CaseIterable, Identifiable {
         }
     }
 
-    var growthAction: String {
-        switch self {
-        case .calm:
-            "Write down one thing you want to protect today."
-        case .happy:
-            "Share one kind sentence with someone."
-        case .tired:
-            "Take three slow breaths and lower one expectation."
-        case .stressed:
-            "Choose the smallest next step and do only that."
-        case .unsure:
-            "Write one question you want to understand better."
-        }
-    }
-
-    var growthActionTitle: String {
-        "A small action for \(rawValue.lowercased())"
-    }
-
     var accessibilityHint: String {
         "Selects \(rawValue.lowercased()) as your current mood."
+    }
+
+    var plantAccessibilityName: String {
+        switch self {
+        case .calm:
+            "Calm sprout"
+        case .happy:
+            "Sun bloom"
+        case .tired:
+            "Moon bell"
+        case .stressed:
+            "Wind grass"
+        case .unsure:
+            "Question bud"
+        }
     }
 }

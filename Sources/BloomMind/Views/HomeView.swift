@@ -31,9 +31,9 @@ struct HomeView: View {
             )
             .bloomPanel(padding: 22)
 
-            GardenPreviewView(
+            EmotionGardenView(
                 title: CheckInState.gardenPreviewTitle,
-                completedCount: checkInState.completedCheckInsThisWeek,
+                moods: checkInState.gardenMoodsThisWeek,
                 totalPlots: CheckInState.weeklyCheckInGoal,
                 progressText: checkInState.gardenProgressText,
                 accessibilityValue: checkInState.gardenAccessibilityValue
@@ -59,63 +59,6 @@ struct HomeView: View {
         }
         .bloomPage(maxWidth: 520, padding: 32)
         .navigationTitle("Today")
-    }
-}
-
-private struct GardenPreviewView: View {
-    let title: String
-    let completedCount: Int
-    let totalPlots: Int
-    let progressText: String
-    let accessibilityValue: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Label(title, systemImage: "leaf")
-                    .font(.headline)
-
-                Spacer()
-
-                Text(progressText)
-                    .font(.caption.bold())
-                    .foregroundStyle(.secondary)
-            }
-
-            HStack(spacing: 8) {
-                ForEach(0..<totalPlots, id: \.self) { index in
-                    GardenPlotView(isGrown: index < completedCount)
-                }
-            }
-        }
-        .bloomPanel(padding: 16)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(title)
-        .accessibilityValue(accessibilityValue)
-    }
-}
-
-private struct GardenPlotView: View {
-    let isGrown: Bool
-
-    var body: some View {
-        VStack(spacing: 5) {
-            Image(systemName: isGrown ? "leaf.fill" : "circle")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(isGrown ? Color.green : Color.secondary.opacity(0.45))
-                .frame(height: 22)
-                .accessibilityHidden(true)
-
-            RoundedRectangle(cornerRadius: 4)
-                .fill(isGrown ? Color.green.opacity(0.22) : Color.gray.opacity(0.14))
-                .frame(height: 8)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
-        .background(
-            isGrown ? Color.green.opacity(0.09) : Color.white.opacity(0.55),
-            in: RoundedRectangle(cornerRadius: 8)
-        )
     }
 }
 
