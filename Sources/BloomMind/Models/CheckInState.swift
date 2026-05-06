@@ -4,6 +4,7 @@ struct CheckInState {
     static let reflectionCharacterLimit = 160
     static let weeklyCheckInGoal = 7
     static let reflectionPromptText = "Write one or two sentences about what is here right now."
+    static let localPrivacyDetailText = "Your reflection stays local in this prototype."
 
     var selectedMood: Mood?
     var reflectionText = ""
@@ -43,7 +44,7 @@ struct CheckInState {
     }
 
     var todayStatusDetail: String {
-        hasCompletedCheckInToday() ? "Your reflection stays local in this prototype." : "One minute is enough to notice what is here."
+        hasCompletedCheckInToday() ? Self.localPrivacyDetailText : "One minute is enough to notice what is here."
     }
 
     var bloomEncouragement: String {

@@ -147,7 +147,7 @@ import Testing
     #expect(completed.primaryActionTitle == "Check In Again")
     #expect(completed.primaryActionAccessibilityHint == "Starts another check-in for today.")
     #expect(completed.todayStatusTitle == "Today's check-in is complete")
-    #expect(completed.todayStatusDetail == "Your reflection stays local in this prototype.")
+    #expect(completed.todayStatusDetail == CheckInState.localPrivacyDetailText)
 }
 
 @Test func gardenAccessibilityValueReflectsWeeklyProgress() {
