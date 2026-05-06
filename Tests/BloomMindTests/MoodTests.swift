@@ -53,7 +53,7 @@ import Testing
     #expect(state.canContinueToAction)
 }
 
-@Test func bloomProgressCapsAtSevenCheckIns() {
+@Test func bloomProgressCapsAtGoalWithAccessibilityCopy() {
     let state = CheckInState(completedCheckIns: 12)
 
     #expect(state.completedCheckInsThisWeek == CheckInState.weeklyCheckInGoal)
@@ -62,7 +62,7 @@ import Testing
     #expect(state.weeklyProgressAccessibilityValue == "100 percent, 7 of 7 check-ins complete")
 }
 
-@Test func bloomProgressClampsNegativeCheckIns() {
+@Test func bloomProgressFloorsAtZeroWithAccessibilityCopy() {
     let state = CheckInState(completedCheckIns: -2)
 
     #expect(state.completedCheckInsThisWeek == 0)
