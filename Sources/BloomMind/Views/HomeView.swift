@@ -34,6 +34,7 @@ struct HomeView: View {
             GardenPreviewView(
                 completedCount: checkInState.completedCheckInsThisWeek,
                 totalPlots: CheckInState.weeklyCheckInGoal,
+                progressText: checkInState.gardenProgressText,
                 accessibilityValue: checkInState.gardenAccessibilityValue
             )
 
@@ -63,6 +64,7 @@ struct HomeView: View {
 private struct GardenPreviewView: View {
     let completedCount: Int
     let totalPlots: Int
+    let progressText: String
     let accessibilityValue: String
 
     var body: some View {
@@ -73,7 +75,7 @@ private struct GardenPreviewView: View {
 
                 Spacer()
 
-                Text("\(completedCount)/\(totalPlots)")
+                Text(progressText)
                     .font(.caption.bold())
                     .foregroundStyle(.secondary)
             }

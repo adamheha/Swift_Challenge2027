@@ -165,6 +165,12 @@ import Testing
     #expect(capped.gardenAccessibilityValue == "7 of 7 plants grown")
 }
 
+@Test func gardenProgressTextReflectsClampedWeeklyProgress() {
+    #expect(CheckInState(completedCheckIns: -2).gardenProgressText == "0/7")
+    #expect(CheckInState(completedCheckIns: 3).gardenProgressText == "3/7")
+    #expect(CheckInState(completedCheckIns: 12).gardenProgressText == "7/7")
+}
+
 @MainActor
 @Test func stepProgressAccessibilityClampsOutOfRangeSteps() {
     let beforeFirstStep = StepProgressView(currentStep: 0)

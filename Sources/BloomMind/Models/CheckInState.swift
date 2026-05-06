@@ -93,6 +93,10 @@ struct CheckInState {
         "\(completedCheckInsThisWeek) of \(Self.weeklyCheckInGoal) plants grown"
     }
 
+    var gardenProgressText: String {
+        "\(completedCheckInsThisWeek)/\(Self.weeklyCheckInGoal)"
+    }
+
     var canContinueToAction: Bool {
         selectedMood != nil && !trimmedReflectionText.isEmpty && isReflectionWithinLimit
     }
