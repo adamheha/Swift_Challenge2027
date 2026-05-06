@@ -10,11 +10,8 @@ import Testing
     #expect(Mood.unsure.growthAction == "Write one question you want to understand better.")
 }
 
-@Test func moodAccessibilityHintDescribesSelection() {
+@Test func moodSupportCopyMatchesMood() {
     #expect(Mood.stressed.accessibilityHint == "Selects stressed as your current mood.")
-}
-
-@Test func moodGrowthActionTitleMatchesMood() {
     #expect(Mood.tired.growthActionTitle == "A small action for tired")
 }
 
