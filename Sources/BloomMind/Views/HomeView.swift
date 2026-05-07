@@ -102,11 +102,7 @@ private struct TodayStatusView: View {
             Spacer()
         }
         .padding(14)
-        .background(.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 8))
-        .overlay {
-            RoundedRectangle(cornerRadius: 8)
-                .stroke((isComplete ? Color.green : Color.blue).opacity(0.28), lineWidth: 1)
-        }
+        .bloomCardBackground(tint: isComplete ? .green : .blue)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(title)
         .accessibilityValue(detail)

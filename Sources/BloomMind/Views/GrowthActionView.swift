@@ -107,11 +107,7 @@ private struct LocalActionExplanationView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
-        .background(.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 8))
-        .overlay {
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(tint.opacity(0.22), lineWidth: 1)
-        }
+        .bloomCardBackground(tint: tint)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Why this action")
         .accessibilityValue("\(suggestion.theme.displayName). \(suggestion.explanation) \(suggestion.literacyInsight)")

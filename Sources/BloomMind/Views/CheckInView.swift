@@ -79,11 +79,7 @@ struct CheckInView: View {
                 .accessibilityLabel("Reflection")
                 .accessibilityValue(checkInState.reflectionAccessibilityValue)
                 .accessibilityHint(checkInState.reflectionAccessibilityHint)
-                .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(.green.opacity(0.2), lineWidth: 1)
-                }
+                .bloomCardBackground(tint: .green)
 
                 if !checkInState.isReflectionWithinLimit {
                     Label("Keep this reflection short enough for a one-minute check-in.", systemImage: "exclamationmark.circle")
@@ -223,7 +219,7 @@ private struct MoodButton: View {
                     .minimumScaleFactor(0.85)
             }
             .frame(maxWidth: .infinity, minHeight: buttonMinHeight)
-            .foregroundStyle(isSelected ? .white : mood.tint)
+            .foregroundStyle(isSelected ? mood.selectedForegroundColor : mood.tint)
             .background(isSelected ? mood.tint.gradient : mood.tint.opacity(0.12).gradient, in: RoundedRectangle(cornerRadius: 8))
             .overlay {
                 RoundedRectangle(cornerRadius: 8)

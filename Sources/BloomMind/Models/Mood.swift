@@ -29,7 +29,7 @@ enum Mood: String, CaseIterable, Identifiable {
         case .calm:
             .green
         case .happy:
-            .yellow
+            Color(red: 0.82, green: 0.50, blue: 0.04)
         case .tired:
             .blue
         case .stressed:
@@ -37,6 +37,10 @@ enum Mood: String, CaseIterable, Identifiable {
         case .unsure:
             .purple
         }
+    }
+
+    var selectedForegroundColor: Color {
+        self == .happy ? .black : .white
     }
 
     var accessibilityHint: String {

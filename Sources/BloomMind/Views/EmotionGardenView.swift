@@ -162,6 +162,7 @@ private struct EmotionGardenPlotView: View {
     let newestPlantIsGrown: Bool
     let onSelect: () -> Void
 
+    @Environment(\.colorScheme) private var colorScheme
     @ScaledMetric(relativeTo: .body) private var plotMinWidth: CGFloat = 58
     @ScaledMetric(relativeTo: .body) private var plotMinHeight: CGFloat = 104
     @ScaledMetric(relativeTo: .body) private var plantFrameHeight: CGFloat = 78
@@ -222,7 +223,7 @@ private struct EmotionGardenPlotView: View {
 
     private var backgroundColor: Color {
         guard let mood else {
-            return Color.white.opacity(0.48)
+            return colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.48)
         }
 
         return mood.tint.opacity(0.1)
