@@ -102,12 +102,13 @@ Progress so far:
 
 - Added a tap-to-sort fragment board in Growth Action.
 - Added drag-and-drop lane movement while keeping tap-to-move as the fallback.
+- Added spring movement as fragments change lanes.
 - Generated fragments from mood, detected theme, now-step, later-boundary, and release-pressure copy.
 - Kept lane selection connected to the seed commitment summary.
 
 Next:
 
-- Add a stronger animation from sorted fragments into the final seed.
+- Add a stronger final animation from the sorted board into the planted seed.
 
 ## Final Demo And Submission Review
 

@@ -76,11 +76,12 @@ Implemented:
 
 - Convert mood, detected theme, and local action outputs into movable thought fragments.
 - Let the user sort fragments into Now, Later, and Let go with tap-to-move and drag/drop.
+- Animate fragments as they move between lanes.
 - Add a VoiceOver-friendly non-drag alternative.
 
 Next:
 
-- Animate the sorted fragments into the final seed.
+- Add a stronger final animation from the sorted board into the planted seed.
 
 ### 2.0 Stage 3 - Cinematic Garden Payoff
 

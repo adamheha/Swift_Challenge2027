@@ -124,6 +124,7 @@ private struct StormSortingView: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var fragmentAssignments: [StormFragment.ID: StormLaneKind] = [:]
+    @Namespace private var fragmentNamespace
 
     private var columns: [GridItem] {
         [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 220 : 160), spacing: 10)]
@@ -141,9 +142,12 @@ private struct StormSortingView: View {
                         lane: lane,
                         fragments: fragments(in: lane),
                         tint: lane.tint(primary: tint),
+                        namespace: fragmentNamespace,
                         isSelected: selectedLane == lane,
                         onSelectLane: {
-                            selectedLane = lane
+                            withAnimation(sortingAnimation) {
+                                selectedLane = lane
+                            }
                         },
                         onMoveFragment: moveFragment,
                         onDropFragments: moveFragments
@@ -173,16 +177,25 @@ private struct StormSortingView: View {
 
     private func moveFragment(_ fragment: StormFragment) {
         let nextLane = currentLane(for: fragment).nextLane
-        fragmentAssignments[fragment.id] = nextLane
-        selectedLane = nextLane
+
+        withAnimation(sortingAnimation) {
+            fragmentAssignments[fragment.id] = nextLane
+            selectedLane = nextLane
+        }
     }
 
     private func moveFragments(_ fragmentIDs: [StormFragment.ID], to lane: StormLaneKind) {
-        for fragmentID in fragmentIDs {
-            fragmentAssignments[fragmentID] = lane
-        }
+        withAnimation(sortingAnimation) {
+            for fragmentID in fragmentIDs {
+                fragmentAssignments[fragmentID] = lane
+            }
 
-        selectedLane = lane
+            selectedLane = lane
+        }
+    }
+
+    private var sortingAnimation: Animation {
+        .spring(response: 0.42, dampingFraction: 0.78)
     }
 }
 
@@ -232,6 +245,7 @@ private struct SeedCommitmentView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(selectedLane.seedTitle)
         .accessibilityValue(selectedLane.text(from: suggestion))
+        .animation(.spring(response: 0.36, dampingFraction: 0.8), value: selectedLane)
     }
 
     private var seedBackground: LinearGradient {
@@ -250,6 +264,7 @@ private struct StormLaneColumnView: View {
     let lane: StormLaneKind
     let fragments: [StormFragment]
     let tint: Color
+    let namespace: Namespace.ID
     let isSelected: Bool
     let onSelectLane: () -> Void
     let onMoveFragment: (StormFragment) -> Void
@@ -277,7 +292,8 @@ private struct StormLaneColumnView: View {
                 ForEach(fragments) { fragment in
                     StormFragmentChipView(
                         fragment: fragment,
-                        tint: tint
+                        tint: tint,
+                        namespace: namespace
                     ) {
                         onMoveFragment(fragment)
                     }
@@ -306,6 +322,7 @@ private struct StormLaneColumnView: View {
 private struct StormFragmentChipView: View {
     let fragment: StormFragment
     let tint: Color
+    let namespace: Namespace.ID
     let action: () -> Void
 
     var body: some View {
@@ -329,6 +346,7 @@ private struct StormFragmentChipView: View {
                 RoundedRectangle(cornerRadius: 7)
                     .stroke(tint.opacity(0.22), lineWidth: 1)
             }
+            .matchedGeometryEffect(id: fragment.id, in: namespace)
         }
         .buttonStyle(.plain)
         .draggable(fragment.id)
