@@ -3,7 +3,7 @@ import Foundation
 struct CheckInState {
     static let reflectionCharacterLimit = 160
     static let weeklyCheckInGoal = 7
-    static let reflectionPromptText = "Write one or two sentences about what is here right now."
+    static let reflectionPromptText = "Optional: write one or two sentences about what is here right now."
     static let localPrivacyDetailText = "Your reflection stays local in this prototype."
     static let completeActionAccessibilityHint = "Saves this check-in and returns to Today."
     static let gardenPreviewTitle = "Emotion garden"
@@ -127,11 +127,11 @@ struct CheckInState {
     var continueActionAccessibilityHint: String {
         canContinueToAction
             ? "Shows a small growth action."
-            : "Select a mood and write a short reflection to continue."
+            : "Select a mood to continue."
     }
 
     var canContinueToAction: Bool {
-        selectedMood != nil && !trimmedReflectionText.isEmpty && isReflectionWithinLimit
+        selectedMood != nil && isReflectionWithinLimit
     }
 
     func hasCompletedCheckInToday(

@@ -27,7 +27,7 @@ Stage 0 research, Stage 1 concept, Stage 2 SwiftUI MVP, Stage 4 product repositi
 
 - SwiftUI app shell with a typed navigation flow.
 - Home screen with BloomMind identity, weekly bloom progress, an interactive emotion garden, and today-completion feedback.
-- Check-in screen with mood selection, selected-state checkmark, required reflection input, and a three-step progress indicator.
+- Check-in screen with mood selection, selected-state checkmark, optional reflection input, and a three-step progress indicator.
 - Growth action screen with local mood-and-theme suggested actions and a private theme explanation.
 - Mood-specific SwiftUI plant visuals that grow from completed local check-ins.
 - Local-only reflection theme detection for school, friendship, rest, pressure, and uncertainty.

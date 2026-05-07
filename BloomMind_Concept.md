@@ -72,7 +72,7 @@ Main experience flow:
 
 1. The user opens the app and sees today's Bloom check-in.
 2. The user chooses a current mood.
-3. The user writes a short reflection.
+3. The user can write a short reflection, or skip it to continue quickly.
 4. The app detects a simple reflection theme locally, when possible.
 5. The app suggests one small growth action.
 6. The user's daily bloom visually grows based on completed check-ins.
@@ -112,7 +112,7 @@ The current build target is a working local SwiftUI prototype with three main sc
    - Shows app name, today's prompt, bloom progress, and a start check-in button.
 
 2. Check-In
-   - Lets the user select a mood and write a short reflection.
+   - Lets the user select a mood and optionally write a short reflection.
 
 3. Growth Action
    - Shows one small action matched to the selected mood.
@@ -123,7 +123,7 @@ The current build target is a working local SwiftUI prototype with three main sc
 The award-level version should feel complete in a very short demo:
 
 1. The reviewer opens BloomMind and sees a living garden instead of a static progress tracker.
-2. The reviewer chooses a mood and writes a short reflection.
+2. The reviewer chooses a mood and can optionally write a short reflection.
 3. The app extracts a simple local theme such as school, friendship, rest, pressure, or uncertainty.
 4. The app creates one small action from mood plus theme.
 5. A mood-specific plant grows into the garden with an accessible animation.

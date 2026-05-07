@@ -27,7 +27,7 @@ Target review time: 60 seconds.
 2. On the Today screen, point out the weekly bloom progress, emotion garden, local privacy status, and start button.
 3. Tap Start Check-In.
 4. Select Stressed.
-5. Enter this short reflection:
+5. Optional: enter this short reflection to exercise local theme detection:
 
    `I have a project due today and feel pressure to finish everything.`
 
@@ -75,6 +75,7 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Open the app and complete the demo path in under 3 minutes.
 - Confirm the one-minute demo path works without any network connection.
 - Confirm the Reflection field accepts typed text after clicking or tapping directly inside it.
+- Confirm Continue can also be tapped after selecting a mood when Reflection is empty.
 - Run `swift test`.
 - Run `swift build`.
 - Confirm the ZIP package is under 25 MB.
@@ -88,8 +89,8 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 
 1. Open the package on iPad or in Swift Playgrounds.
 2. Start a check-in and select Stressed.
-3. Type `I have a project due today and feel pressure to finish everything.` in Reflection.
-4. Confirm Continue becomes enabled.
+3. Either leave Reflection empty to test the quick path, or type `I have a project due today and feel pressure to finish everything.` to test local theme detection.
+4. Confirm Continue becomes enabled after selecting a mood.
 5. Confirm the Growth Action shows the pressure-themed tiny action and a Tiny idea explanation.
 6. Complete the check-in and return to Today.
 7. Tap the newest garden plant and confirm it shows a private mood-based note without reflection text.

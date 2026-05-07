@@ -134,15 +134,15 @@ import Testing
     #expect(state.completedCheckInsThisWeek == 1)
 }
 
-@Test func checkInCanContinueRequiresMoodAndReflection() {
+@Test func checkInCanContinueRequiresMoodOnlyAndValidReflectionLength() {
     var state = CheckInState()
     #expect(!state.canContinueToAction)
 
     state.selectedMood = .calm
-    #expect(!state.canContinueToAction)
+    #expect(state.canContinueToAction)
 
     state.reflectionText = "   "
-    #expect(!state.canContinueToAction)
+    #expect(state.canContinueToAction)
 
     state.reflectionText = "I noticed I feel steady today."
     #expect(state.canContinueToAction)
@@ -234,11 +234,10 @@ import Testing
 
 @Test func continueActionAccessibilityHintReflectsReadiness() {
     let empty = CheckInState()
-    #expect(empty.continueActionAccessibilityHint == "Select a mood and write a short reflection to continue.")
+    #expect(empty.continueActionAccessibilityHint == "Select a mood to continue.")
 
     let ready = CheckInState(
-        selectedMood: .calm,
-        reflectionText: "I feel steady enough to start small."
+        selectedMood: .calm
     )
     #expect(ready.continueActionAccessibilityHint == "Shows a small growth action.")
 }
