@@ -75,12 +75,11 @@ Goal: Make the transformation tactile.
 Implemented:
 
 - Convert mood, detected theme, and local action outputs into movable thought fragments.
-- Let the user sort fragments into Now, Later, and Let go with a tap-to-move board.
+- Let the user sort fragments into Now, Later, and Let go with tap-to-move and drag/drop.
 - Add a VoiceOver-friendly non-drag alternative.
 
 Next:
 
-- Upgrade the board to drag-and-drop movement.
 - Animate the sorted fragments into the final seed.
 
 ### 2.0 Stage 3 - Cinematic Garden Payoff

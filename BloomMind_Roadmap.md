@@ -77,11 +77,11 @@ Completed in this branch:
 - Turn mood, theme, now-step, later-boundary, and release-pressure copy into tappable thought fragments.
 - Group fragments into Now, Later, and Let go columns.
 - Let the user move a fragment to the next lane by tapping it.
+- Let the user drag a fragment into a different lane, while preserving tap-to-move as the fallback.
 - Keep the selected lane connected to the seed commitment summary.
 
 Next:
 
-- Add drag-and-drop movement once the tap-to-sort model is stable.
 - Animate the sorted fragments into the final seed.
 - Preserve Reduce Motion and VoiceOver alternatives.
 

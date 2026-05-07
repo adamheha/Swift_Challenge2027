@@ -96,17 +96,17 @@ Carried forward:
 
 ## BloomMind 2.0 Stage 2 Target
 
-Stage 2 makes sorting tactile. The first version converts the Growth Action result into thought fragments, groups those fragments into Now, Later, and Let go, and lets the user move fragments between lanes by tapping them.
+Stage 2 makes sorting tactile. The current version converts the Growth Action result into thought fragments, groups those fragments into Now, Later, and Let go, and lets the user move fragments between lanes by tapping or dragging them.
 
 Progress so far:
 
 - Added a tap-to-sort fragment board in Growth Action.
+- Added drag-and-drop lane movement while keeping tap-to-move as the fallback.
 - Generated fragments from mood, detected theme, now-step, later-boundary, and release-pressure copy.
 - Kept lane selection connected to the seed commitment summary.
 
 Next:
 
-- Upgrade tap-to-sort into drag-and-drop sorting.
 - Add a stronger animation from sorted fragments into the final seed.
 
 ## Final Demo And Submission Review

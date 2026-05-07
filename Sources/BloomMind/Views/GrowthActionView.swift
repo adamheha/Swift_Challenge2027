@@ -145,7 +145,8 @@ private struct StormSortingView: View {
                         onSelectLane: {
                             selectedLane = lane
                         },
-                        onMoveFragment: moveFragment
+                        onMoveFragment: moveFragment,
+                        onDropFragments: moveFragments
                     )
                 }
             }
@@ -174,6 +175,14 @@ private struct StormSortingView: View {
         let nextLane = currentLane(for: fragment).nextLane
         fragmentAssignments[fragment.id] = nextLane
         selectedLane = nextLane
+    }
+
+    private func moveFragments(_ fragmentIDs: [StormFragment.ID], to lane: StormLaneKind) {
+        for fragmentID in fragmentIDs {
+            fragmentAssignments[fragmentID] = lane
+        }
+
+        selectedLane = lane
     }
 }
 
@@ -244,6 +253,9 @@ private struct StormLaneColumnView: View {
     let isSelected: Bool
     let onSelectLane: () -> Void
     let onMoveFragment: (StormFragment) -> Void
+    let onDropFragments: ([StormFragment.ID], StormLaneKind) -> Void
+
+    @State private var isDropTargeted = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -275,10 +287,16 @@ private struct StormLaneColumnView: View {
         .frame(maxWidth: .infinity, minHeight: 168, alignment: .topLeading)
         .padding(12)
         .bloomCardBackground(tint: tint)
-        .background(isSelected ? tint.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+        .background((isSelected || isDropTargeted) ? tint.opacity(isDropTargeted ? 0.20 : 0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 8))
         .overlay {
             RoundedRectangle(cornerRadius: 8)
-                .stroke(isSelected ? tint.opacity(0.78) : Color.clear, lineWidth: 2)
+                .stroke((isSelected || isDropTargeted) ? tint.opacity(0.78) : Color.clear, lineWidth: isDropTargeted ? 3 : 2)
+        }
+        .dropDestination(for: String.self) { fragmentIDs, _ in
+            onDropFragments(fragmentIDs, lane)
+            return true
+        } isTargeted: { isTargeted in
+            isDropTargeted = isTargeted
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(lane.title)
@@ -313,6 +331,7 @@ private struct StormFragmentChipView: View {
             }
         }
         .buttonStyle(.plain)
+        .draggable(fragment.id)
         .accessibilityLabel(fragment.text)
         .accessibilityHint("Moves this fragment to the next lane.")
     }
