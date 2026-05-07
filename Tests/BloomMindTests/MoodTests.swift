@@ -78,6 +78,16 @@ import Testing
     #expect(Mood.unsure.plantAccessibilityName == "Question bud")
 }
 
+@Test func moodGardenReflectionNotesAreSpecificAndPrivate() {
+    let notes = Mood.allCases.map(\.gardenReflectionNote)
+    let prompts = Mood.allCases.map(\.gardenRevisitPrompt)
+
+    #expect(Set(notes).count == Mood.allCases.count)
+    #expect(Set(prompts).count == Mood.allCases.count)
+    #expect(Mood.stressed.gardenReflectionNote == "This plant marks a check-in where pressure became one smaller next step.")
+    #expect(Mood.stressed.gardenRevisitPrompt == "Look for one task that can wait before starting the next tiny step.")
+}
+
 @Test func checkInCompletionResetsCurrentEntry() {
     var state = CheckInState(
         selectedMood: .happy,

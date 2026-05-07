@@ -57,4 +57,34 @@ enum Mood: String, CaseIterable, Identifiable {
             "Question bud"
         }
     }
+
+    var gardenReflectionNote: String {
+        switch self {
+        case .calm:
+            "This plant marks a check-in where steadiness was noticed."
+        case .happy:
+            "This plant marks a check-in where good energy became something shareable."
+        case .tired:
+            "This plant marks a check-in where low energy was allowed to move gently."
+        case .stressed:
+            "This plant marks a check-in where pressure became one smaller next step."
+        case .unsure:
+            "This plant marks a check-in where uncertainty became one clearer question."
+        }
+    }
+
+    var gardenRevisitPrompt: String {
+        switch self {
+        case .calm:
+            "Protect one small steady thing before adding more."
+        case .happy:
+            "Use a little of that energy for one kind action."
+        case .tired:
+            "Choose the version of the next step that asks for less."
+        case .stressed:
+            "Look for one task that can wait before starting the next tiny step."
+        case .unsure:
+            "Name the question before trying to answer everything."
+        }
+    }
 }

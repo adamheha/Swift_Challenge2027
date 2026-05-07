@@ -10,6 +10,7 @@ struct EmotionGardenView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var newestPlantIsGrown = true
+    @State private var selectedPlotIndex: Int?
 
     private var safeTotalPlots: Int {
         max(totalPlots, 0)
@@ -23,6 +24,17 @@ struct EmotionGardenView: View {
         visibleMoods.indices.last
     }
 
+    private var selectedMood: Mood? {
+        guard
+            let selectedPlotIndex,
+            visibleMoods.indices.contains(selectedPlotIndex)
+        else {
+            return nil
+        }
+
+        return visibleMoods[selectedPlotIndex]
+    }
+
     private var wrappedColumns: [GridItem] {
         [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 82 : 66), spacing: 8)]
     }
@@ -32,9 +44,16 @@ struct EmotionGardenView: View {
             header
 
             plotLayout
+
+            if let selectedMood {
+                GardenPlantDetailView(
+                    mood: selectedMood,
+                    isNewest: selectedPlotIndex == newestMoodIndex
+                )
+            }
         }
         .bloomPanel(padding: 16)
-        .accessibilityElement(children: .ignore)
+        .accessibilityElement(children: .contain)
         .accessibilityLabel(title)
         .accessibilityValue(accessibilityValue)
         .onAppear(perform: animateNewestPlant)
@@ -47,6 +66,10 @@ struct EmotionGardenView: View {
     }
 
     private func animateNewestPlant() {
+        if selectedPlotIndex == nil || selectedMood == nil {
+            selectedPlotIndex = newestMoodIndex
+        }
+
         guard !reduceMotion, newestMoodIndex != nil else {
             newestPlantIsGrown = true
             return
@@ -123,16 +146,21 @@ struct EmotionGardenView: View {
     private func plot(at index: Int) -> some View {
         EmotionGardenPlotView(
             mood: visibleMoods.indices.contains(index) ? visibleMoods[index] : nil,
+            isSelected: selectedPlotIndex == index,
             isNewest: newestMoodIndex == index,
             newestPlantIsGrown: newestPlantIsGrown || reduceMotion
-        )
+        ) {
+            selectedPlotIndex = index
+        }
     }
 }
 
 private struct EmotionGardenPlotView: View {
     let mood: Mood?
+    let isSelected: Bool
     let isNewest: Bool
     let newestPlantIsGrown: Bool
+    let onSelect: () -> Void
 
     @ScaledMetric(relativeTo: .body) private var plotMinWidth: CGFloat = 58
     @ScaledMetric(relativeTo: .body) private var plotMinHeight: CGFloat = 104
@@ -151,6 +179,19 @@ private struct EmotionGardenPlotView: View {
     }
 
     var body: some View {
+        Group {
+            if isGrown {
+                Button(action: onSelect) {
+                    plotContent
+                }
+                .buttonStyle(.plain)
+            } else {
+                plotContent
+            }
+        }
+    }
+
+    private var plotContent: some View {
         VStack(spacing: 6) {
             ZStack(alignment: .bottom) {
                 if let mood {
@@ -172,7 +213,7 @@ private struct EmotionGardenPlotView: View {
         .background(backgroundColor, in: RoundedRectangle(cornerRadius: 8))
         .overlay {
             RoundedRectangle(cornerRadius: 8)
-                .stroke(borderColor, lineWidth: 1)
+                .stroke(borderColor, lineWidth: isSelected ? 2 : 1)
         }
         .accessibilityLabel(accessibilityLabel)
         .accessibilityValue(accessibilityValue)
@@ -192,7 +233,7 @@ private struct EmotionGardenPlotView: View {
             return Color.secondary.opacity(0.12)
         }
 
-        return mood.tint.opacity(0.24)
+        return mood.tint.opacity(isSelected ? 0.72 : 0.24)
     }
 
     private var soilColor: Color {
@@ -213,7 +254,45 @@ private struct EmotionGardenPlotView: View {
     }
 
     private var accessibilityHint: String {
-        isGrown ? "Part of this week's local emotion garden." : "Completing a check-in grows a plant here."
+        isGrown ? "Shows a private garden note for this plant." : "Completing a check-in grows a plant here."
+    }
+}
+
+private struct GardenPlantDetailView: View {
+    let mood: Mood
+    let isNewest: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(detailTitle, systemImage: mood.symbolName)
+                .font(.subheadline.bold())
+                .foregroundStyle(mood.tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(mood.gardenReflectionNote)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(mood.gardenRevisitPrompt)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(mood.tint.opacity(0.1), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(mood.tint.opacity(0.22), lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(detailTitle)
+        .accessibilityValue("\(mood.gardenReflectionNote) \(mood.gardenRevisitPrompt)")
+    }
+
+    private var detailTitle: String {
+        isNewest ? "Newest \(mood.plantAccessibilityName)" : mood.plantAccessibilityName
     }
 }
 
