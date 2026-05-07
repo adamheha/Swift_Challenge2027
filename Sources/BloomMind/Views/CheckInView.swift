@@ -1,5 +1,7 @@
 import SwiftUI
+#if os(macOS)
 import AppKit
+#endif
 
 struct CheckInView: View {
     @Binding var checkInState: CheckInState
@@ -110,6 +112,19 @@ struct CheckInView: View {
     }
 }
 
+#if !os(macOS)
+private struct ReflectionTextView: View {
+    @Binding var text: String
+    let minHeight: CGFloat
+
+    var body: some View {
+        TextEditor(text: $text)
+            .font(.body)
+            .scrollContentBackground(.hidden)
+            .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .topLeading)
+    }
+}
+#else
 private struct ReflectionTextView: NSViewRepresentable {
     @Binding var text: String
     let minHeight: CGFloat
@@ -186,6 +201,7 @@ private final class FocusableReflectionNSTextView: NSTextView {
         super.mouseDown(with: event)
     }
 }
+#endif
 
 private struct MoodButton: View {
     let mood: Mood

@@ -5,6 +5,7 @@ import PackageDescription
 let package = Package(
     name: "BloomMind",
     platforms: [
+        .iOS(.v17),
         .macOS(.v14)
     ],
     products: [
