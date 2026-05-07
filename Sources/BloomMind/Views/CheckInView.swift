@@ -114,14 +114,8 @@ private struct ReflectionTextView: NSViewRepresentable {
     @Binding var text: String
     let minHeight: CGFloat
 
-    func makeNSView(context: Context) -> NSScrollView {
-        let scrollView = NSScrollView()
-        scrollView.borderType = .noBorder
-        scrollView.drawsBackground = false
-        scrollView.hasVerticalScroller = false
-        scrollView.hasHorizontalScroller = false
-
-        let textView = NSTextView()
+    func makeNSView(context: Context) -> FocusableReflectionNSTextView {
+        let textView = FocusableReflectionNSTextView()
         textView.delegate = context.coordinator
         textView.string = text
         textView.font = .preferredFont(forTextStyle: .body)
@@ -136,27 +130,16 @@ private struct ReflectionTextView: NSViewRepresentable {
         textView.isSelectable = true
         textView.isHorizontallyResizable = false
         textView.isVerticallyResizable = true
-        textView.autoresizingMask = [.width]
+        textView.autoresizingMask = [.width, .height]
         textView.minSize = NSSize(width: 0, height: minHeight)
         textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         textView.textContainerInset = NSSize(width: 12, height: 12)
         textView.textContainer?.widthTracksTextView = true
-        textView.textContainer?.containerSize = NSSize(
-            width: scrollView.contentSize.width,
-            height: CGFloat.greatestFiniteMagnitude
-        )
-
-        scrollView.documentView = textView
-        context.coordinator.textView = textView
-        return scrollView
+        return textView
     }
 
-    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+    func updateNSView(_ textView: FocusableReflectionNSTextView, context: Context) {
         context.coordinator.parent = self
-
-        guard let textView = scrollView.documentView as? NSTextView else {
-            return
-        }
 
         if textView.string != text {
             textView.string = text
@@ -174,7 +157,6 @@ private struct ReflectionTextView: NSViewRepresentable {
 
     final class Coordinator: NSObject, NSTextViewDelegate {
         var parent: ReflectionTextView
-        weak var textView: NSTextView?
 
         init(parent: ReflectionTextView) {
             self.parent = parent
@@ -187,6 +169,21 @@ private struct ReflectionTextView: NSViewRepresentable {
 
             parent.text = textView.string
         }
+    }
+}
+
+private final class FocusableReflectionNSTextView: NSTextView {
+    override var acceptsFirstResponder: Bool {
+        true
+    }
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+        true
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        window?.makeFirstResponder(self)
+        super.mouseDown(with: event)
     }
 }
 
