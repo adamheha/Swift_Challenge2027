@@ -39,6 +39,7 @@ struct BloomMindApp: App {
                 }
             }
             .frame(minWidth: 420, minHeight: 620)
+            .preferredColorScheme(.light)
         }
     }
 }

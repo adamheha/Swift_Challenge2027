@@ -61,13 +61,15 @@ struct CheckInView: View {
                 TextField(
                     "Reflection",
                     text: $checkInState.reflectionText,
-                    prompt: Text(CheckInState.reflectionPromptText),
+                    prompt: Text(CheckInState.reflectionPromptText)
+                        .foregroundStyle(.secondary),
                     axis: .vertical
                 )
                     .textFieldStyle(.plain)
                     .lineLimit(4...8)
                     .frame(maxWidth: .infinity, minHeight: reflectionMinHeight, alignment: .topLeading)
                     .padding(12)
+                    .foregroundStyle(.primary)
                     .accessibilityLabel("Reflection")
                     .accessibilityValue(checkInState.reflectionAccessibilityValue)
                     .accessibilityHint(checkInState.reflectionAccessibilityHint)
