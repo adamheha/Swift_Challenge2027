@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. Each stage sho
 
 ## Current Status
 
-Current stage: Stage 7 - Accessibility, Polish, and Submission Safety Complete
+Current stage: Stage 9 - Research-Informed Upgrade In Progress
 
-Current branch: `codex/bloommind-stage-7`
+Current branch: `codex/bloommind-stage-9`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: Stage 8 - Final Demo and Submission Package
+Next stage: To be defined after Stage 9
 
 ## Stage 0 - Award Research
 
@@ -176,3 +176,28 @@ Rules check:
 - Checked on May 6, 2026.
 - Apple had not published Swift Student Challenge 2027 rules yet.
 - The package is aligned with the latest official 2026 requirements: `.swiftpm` ZIP, offline behavior, 25 MB ZIP limit, Swift Playgrounds 4.6 or Xcode 26 or later, English content, individual work, and AI usage disclosure.
+
+## Stage 9 - Research-Informed Upgrade
+
+Status: In Progress
+
+Goal: Apply the strongest patterns from public Swift Student Challenge projects: a clearer learning loop, one stronger Apple-native local technology choice, a more interactive garden, better iPad readiness, stronger visual safety, and a sharper personal story.
+
+Planned:
+
+- Add emotional literacy micro-explanations to the growth action flow.
+- Use Apple's NaturalLanguage framework locally for theme detection, with the current transparent keyword rules as a fallback.
+- Make the garden more interactive without exposing private reflection text.
+- Improve iPad and Swift Playgrounds readiness.
+- Tighten visual contrast so the app stays readable in light and dark appearances.
+- Strengthen the personal-story submission draft.
+
+Definition of done:
+
+- The one-minute loop teaches a small emotional literacy idea, not just a mood-tracking step.
+- Theme detection remains local, testable, and explainable.
+- The garden has at least one meaningful tap or gesture interaction.
+- The package direction is clearer for Swift Playgrounds and iPad review.
+- Light and dark appearances remain readable.
+- The submission draft connects the app to a specific student motivation.
+- Changes are committed and pushed to GitHub.

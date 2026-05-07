@@ -17,9 +17,9 @@ The project starts with a clear concept document, then grows into a small, polis
 
 ## Current Stage
 
-Stage 8: final demo and submission package - complete.
+Stage 9: research-informed upgrade - in progress.
 
-Active branch: `codex/bloommind-stage-8`
+Active branch: `codex/bloommind-stage-9`
 
 Stage 0 research, Stage 1 concept, Stage 2 SwiftUI MVP, Stage 4 product repositioning, Stage 5 interactive emotion garden, Stage 6 local action engine, Stage 7 accessibility/submission polish, and Stage 8 final submission packaging are complete. Stage 3 MVP polish is mostly complete.
 
@@ -59,6 +59,11 @@ BloomMind should become more than a mood tracker. The strongest version should d
 - Stage 6: Local action engine - complete.
 - Stage 7: Accessibility, polish, and submission safety - complete.
 - Stage 8: Final demo and submission package - complete.
+- Stage 9: Research-informed upgrade - in progress.
+
+## Stage 9 Target
+
+Stage 9 applies patterns from strong public Swift Student Challenge projects. The target is to make BloomMind feel more like a small interactive learning experience: add emotional literacy micro-explanations, use Apple's NaturalLanguage framework locally with transparent fallback rules, make the garden more interactive, improve iPad and Swift Playgrounds readiness, tighten light/dark contrast, and strengthen the personal-story submission draft.
 
 ## Final Demo And Submission Review
 
