@@ -39,19 +39,22 @@ Core idea:
 Completed in this branch:
 
 - Added a native SwiftUI `PressureStormView` using `TimelineView` and `Canvas`.
+- Added orbit trails and high-contrast text shading so the storm reads as a dramatic scene without sacrificing legibility.
 - Rebuilt Home around a high-contrast storm-to-seed hero scene.
 - Added a live storm preview to Check-In.
 - Changed the reflection input to a focused `TextEditor` so typing works reliably in the reflection area.
 - Reframed the step flow as Name, Sort, Grow.
 - Added Now / Later / Let go outputs to the local action engine and Growth Action screen.
+- Made the Now / Later / Let go lanes tappable so the user can focus one part of the sorted storm.
 - Removed the forced light appearance so the app can use the system color scheme.
 - Updated unit tests for the new 2.0 copy and action outputs.
+- Removed the unused old circular progress dashboard from Home.
 
 Remaining:
 
 - Smoke check the new flow in Xcode's app window and an iPad-sized preview.
 - Tune the storm labels and particles after seeing it on actual device sizes.
-- Decide whether Stage 2 should add drag-and-drop sorting or a more cinematic completion animation first.
+- Decide whether Stage 2 should expand the tappable lanes into drag-and-drop sorting or focus first on the cinematic completion animation.
 
 Definition of done:
 

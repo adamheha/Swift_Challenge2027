@@ -114,63 +114,128 @@ private struct StormSortingView: View {
     let tint: Color
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @State private var selectedLane: StormLaneKind = .now
 
     private var columns: [GridItem] {
         [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 220 : 160), spacing: 10)]
     }
 
     var body: some View {
-        LazyVGrid(columns: columns, spacing: 10) {
-            StormLaneCard(
-                title: "Now",
-                symbolName: "bolt.fill",
-                text: suggestion.nowStep,
-                tint: tint
-            )
+        VStack(alignment: .leading, spacing: 12) {
+            LazyVGrid(columns: columns, spacing: 10) {
+                StormLaneCard(
+                    kind: .now,
+                    text: suggestion.nowStep,
+                    tint: tint,
+                    isSelected: selectedLane == .now
+                ) {
+                    selectedLane = .now
+                }
 
-            StormLaneCard(
-                title: "Later",
-                symbolName: "tray",
-                text: suggestion.laterStep,
-                tint: Color.blue
-            )
+                StormLaneCard(
+                    kind: .later,
+                    text: suggestion.laterStep,
+                    tint: Color.blue,
+                    isSelected: selectedLane == .later
+                ) {
+                    selectedLane = .later
+                }
 
-            StormLaneCard(
-                title: "Let go",
-                symbolName: "wind",
-                text: suggestion.releaseStep,
-                tint: Color.orange
-            )
+                StormLaneCard(
+                    kind: .release,
+                    text: suggestion.releaseStep,
+                    tint: Color.orange,
+                    isSelected: selectedLane == .release
+                ) {
+                    selectedLane = .release
+                }
+            }
+
+            Label(selectedLane.commitmentLine, systemImage: selectedLane.symbolName)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityLabel(selectedLane.commitmentLine)
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Sorted pressure lanes")
     }
 }
 
+private enum StormLaneKind {
+    case now
+    case later
+    case release
+
+    var title: String {
+        switch self {
+        case .now:
+            "Now"
+        case .later:
+            "Later"
+        case .release:
+            "Let go"
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .now:
+            "bolt.fill"
+        case .later:
+            "tray"
+        case .release:
+            "wind"
+        }
+    }
+
+    var commitmentLine: String {
+        switch self {
+        case .now:
+            "Start with this one visible step."
+        case .later:
+            "Park the bigger worry here for after the first step."
+        case .release:
+            "This is the pressure you do not have to carry right now."
+        }
+    }
+}
+
 private struct StormLaneCard: View {
-    let title: String
-    let symbolName: String
+    let kind: StormLaneKind
     let text: String
     let tint: Color
+    let isSelected: Bool
+    let action: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label(title, systemImage: symbolName)
-                .font(.subheadline.bold())
-                .foregroundStyle(tint)
-                .fixedSize(horizontal: false, vertical: true)
+        Button(action: action) {
+            VStack(alignment: .leading, spacing: 8) {
+                Label(kind.title, systemImage: kind.symbolName)
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Text(text)
-                .font(.subheadline)
-                .foregroundStyle(.primary)
-                .fixedSize(horizontal: false, vertical: true)
+                Text(text)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, minHeight: 116, alignment: .topLeading)
+            .padding(14)
+            .bloomCardBackground(tint: tint)
+            .background(isSelected ? tint.opacity(0.14) : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(isSelected ? tint.opacity(0.75) : Color.clear, lineWidth: 2)
+            }
         }
-        .frame(maxWidth: .infinity, minHeight: 116, alignment: .topLeading)
-        .padding(14)
-        .bloomCardBackground(tint: tint)
+        .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(title)
+        .accessibilityLabel(kind.title)
         .accessibilityValue(text)
+        .accessibilityHint(isSelected ? "Selected lane." : "Selects this lane for focus.")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 

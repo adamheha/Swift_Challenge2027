@@ -70,6 +70,7 @@ struct PressureStormView: View {
         let labelSize = max(11, min(15, size.width / 34))
 
         drawCenterGlow(in: &context, center: center, shortestSide: shortestSide)
+        drawOrbitTrails(in: &context, center: center, shortestSide: shortestSide, time: time)
 
         for particle in StormParticle.samples {
             let speed = particle.speed * (isResolved ? 0.22 : 1)
@@ -130,6 +131,55 @@ struct PressureStormView: View {
         )
     }
 
+    private func drawOrbitTrails(
+        in context: inout GraphicsContext,
+        center: CGPoint,
+        shortestSide: CGFloat,
+        time: TimeInterval
+    ) {
+        let trailColors = [
+            Color(red: 0.35, green: 0.86, blue: 1.00),
+            Color(red: 1.00, green: 0.62, blue: 0.20),
+            Color(red: 0.80, green: 0.55, blue: 1.00)
+        ]
+
+        for index in trailColors.indices {
+            var path = Path()
+            let direction = index.isMultiple(of: 2) ? 1.0 : -1.0
+            let phase = time * (isResolved ? 0.12 : 0.42) * direction + Double(index) * 0.7
+            let baseRadius = shortestSide * (isResolved ? 0.16 + CGFloat(index) * 0.036 : 0.25 + CGFloat(index) * 0.08)
+            let opacity = isResolved ? 0.16 : 0.13 + clampedIntensity * 0.18
+
+            for step in 0...116 {
+                let progress = Double(step) / 116
+                let angle = progress * Double.pi * 2 + phase
+                let ripple = sin(progress * Double.pi * 6 + time + Double(index)) * shortestSide * (isResolved ? 0.004 : 0.014)
+                let radius = baseRadius + ripple
+                let point = CGPoint(
+                    x: center.x + cos(angle) * radius,
+                    y: center.y + sin(angle) * radius * 0.72
+                )
+
+                if step == 0 {
+                    path.move(to: point)
+                } else {
+                    path.addLine(to: point)
+                }
+            }
+
+            context.stroke(
+                path,
+                with: .color((isResolved ? baseTint : trailColors[index]).opacity(opacity)),
+                style: StrokeStyle(
+                    lineWidth: isResolved ? 1.4 : 1.7,
+                    lineCap: .round,
+                    lineJoin: .round,
+                    dash: isResolved ? [6, 16] : [10, 14]
+                )
+            )
+        }
+    }
+
     private func drawSeed(
         in context: inout GraphicsContext,
         center: CGPoint,
@@ -178,12 +228,24 @@ struct StormToBloomHeroView: View {
                 showsLabels: !isCompleteToday
             )
 
+            LinearGradient(
+                colors: [
+                    Color.black.opacity(0.78),
+                    Color.black.opacity(0.24),
+                    Color.black.opacity(0.02)
+                ],
+                startPoint: .bottom,
+                endPoint: .top
+            )
+            .allowsHitTesting(false)
+
             VStack(alignment: .leading, spacing: 12) {
                 Text(isCompleteToday ? "A seed is already growing." : "Turn the storm into a seed.")
                     .font(.largeTitle.bold())
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
+                    .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 3)
 
                 Text(prompt)
                     .font(.headline)
@@ -234,10 +296,22 @@ struct CheckInStormPreviewView: View {
                 showsLabels: selectedMood == nil
             )
 
+            LinearGradient(
+                colors: [
+                    Color.black.opacity(0.74),
+                    Color.black.opacity(0.18),
+                    Color.black.opacity(0.02)
+                ],
+                startPoint: .bottom,
+                endPoint: .top
+            )
+            .allowsHitTesting(false)
+
             VStack(alignment: .leading, spacing: 6) {
                 Text(selectedMood == nil ? "Name the weather." : "\(selectedMood?.rawValue ?? "Mood") found.")
                     .font(.headline)
                     .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.45), radius: 6, x: 0, y: 2)
 
                 Text(selectedMood == nil ? "Tap the closest mood, then give one sentence to the storm." : "The storm is already starting to gather into one seed.")
                     .font(.caption)

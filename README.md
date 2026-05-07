@@ -29,14 +29,14 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - SwiftUI app shell with a typed navigation flow.
 - Home screen with a moving pressure-storm hero, weekly bloom progress, an interactive emotion garden, and today-completion feedback.
 - Check-in screen with mood selection, selected-state checkmark, a live storm preview, optional reflection input, and a three-step progress indicator.
-- Growth action screen with local mood-and-theme suggested actions, Now / Later / Let go sorting, and a private theme explanation.
+- Growth action screen with local mood-and-theme suggested actions, tappable Now / Later / Let go sorting, and a private theme explanation.
 - Mood-specific SwiftUI plant visuals that grow from completed local check-ins.
 - Local-only reflection theme detection for school, friendship, rest, pressure, and uncertainty.
 - Local-only state for the active check-in, weekly progress, latest completion time, and garden mood history.
 - NaturalLanguage-assisted local theme detection with transparent keyword fallback.
 - Emotional literacy micro-explanations that teach one small idea during the Growth Action step.
 - Tappable garden plants that reveal private mood-based revisit notes without showing reflection text.
-- Native SwiftUI `Canvas` pressure-storm visuals that respect Reduce Motion and VoiceOver summaries.
+- Native SwiftUI `Canvas` pressure-storm visuals with orbit trails, high-contrast overlays, Reduce Motion support, and VoiceOver summaries.
 - Accessibility polish for Dynamic Type, Reduce Motion, VoiceOver labels and values, mood selection, reflection entry, step progress, garden state, and completion actions.
 - Light/dark adaptive app backgrounds, panels, cards, and mood selection contrast.
 - Submission-safe product boundaries: no accounts, no analytics, no network calls, no medical claims, and no diagnostic language in the app flow.
@@ -79,10 +79,12 @@ Stage 1 of BloomMind 2.0 changes the feeling of the app. The target is to make t
 Progress so far:
 
 - Added a native SwiftUI pressure storm scene using `Canvas` and `TimelineView`.
+- Added orbit trails and high-contrast text shading to the storm scenes.
 - Rebuilt Home around a high-contrast storm-to-seed hero.
 - Added a live storm preview to Check-In.
 - Replaced the reflection input with a focused `TextEditor` to make typing reliable.
-- Added Now / Later / Let go outputs to the local action engine and Growth Action screen.
+- Added tappable Now / Later / Let go outputs to the local action engine and Growth Action screen.
+- Removed the old circular progress dashboard from Home so the first screen stays story-driven.
 - Updated tests for the 2.0 copy and action outputs.
 
 Remaining:

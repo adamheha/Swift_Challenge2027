@@ -92,68 +92,6 @@ private struct TodayStatusView: View {
     }
 }
 
-private struct BloomProgressView: View {
-    let progress: Double
-    let percent: Int
-    let completedCount: Int
-    let goalCount: Int
-    let accessibilityValue: String
-    let encouragement: String
-
-    @ScaledMetric(relativeTo: .title) private var ringSize: CGFloat = 190
-    @ScaledMetric(relativeTo: .body) private var ringLineWidth: CGFloat = 18
-
-    private var displayedRingSize: CGFloat {
-        min(ringSize, 230)
-    }
-
-    private var displayedRingLineWidth: CGFloat {
-        min(ringLineWidth, 24)
-    }
-
-    var body: some View {
-        VStack(spacing: 12) {
-            ZStack {
-                Circle()
-                    .stroke(.green.opacity(0.16), lineWidth: displayedRingLineWidth)
-
-                Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(.green.gradient, style: StrokeStyle(lineWidth: displayedRingLineWidth, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-
-                VStack(spacing: 4) {
-                    Text("\(percent)%")
-                        .font(.title.bold())
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
-                    Text("weekly bloom")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
-                }
-            }
-            .frame(width: displayedRingSize, height: displayedRingSize)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Weekly bloom progress")
-            .accessibilityValue(accessibilityValue)
-            .accessibilityHint("Updates after each completed local check-in.")
-
-            Text("\(completedCount) of \(goalCount) check-ins complete")
-                .font(.headline)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Text(encouragement)
-                .font(.subheadline)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-    }
-}
-
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {

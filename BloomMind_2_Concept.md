@@ -61,10 +61,11 @@ Goal: Make the app immediately more memorable.
 Implemented:
 
 - A `Canvas` and `TimelineView` pressure storm.
+- Orbit trails and high-contrast text shading for a stronger first impression.
 - A new Home hero: "Turn the storm into a seed."
 - A live Check-In storm preview.
 - A reliable `TextEditor` reflection field.
-- Now / Later / Let go outputs in Growth Action.
+- Tappable Now / Later / Let go outputs in Growth Action.
 
 ### 2.0 Stage 2 - Interactive Sorting
 
