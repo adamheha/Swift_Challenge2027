@@ -42,8 +42,8 @@ Target review time: 60 seconds.
 
    `Make it tiny: choose one thing that can wait, then start only the next tiny step.`
 
-8. Note that BloomMind detects a pressure theme locally without sending or saving the private reflection text.
-9. Tap Complete Check-In.
+8. Confirm the seed commitment updates when a lane is selected, and note that BloomMind detects a pressure theme locally without sending or saving the private reflection text.
+9. Tap Plant This Seed.
 10. Return to Today and confirm the garden has grown with a mood-specific plant.
 
 ## Submission Response Drafts

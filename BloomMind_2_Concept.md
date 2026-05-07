@@ -66,6 +66,7 @@ Implemented:
 - A live Check-In storm preview.
 - A reliable `TextEditor` reflection field.
 - Tappable Now / Later / Let go outputs in Growth Action.
+- A seed commitment summary and Plant This Seed ending.
 
 ### 2.0 Stage 2 - Interactive Sorting
 

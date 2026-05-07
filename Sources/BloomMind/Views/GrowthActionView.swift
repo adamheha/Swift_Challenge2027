@@ -5,6 +5,7 @@ struct GrowthActionView: View {
     let onComplete: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @State private var selectedLane: StormLaneKind = .now
 
     private var selectedMood: Mood {
         checkInState.selectedMood ?? .unsure
@@ -33,7 +34,14 @@ struct GrowthActionView: View {
 
             StormSortingView(
                 suggestion: suggestion,
-                tint: selectedMood.tint
+                tint: selectedMood.tint,
+                selectedLane: $selectedLane
+            )
+
+            SeedCommitmentView(
+                mood: selectedMood,
+                suggestion: suggestion,
+                selectedLane: selectedLane
             )
 
             LocalActionExplanationView(
@@ -47,7 +55,7 @@ struct GrowthActionView: View {
                 checkInState.completeCheckIn()
                 onComplete()
             } label: {
-                Label("Complete Check-In", systemImage: "checkmark.circle.fill")
+                Label("Plant This Seed", systemImage: "camera.macro.circle.fill")
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity)
@@ -112,9 +120,9 @@ private struct PressureBloomTransformationView: View {
 private struct StormSortingView: View {
     let suggestion: GrowthActionSuggestion
     let tint: Color
+    @Binding var selectedLane: StormLaneKind
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @State private var selectedLane: StormLaneKind = .now
 
     private var columns: [GridItem] {
         [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 220 : 160), spacing: 10)]
@@ -162,6 +170,66 @@ private struct StormSortingView: View {
     }
 }
 
+private struct SeedCommitmentView: View {
+    let mood: Mood
+    let suggestion: GrowthActionSuggestion
+    let selectedLane: StormLaneKind
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var seedSize: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 62 : 54
+    }
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(mood.tint.opacity(0.22))
+
+                Image(systemName: selectedLane.symbolName)
+                    .font(.title3.bold())
+                    .foregroundStyle(mood.tint)
+                    .accessibilityHidden(true)
+            }
+            .frame(width: seedSize, height: seedSize)
+
+            VStack(alignment: .leading, spacing: 5) {
+                Text(selectedLane.seedTitle)
+                    .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(selectedLane.text(from: suggestion))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(seedBackground, in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(mood.tint.opacity(0.24), lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(selectedLane.seedTitle)
+        .accessibilityValue(selectedLane.text(from: suggestion))
+    }
+
+    private var seedBackground: LinearGradient {
+        LinearGradient(
+            colors: [
+                mood.tint.opacity(0.16),
+                Color.white.opacity(0.62)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+}
+
 private enum StormLaneKind {
     case now
     case later
@@ -197,6 +265,28 @@ private enum StormLaneKind {
             "Park the bigger worry here for after the first step."
         case .release:
             "This is the pressure you do not have to carry right now."
+        }
+    }
+
+    var seedTitle: String {
+        switch self {
+        case .now:
+            "This seed starts with now."
+        case .later:
+            "This seed protects later."
+        case .release:
+            "This seed lets one thing go."
+        }
+    }
+
+    func text(from suggestion: GrowthActionSuggestion) -> String {
+        switch self {
+        case .now:
+            suggestion.nowStep
+        case .later:
+            suggestion.laterStep
+        case .release:
+            suggestion.releaseStep
         }
     }
 }

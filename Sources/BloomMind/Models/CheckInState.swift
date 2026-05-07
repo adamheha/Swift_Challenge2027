@@ -5,7 +5,7 @@ struct CheckInState {
     static let weeklyCheckInGoal = 7
     static let reflectionPromptText = "Optional: write one or two sentences about what is spinning around you."
     static let localPrivacyDetailText = "Your reflection stays local in this prototype."
-    static let completeActionAccessibilityHint = "Saves this check-in and returns to Today."
+    static let completeActionAccessibilityHint = "Plants this seed in the garden and returns to Today."
     static let gardenPreviewTitle = "Emotion garden"
 
     var selectedMood: Mood?
@@ -52,7 +52,7 @@ struct CheckInState {
 
     var bloomEncouragement: String {
         if hasCompletedCheckInToday() {
-            return "Today's check-in is complete. Let that small action count."
+            return "Today's seed is growing. Let that small action count."
         }
 
         return switch completedCheckInsThisWeek {

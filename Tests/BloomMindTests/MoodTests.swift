@@ -201,7 +201,7 @@ import Testing
     state.completeCheckIn()
 
     #expect(state.hasCompletedCheckInToday())
-    #expect(state.bloomEncouragement == "Today's check-in is complete. Let that small action count.")
+    #expect(state.bloomEncouragement == "Today's seed is growing. Let that small action count.")
 }
 
 
@@ -232,7 +232,7 @@ import Testing
 }
 
 @Test func completeActionAccessibilityHintDescribesResult() {
-    #expect(CheckInState.completeActionAccessibilityHint == "Saves this check-in and returns to Today.")
+    #expect(CheckInState.completeActionAccessibilityHint == "Plants this seed in the garden and returns to Today.")
 }
 
 @Test func continueActionAccessibilityHintReflectsReadiness() {

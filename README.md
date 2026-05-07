@@ -84,6 +84,8 @@ Progress so far:
 - Added a live storm preview to Check-In.
 - Replaced the reflection input with a focused `TextEditor` to make typing reliable.
 - Added tappable Now / Later / Let go outputs to the local action engine and Growth Action screen.
+- Added a seed commitment summary that changes with the selected lane before planting.
+- Renamed the final completion action to Plant This Seed.
 - Removed the old circular progress dashboard from Home so the first screen stays story-driven.
 - Updated tests for the 2.0 copy and action outputs.
 

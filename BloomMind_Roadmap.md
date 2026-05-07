@@ -46,6 +46,8 @@ Completed in this branch:
 - Reframed the step flow as Name, Sort, Grow.
 - Added Now / Later / Let go outputs to the local action engine and Growth Action screen.
 - Made the Now / Later / Let go lanes tappable so the user can focus one part of the sorted storm.
+- Added a seed commitment summary that changes with the selected lane before the user plants the seed.
+- Renamed the final action to Plant This Seed to make the story loop explicit.
 - Removed the forced light appearance so the app can use the system color scheme.
 - Updated unit tests for the new 2.0 copy and action outputs.
 - Removed the unused old circular progress dashboard from Home.
