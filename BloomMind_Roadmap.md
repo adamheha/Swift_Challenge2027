@@ -192,6 +192,19 @@ Planned:
 - Tighten visual contrast so the app stays readable in light and dark appearances.
 - Strengthen the personal-story submission draft.
 
+Completed so far:
+
+- Added NaturalLanguage-assisted local theme detection with transparent keyword fallback.
+- Added emotional literacy micro-explanations to the Growth Action screen.
+- Made grown garden plants tappable with private mood-based revisit notes.
+- Added iOS platform readiness and a non-macOS SwiftUI reflection editor path.
+- Improved light and dark appearance contrast for app backgrounds, panels, cards, and the happy mood selection state.
+
+Remaining:
+
+- Finalize the personal story with the applicant's own specific school-pressure moment.
+- Smoke check the `.swiftpm` app playground format on the actual submission environment when available.
+
 Definition of done:
 
 - The one-minute loop teaches a small emotional literacy idea, not just a mood-tracking step.

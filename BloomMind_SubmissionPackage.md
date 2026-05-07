@@ -48,7 +48,11 @@ BloomMind is a privacy-first SwiftUI app playground that helps students turn ove
 
 ### Personal Motivation
 
-I wanted to build BloomMind because students often have only a minute or two to notice what they feel before moving to the next class, assignment, or responsibility. Many wellness tools feel too heavy, clinical, or time-consuming for that moment. BloomMind is designed to feel calm and approachable: it does not diagnose the user, collect private data, or ask for an account. It simply helps a student name what is present and take one small next step.
+Personal-story scaffold to customize before final submission:
+
+`I built BloomMind after noticing how quickly school pressure can turn into a vague "everything is too much" feeling. [Replace this sentence with one specific moment from your own student life: a project, competition, exam week, club responsibility, or moment when you needed one small next step.] I wanted the app to feel like something a student could use in one quiet minute before moving to the next class or assignment. BloomMind does not diagnose the user, collect private data, or ask for an account. It simply helps a student name what is present, learn one small idea about that feeling, and choose a doable next step.`
+
+Do not submit this paragraph unchanged. The strongest version should include one true, specific motivation from the applicant.
 
 ### Creativity And Impact
 
@@ -56,7 +60,7 @@ The main creative idea is that emotions become growth. Instead of showing a gene
 
 ### Technical Work
 
-BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. A small local action engine analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty. That theme is combined with the selected mood to create one tiny action. The reflection text stays local in the prototype and is not displayed again on the action screen.
+BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. A local action engine uses Apple's NaturalLanguage framework when available to assist local theme detection, with transparent keyword rules as a fallback. It analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty, then combines the detected theme with the selected mood to create one tiny action and one emotional literacy micro-explanation. The reflection text stays local in the prototype and is not displayed again on the action screen.
 
 ### Privacy And Safety
 
@@ -80,3 +84,9 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 ## Packaging Notes
 
 This repository is a Swift Package prototype. For the final Apple upload, package it as an app playground directory named `BloomMind.swiftpm`, then ZIP that `.swiftpm` directory. Keep the final ZIP under 25 MB and verify it opens with Swift Playgrounds 4.6 or Xcode 26, or later.
+
+Stage 9 readiness notes:
+
+- The package now declares iOS and macOS platform support.
+- The reflection editor keeps the native macOS text view path and uses SwiftUI `TextEditor` outside macOS for iPad/Swift Playgrounds readiness.
+- A final iPad or Swift Playgrounds smoke check is still needed before submission.

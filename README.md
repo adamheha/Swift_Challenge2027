@@ -32,7 +32,11 @@ Stage 0 research, Stage 1 concept, Stage 2 SwiftUI MVP, Stage 4 product repositi
 - Mood-specific SwiftUI plant visuals that grow from completed local check-ins.
 - Local-only reflection theme detection for school, friendship, rest, pressure, and uncertainty.
 - Local-only state for the active check-in, weekly progress, latest completion time, and garden mood history.
+- NaturalLanguage-assisted local theme detection with transparent keyword fallback.
+- Emotional literacy micro-explanations that teach one small idea during the Growth Action step.
+- Tappable garden plants that reveal private mood-based revisit notes without showing reflection text.
 - Accessibility polish for Dynamic Type, Reduce Motion, VoiceOver labels and values, mood selection, reflection entry, step progress, garden state, and completion actions.
+- Light/dark adaptive app backgrounds, panels, cards, and mood selection contrast.
 - Submission-safe product boundaries: no accounts, no analytics, no network calls, no medical claims, and no diagnostic language in the app flow.
 - Xcode previews for key empty, selected, completed, full-garden, and summary states.
 - Unit tests for mood actions, check-in completion, garden mood state, progress floors/capping, accessibility copy, and edge-case step state.
@@ -64,6 +68,18 @@ BloomMind should become more than a mood tracker. The strongest version should d
 ## Stage 9 Target
 
 Stage 9 applies patterns from strong public Swift Student Challenge projects. The target is to make BloomMind feel more like a small interactive learning experience: add emotional literacy micro-explanations, use Apple's NaturalLanguage framework locally with transparent fallback rules, make the garden more interactive, improve iPad and Swift Playgrounds readiness, tighten light/dark contrast, and strengthen the personal-story submission draft.
+
+Progress so far:
+
+- NaturalLanguage-assisted local theme detection and emotional literacy micro-explanations are implemented.
+- Grown garden plants are tappable and reveal private mood-based revisit notes.
+- The package declares iOS support and uses a SwiftUI reflection editor path outside macOS.
+- The app has a light/dark contrast pass for backgrounds, panels, cards, and mood selection.
+
+Remaining:
+
+- Replace the personal-story scaffold with the applicant's real motivation.
+- Smoke check the final `.swiftpm` app playground in the actual review environment.
 
 ## Final Demo And Submission Review
 
