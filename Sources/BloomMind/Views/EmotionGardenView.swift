@@ -24,6 +24,10 @@ struct EmotionGardenView: View {
         visibleMoods.indices.last
     }
 
+    private var newestMood: Mood? {
+        visibleMoods.last
+    }
+
     private var selectedMood: Mood? {
         guard
             let selectedPlotIndex,
@@ -42,6 +46,14 @@ struct EmotionGardenView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             header
+
+            if let newestMood {
+                GardenPayoffBannerView(
+                    mood: newestMood,
+                    completedCount: visibleMoods.count,
+                    totalCount: safeTotalPlots
+                )
+            }
 
             plotLayout
 
@@ -152,6 +164,66 @@ struct EmotionGardenView: View {
         ) {
             selectedPlotIndex = index
         }
+    }
+}
+
+private struct GardenPayoffBannerView: View {
+    let mood: Mood
+    let completedCount: Int
+    let totalCount: Int
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var glow = false
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(mood.tint.opacity(glow ? 0.28 : 0.16))
+
+                Image(systemName: mood.symbolName)
+                    .font(.title3.bold())
+                    .foregroundStyle(mood.tint)
+                    .accessibilityHidden(true)
+            }
+            .frame(width: 48, height: 48)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Storm planted")
+                    .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("\(mood.rawValue) became \(mood.plantAccessibilityName.lowercased()). \(completedCount)/\(totalCount) \(seedWord) growing this week.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(mood.tint.opacity(0.10), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(mood.tint.opacity(glow ? 0.42 : 0.22), lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Storm planted")
+        .accessibilityValue("\(mood.rawValue) became \(mood.plantAccessibilityName.lowercased()). \(completedCount) of \(totalCount) \(seedWord) growing this week.")
+        .onAppear {
+            guard !reduceMotion else {
+                glow = true
+                return
+            }
+
+            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                glow = true
+            }
+        }
+    }
+
+    private var seedWord: String {
+        completedCount == 1 ? "seed is" : "seeds are"
     }
 }
 

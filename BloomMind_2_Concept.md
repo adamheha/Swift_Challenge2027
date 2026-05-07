@@ -88,7 +88,13 @@ Next:
 
 Goal: Make completion feel unforgettable.
 
-Planned:
+Implemented:
+
+- Add a Storm planted payoff banner connected to the newest mood plant.
+- Show the weekly seed count as part of the garden payoff.
+- Preserve Reduce Motion for payoff glow.
+
+Next:
 
 - Animate the sorted storm into a seed.
 - Grow the mood-specific plant from that seed.

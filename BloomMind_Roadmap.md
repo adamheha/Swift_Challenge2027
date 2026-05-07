@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 2 - Interactive Sorting Complete
+Current stage: BloomMind 2.0 Stage 3 - Cinematic Garden Payoff In Progress
 
-Current branch: `codex/bloommind-2-stage-2`
+Current branch: `codex/bloommind-2-stage-3`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 2.0 Stage 3 - Cinematic Garden Payoff
+Next stage: BloomMind 2.0 Stage 4 - Final Review Polish
 
 ## Version 1.x Baseline
 
@@ -90,14 +90,20 @@ Carried forward:
 
 ## BloomMind 2.0 Stage 3 - Cinematic Garden Payoff
 
-Status: Planned
+Status: In Progress
 
 Goal: Make completion feel award-level.
 
-Possible scope:
+Completed in this branch:
 
-- Add a stronger seed-to-plant transition.
-- Make the weekly garden feel like a living memory of storms transformed.
+- Added a Storm planted payoff banner to the garden when at least one mood plant is growing.
+- Connected the payoff banner to the newest mood and weekly seed count.
+- Preserved Reduce Motion by disabling the banner glow pulse when requested.
+
+Next:
+
+- Add a stronger visual collapse from sorted fragments into the planted seed.
+- Make the weekly garden feel more like a living memory of storms transformed.
 - Add a one-minute demo mode with a polished reviewer path.
 
 ## Stage 0 - Award Research

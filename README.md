@@ -18,9 +18,9 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 2: Interactive Sorting - complete.
+BloomMind 2.0 Stage 3: Cinematic Garden Payoff - in progress.
 
-Active branch: `codex/bloommind-2-stage-2`
+Active branch: `codex/bloommind-2-stage-3`
 
 Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. BloomMind 2.0 starts from that foundation and pushes the app toward a more memorable Swift Student Challenge experience.
 
@@ -36,6 +36,7 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - NaturalLanguage-assisted local theme detection with transparent keyword fallback.
 - Emotional literacy micro-explanations that teach one small idea during the Growth Action step.
 - Tappable garden plants that reveal private mood-based revisit notes without showing reflection text.
+- A Storm planted garden payoff banner connected to the newest mood and weekly seed count.
 - Native SwiftUI `Canvas` pressure-storm visuals with orbit trails, high-contrast overlays, Reduce Motion support, and VoiceOver summaries.
 - Accessibility polish for Dynamic Type, Reduce Motion, VoiceOver labels and values, mood selection, reflection entry, step progress, garden state, and completion actions.
 - Light/dark adaptive app backgrounds, panels, cards, and mood selection contrast.
@@ -70,7 +71,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - Stage 9: Research-informed upgrade - superseded by 2.0.
 - BloomMind 2.0 Stage 1: Pressure Storm Pivot - complete.
 - BloomMind 2.0 Stage 2: Interactive Sorting - complete.
-- BloomMind 2.0 Stage 3: Cinematic Garden Payoff - planned.
+- BloomMind 2.0 Stage 3: Cinematic Garden Payoff - in progress.
 
 ## BloomMind 2.0 Stage 1 Target
 
@@ -111,6 +112,21 @@ Progress so far:
 Carried forward:
 
 - Add a stronger visual collapse from the sorted board into the planted seed during Stage 3.
+
+## BloomMind 2.0 Stage 3 Target
+
+Stage 3 makes the return to the garden feel like a payoff, not just a saved state.
+
+Progress so far:
+
+- Added a Storm planted payoff banner to the garden.
+- Connected the banner to the newest mood plant and weekly seed count.
+- Preserved Reduce Motion by disabling the glow pulse when requested.
+
+Next:
+
+- Add a stronger visual collapse from the sorted board into the planted seed.
+- Make the weekly garden feel more like a living memory of storms transformed.
 
 ## Final Demo And Submission Review
 
