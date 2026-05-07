@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 1 - Pressure Storm Pivot Complete
+Current stage: BloomMind 2.0 Stage 2 - Interactive Sorting In Progress
 
-Current branch: `codex/bloommind-2-stage-1`
+Current branch: `codex/bloommind-2-stage-2`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 2.0 Stage 2 - Interactive Sorting
+Next stage: BloomMind 2.0 Stage 3 - Cinematic Garden Payoff
 
 ## Version 1.x Baseline
 
@@ -68,14 +68,20 @@ Definition of done:
 
 ## BloomMind 2.0 Stage 2 - Interactive Sorting
 
-Status: Planned
+Status: In Progress
 
 Goal: Make the storm transformation interactive instead of only visual.
 
-Possible scope:
+Completed in this branch:
 
-- Turn reflection themes into draggable thought fragments.
-- Let the user sort fragments into Now, Later, and Let go.
+- Turn mood, theme, now-step, later-boundary, and release-pressure copy into tappable thought fragments.
+- Group fragments into Now, Later, and Let go columns.
+- Let the user move a fragment to the next lane by tapping it.
+- Keep the selected lane connected to the seed commitment summary.
+
+Next:
+
+- Add drag-and-drop movement once the tap-to-sort model is stable.
 - Animate the sorted fragments into the final seed.
 - Preserve Reduce Motion and VoiceOver alternatives.
 

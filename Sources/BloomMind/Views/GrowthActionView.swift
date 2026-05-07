@@ -123,39 +123,30 @@ private struct StormSortingView: View {
     @Binding var selectedLane: StormLaneKind
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @State private var fragmentAssignments: [StormFragment.ID: StormLaneKind] = [:]
 
     private var columns: [GridItem] {
         [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 220 : 160), spacing: 10)]
     }
 
+    private var fragments: [StormFragment] {
+        StormFragment.fragments(for: suggestion)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             LazyVGrid(columns: columns, spacing: 10) {
-                StormLaneCard(
-                    kind: .now,
-                    text: suggestion.nowStep,
-                    tint: tint,
-                    isSelected: selectedLane == .now
-                ) {
-                    selectedLane = .now
-                }
-
-                StormLaneCard(
-                    kind: .later,
-                    text: suggestion.laterStep,
-                    tint: Color.blue,
-                    isSelected: selectedLane == .later
-                ) {
-                    selectedLane = .later
-                }
-
-                StormLaneCard(
-                    kind: .release,
-                    text: suggestion.releaseStep,
-                    tint: Color.orange,
-                    isSelected: selectedLane == .release
-                ) {
-                    selectedLane = .release
+                ForEach(StormLaneKind.allCases) { lane in
+                    StormLaneColumnView(
+                        lane: lane,
+                        fragments: fragments(in: lane),
+                        tint: lane.tint(primary: tint),
+                        isSelected: selectedLane == lane,
+                        onSelectLane: {
+                            selectedLane = lane
+                        },
+                        onMoveFragment: moveFragment
+                    )
                 }
             }
 
@@ -167,6 +158,22 @@ private struct StormSortingView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Sorted pressure lanes")
+    }
+
+    private func fragments(in lane: StormLaneKind) -> [StormFragment] {
+        fragments.filter { fragment in
+            currentLane(for: fragment) == lane
+        }
+    }
+
+    private func currentLane(for fragment: StormFragment) -> StormLaneKind {
+        fragmentAssignments[fragment.id] ?? fragment.startingLane
+    }
+
+    private func moveFragment(_ fragment: StormFragment) {
+        let nextLane = currentLane(for: fragment).nextLane
+        fragmentAssignments[fragment.id] = nextLane
+        selectedLane = nextLane
     }
 }
 
@@ -230,10 +237,135 @@ private struct SeedCommitmentView: View {
     }
 }
 
-private enum StormLaneKind {
+private struct StormLaneColumnView: View {
+    let lane: StormLaneKind
+    let fragments: [StormFragment]
+    let tint: Color
+    let isSelected: Bool
+    let onSelectLane: () -> Void
+    let onMoveFragment: (StormFragment) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button(action: onSelectLane) {
+                Label(lane.title, systemImage: lane.symbolName)
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .buttonStyle(.plain)
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
+
+            if fragments.isEmpty {
+                Text(lane.emptyText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                ForEach(fragments) { fragment in
+                    StormFragmentChipView(
+                        fragment: fragment,
+                        tint: tint
+                    ) {
+                        onMoveFragment(fragment)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, minHeight: 168, alignment: .topLeading)
+        .padding(12)
+        .bloomCardBackground(tint: tint)
+        .background(isSelected ? tint.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(isSelected ? tint.opacity(0.78) : Color.clear, lineWidth: 2)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(lane.title)
+    }
+}
+
+private struct StormFragmentChipView: View {
+    let fragment: StormFragment
+    let tint: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(alignment: .firstTextBaseline, spacing: 7) {
+                Image(systemName: fragment.symbolName)
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+                    .accessibilityHidden(true)
+
+                Text(fragment.text)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(tint.opacity(0.11), in: RoundedRectangle(cornerRadius: 7))
+            .overlay {
+                RoundedRectangle(cornerRadius: 7)
+                    .stroke(tint.opacity(0.22), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(fragment.text)
+        .accessibilityHint("Moves this fragment to the next lane.")
+    }
+}
+
+private struct StormFragment: Identifiable, Hashable {
+    let id: String
+    let text: String
+    let symbolName: String
+    let startingLane: StormLaneKind
+
+    static func fragments(for suggestion: GrowthActionSuggestion) -> [StormFragment] {
+        [
+            StormFragment(
+                id: "mood",
+                text: suggestion.mood.fragmentText,
+                symbolName: suggestion.mood.symbolName,
+                startingLane: .now
+            ),
+            StormFragment(
+                id: "theme",
+                text: suggestion.theme.fragmentText,
+                symbolName: suggestion.theme.symbolName,
+                startingLane: .later
+            ),
+            StormFragment(
+                id: "now",
+                text: suggestion.nowStep,
+                symbolName: "bolt.fill",
+                startingLane: .now
+            ),
+            StormFragment(
+                id: "later",
+                text: suggestion.laterStep,
+                symbolName: "tray",
+                startingLane: .later
+            ),
+            StormFragment(
+                id: "release",
+                text: suggestion.releaseStep,
+                symbolName: "wind",
+                startingLane: .release
+            )
+        ]
+    }
+}
+
+private enum StormLaneKind: CaseIterable, Identifiable {
     case now
     case later
     case release
+
+    var id: String { title }
 
     var title: String {
         switch self {
@@ -268,6 +400,39 @@ private enum StormLaneKind {
         }
     }
 
+    var emptyText: String {
+        switch self {
+        case .now:
+            "No urgent piece here."
+        case .later:
+            "Nothing parked here."
+        case .release:
+            "Nothing to let go here."
+        }
+    }
+
+    var nextLane: StormLaneKind {
+        switch self {
+        case .now:
+            .later
+        case .later:
+            .release
+        case .release:
+            .now
+        }
+    }
+
+    func tint(primary: Color) -> Color {
+        switch self {
+        case .now:
+            primary
+        case .later:
+            .blue
+        case .release:
+            .orange
+        }
+    }
+
     var seedTitle: String {
         switch self {
         case .now:
@@ -291,41 +456,39 @@ private enum StormLaneKind {
     }
 }
 
-private struct StormLaneCard: View {
-    let kind: StormLaneKind
-    let text: String
-    let tint: Color
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: 8) {
-                Label(kind.title, systemImage: kind.symbolName)
-                    .font(.subheadline.bold())
-                    .foregroundStyle(tint)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text(text)
-                    .font(.subheadline)
-                    .foregroundStyle(.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .frame(maxWidth: .infinity, minHeight: 116, alignment: .topLeading)
-            .padding(14)
-            .bloomCardBackground(tint: tint)
-            .background(isSelected ? tint.opacity(0.14) : Color.clear, in: RoundedRectangle(cornerRadius: 8))
-            .overlay {
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(isSelected ? tint.opacity(0.75) : Color.clear, lineWidth: 2)
-            }
+private extension Mood {
+    var fragmentText: String {
+        switch self {
+        case .calm:
+            "Steady energy is available."
+        case .happy:
+            "Good energy can be used carefully."
+        case .tired:
+            "Low energy means the next step should be smaller."
+        case .stressed:
+            "Pressure is making everything sound urgent."
+        case .unsure:
+            "Uncertainty needs one clear question."
         }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(kind.title)
-        .accessibilityValue(text)
-        .accessibilityHint(isSelected ? "Selected lane." : "Selects this lane for focus.")
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
+private extension ReflectionTheme {
+    var fragmentText: String {
+        switch self {
+        case .school:
+            "School is the loudest part of the storm."
+        case .friendship:
+            "A relationship worry is asking for care."
+        case .rest:
+            "Rest is part of the answer, not a reward."
+        case .pressure:
+            "The pressure storm is mixing now with later."
+        case .uncertainty:
+            "The storm needs one answerable question."
+        case .general:
+            "The storm is real even without a perfect label."
+        }
     }
 }
 

@@ -38,7 +38,7 @@ Target review time: 60 seconds.
    `I have a project due today and feel pressure to finish everything.`
 
 6. Tap Continue.
-7. Review the generated Growth Action and tap through the Now / Later / Let go lanes:
+7. Review the generated Growth Action and tap several thought fragments to move them through Now, Later, and Let go:
 
    `Make it tiny: choose one thing that can wait, then start only the next tiny step.`
 
@@ -66,7 +66,7 @@ The main creative idea is that pressure changes form. Instead of showing a gener
 
 ### Technical Work
 
-BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. The 2.0 pressure storm is drawn with native SwiftUI `Canvas` and `TimelineView`, with orbit trails, high-contrast text shading, and a reduced-motion path that preserves meaning. A local action engine uses Apple's NaturalLanguage framework when available to assist local theme detection, with transparent keyword rules as a fallback. It analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty, then combines the detected theme with the selected mood to create one tiny action, tappable Now / Later / Let go sorting, and one emotional literacy micro-explanation. The reflection text stays local in the prototype and is not displayed again on the action screen.
+BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. The 2.0 pressure storm is drawn with native SwiftUI `Canvas` and `TimelineView`, with orbit trails, high-contrast text shading, and a reduced-motion path that preserves meaning. A local action engine uses Apple's NaturalLanguage framework when available to assist local theme detection, with transparent keyword rules as a fallback. It analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty, then combines the detected theme with the selected mood to create thought fragments, one tiny action, tappable Now / Later / Let go sorting, and one emotional literacy micro-explanation. The reflection text stays local in the prototype and is not displayed again on the action screen.
 
 ### Privacy And Safety
 
@@ -83,7 +83,7 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm the Reflection field accepts typed text after clicking or tapping directly inside it.
 - Confirm Continue can also be tapped after selecting a mood when Reflection is empty.
 - Confirm the pressure storm stays readable in light and dark appearances.
-- Confirm the Now / Later / Let go cards appear on Growth Action and can each be selected.
+- Confirm thought fragments appear on Growth Action and can move between Now, Later, and Let go.
 - Run `swift test`.
 - Run `swift build`.
 - Confirm the ZIP package is under 25 MB.
@@ -99,7 +99,7 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 2. Tap Enter the Storm and select Stressed.
 3. Either leave Reflection empty to test the quick path, or type `I have a project due today and feel pressure to finish everything.` to test local theme detection.
 4. Confirm Continue becomes enabled after selecting a mood.
-5. Confirm the Growth Action shows the pressure-themed tiny action, selectable Now / Later / Let go cards, and a Tiny idea explanation.
+5. Confirm the Growth Action shows the pressure-themed tiny action, movable thought fragments, and a Tiny idea explanation.
 6. Complete the check-in and return to Today.
 7. Tap the newest garden plant and confirm it shows a private mood-based note without reflection text.
 8. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.

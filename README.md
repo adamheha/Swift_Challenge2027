@@ -18,9 +18,9 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 1: Pressure Storm Pivot - complete.
+BloomMind 2.0 Stage 2: Interactive Sorting - in progress.
 
-Active branch: `codex/bloommind-2-stage-1`
+Active branch: `codex/bloommind-2-stage-2`
 
 Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. BloomMind 2.0 starts from that foundation and pushes the app toward a more memorable Swift Student Challenge experience.
 
@@ -29,7 +29,7 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - SwiftUI app shell with a typed navigation flow.
 - Home screen with a moving pressure-storm hero, weekly bloom progress, an interactive emotion garden, and today-completion feedback.
 - Check-in screen with mood selection, selected-state checkmark, a live storm preview, optional reflection input, and a three-step progress indicator.
-- Growth action screen with local mood-and-theme suggested actions, tappable Now / Later / Let go sorting, and a private theme explanation.
+- Growth action screen with local mood-and-theme suggested actions, tappable thought-fragment sorting, Now / Later / Let go lanes, seed commitment, and a private theme explanation.
 - Mood-specific SwiftUI plant visuals that grow from completed local check-ins.
 - Local-only reflection theme detection for school, friendship, rest, pressure, and uncertainty.
 - Local-only state for the active check-in, weekly progress, latest completion time, and garden mood history.
@@ -69,7 +69,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - Stage 8: Final demo and submission package - complete.
 - Stage 9: Research-informed upgrade - superseded by 2.0.
 - BloomMind 2.0 Stage 1: Pressure Storm Pivot - complete.
-- BloomMind 2.0 Stage 2: Interactive Sorting - planned.
+- BloomMind 2.0 Stage 2: Interactive Sorting - in progress.
 - BloomMind 2.0 Stage 3: Cinematic Garden Payoff - planned.
 
 ## BloomMind 2.0 Stage 1 Target
@@ -93,6 +93,21 @@ Carried forward:
 
 - Smoke check the app in Xcode and iPad-sized previews before final submission.
 - Expand tappable sorting into a richer Stage 2 interaction.
+
+## BloomMind 2.0 Stage 2 Target
+
+Stage 2 makes sorting tactile. The first version converts the Growth Action result into thought fragments, groups those fragments into Now, Later, and Let go, and lets the user move fragments between lanes by tapping them.
+
+Progress so far:
+
+- Added a tap-to-sort fragment board in Growth Action.
+- Generated fragments from mood, detected theme, now-step, later-boundary, and release-pressure copy.
+- Kept lane selection connected to the seed commitment summary.
+
+Next:
+
+- Upgrade tap-to-sort into drag-and-drop sorting.
+- Add a stronger animation from sorted fragments into the final seed.
 
 ## Final Demo And Submission Review
 
