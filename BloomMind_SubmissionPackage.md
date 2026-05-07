@@ -74,12 +74,28 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 
 - Open the app and complete the demo path in under 3 minutes.
 - Confirm the one-minute demo path works without any network connection.
+- Confirm the Reflection field accepts typed text after clicking or tapping directly inside it.
 - Run `swift test`.
 - Run `swift build`.
 - Confirm the ZIP package is under 25 MB.
 - Confirm all visible app and submission writing is in English.
 - Confirm no secrets, accounts, analytics, telemetry, or network calls are included.
 - Confirm any AI usage is disclosed in the final submission form.
+
+## Swift Playgrounds Smoke Check
+
+Use this checklist when the final `BloomMind.swiftpm` package is available in the actual review environment:
+
+1. Open the package on iPad or in Swift Playgrounds.
+2. Start a check-in and select Stressed.
+3. Type `I have a project due today and feel pressure to finish everything.` in Reflection.
+4. Confirm Continue becomes enabled.
+5. Confirm the Growth Action shows the pressure-themed tiny action and a Tiny idea explanation.
+6. Complete the check-in and return to Today.
+7. Tap the newest garden plant and confirm it shows a private mood-based note without reflection text.
+8. Switch the device or simulator to dark appearance and confirm text, panels, buttons, and garden notes remain readable.
+9. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
+10. Turn on a larger text size and confirm the main flow remains scrollable and readable.
 
 ## Packaging Notes
 
