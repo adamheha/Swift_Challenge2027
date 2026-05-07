@@ -73,7 +73,7 @@ Progress so far:
 
 - NaturalLanguage-assisted local theme detection and emotional literacy micro-explanations are implemented.
 - Grown garden plants are tappable and reveal private mood-based revisit notes.
-- The package declares iOS support and uses a SwiftUI reflection editor path outside macOS.
+- The package declares iOS support and uses a unified SwiftUI vertical reflection field for reliable typing across review environments.
 - The app has a light/dark contrast pass for backgrounds, panels, cards, and mood selection.
 
 Remaining:

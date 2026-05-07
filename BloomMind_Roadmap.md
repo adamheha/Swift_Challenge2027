@@ -197,7 +197,7 @@ Completed so far:
 - Added NaturalLanguage-assisted local theme detection with transparent keyword fallback.
 - Added emotional literacy micro-explanations to the Growth Action screen.
 - Made grown garden plants tappable with private mood-based revisit notes.
-- Added iOS platform readiness and a non-macOS SwiftUI reflection editor path.
+- Added iOS platform readiness and a unified SwiftUI vertical reflection field to keep typing reliable across review environments.
 - Improved light and dark appearance contrast for app backgrounds, panels, cards, and the happy mood selection state.
 
 Remaining:

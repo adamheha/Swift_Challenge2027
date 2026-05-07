@@ -88,5 +88,5 @@ This repository is a Swift Package prototype. For the final Apple upload, packag
 Stage 9 readiness notes:
 
 - The package now declares iOS and macOS platform support.
-- The reflection editor keeps the native macOS text view path and uses SwiftUI `TextEditor` outside macOS for iPad/Swift Playgrounds readiness.
+- The reflection editor uses a unified SwiftUI vertical field for reliable typing across macOS, iPad, and Swift Playgrounds-style review environments.
 - A final iPad or Swift Playgrounds smoke check is still needed before submission.
