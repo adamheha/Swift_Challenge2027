@@ -4,7 +4,7 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 1 - Pressure Storm Pivot
+Current stage: BloomMind 2.0 Stage 1 - Pressure Storm Pivot Complete
 
 Current branch: `codex/bloommind-2-stage-1`
 
@@ -26,7 +26,7 @@ Decision:
 
 ## BloomMind 2.0 Stage 1 - Pressure Storm Pivot
 
-Status: In Progress
+Status: Complete
 
 Goal: Make the first minute feel surprising, visual, and emotionally specific.
 
@@ -52,11 +52,11 @@ Completed in this branch:
 - Updated unit tests for the new 2.0 copy and action outputs.
 - Removed the unused old circular progress dashboard from Home.
 
-Remaining:
+Carried forward:
 
-- Smoke check the new flow in Xcode's app window and an iPad-sized preview.
+- Smoke check the new flow in Xcode's app window and an iPad-sized preview before final submission.
 - Tune the storm labels and particles after seeing it on actual device sizes.
-- Decide whether Stage 2 should expand the tappable lanes into drag-and-drop sorting or focus first on the cinematic completion animation.
+- Expand the tappable lanes into a richer interactive sorting experience in Stage 2.
 
 Definition of done:
 

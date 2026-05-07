@@ -18,7 +18,7 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 1: Pressure Storm Pivot - in progress.
+BloomMind 2.0 Stage 1: Pressure Storm Pivot - complete.
 
 Active branch: `codex/bloommind-2-stage-1`
 
@@ -68,7 +68,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - Stage 7: Accessibility, polish, and submission safety - complete.
 - Stage 8: Final demo and submission package - complete.
 - Stage 9: Research-informed upgrade - superseded by 2.0.
-- BloomMind 2.0 Stage 1: Pressure Storm Pivot - in progress.
+- BloomMind 2.0 Stage 1: Pressure Storm Pivot - complete.
 - BloomMind 2.0 Stage 2: Interactive Sorting - planned.
 - BloomMind 2.0 Stage 3: Cinematic Garden Payoff - planned.
 
@@ -89,10 +89,10 @@ Progress so far:
 - Removed the old circular progress dashboard from Home so the first screen stays story-driven.
 - Updated tests for the 2.0 copy and action outputs.
 
-Remaining:
+Carried forward:
 
-- Smoke check the app in Xcode and iPad-sized previews.
-- Decide the Stage 2 interaction priority: drag-and-drop sorting or cinematic completion first.
+- Smoke check the app in Xcode and iPad-sized previews before final submission.
+- Expand tappable sorting into a richer Stage 2 interaction.
 
 ## Final Demo And Submission Review
 
