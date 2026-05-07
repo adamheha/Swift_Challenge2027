@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(NaturalLanguage)
+import NaturalLanguage
+#endif
 
 enum ReflectionTheme: String, CaseIterable, Identifiable {
     case school
@@ -51,23 +54,23 @@ struct GrowthActionSuggestion: Equatable {
     let title: String
     let action: String
     let explanation: String
+    let literacyInsight: String
 }
 
 enum LocalActionEngine {
     static func detectTheme(in reflectionText: String) -> ReflectionTheme {
-        let normalizedText = normalized(reflectionText)
+        let detectionText = DetectionText(reflectionText)
 
-        guard !normalizedText.isEmpty else {
+        guard !detectionText.normalizedText.isEmpty else {
             return .general
         }
 
-        let words = Set(normalizedText.split(separator: " ").map(String.init))
         var bestTheme = ReflectionTheme.general
         var bestScore = 0
 
         for theme in detectableThemes {
             let score = theme.keywords.reduce(0) { partialScore, keyword in
-                partialScore + (contains(keyword: keyword, in: normalizedText, words: words) ? 1 : 0)
+                partialScore + (contains(keyword: keyword, in: detectionText) ? 1 : 0)
             }
 
             if score > bestScore {
@@ -88,7 +91,8 @@ enum LocalActionEngine {
             theme: theme,
             title: "A tiny \(theme.titleNoun) step for \(mood.rawValue.lowercased())",
             action: action,
-            explanation: explanation(for: mood, theme: theme)
+            explanation: explanation(for: mood, theme: theme),
+            literacyInsight: theme.literacyInsight
         )
     }
 
@@ -108,12 +112,14 @@ enum LocalActionEngine {
             .joined(separator: " ")
     }
 
-    private static func contains(keyword: String, in normalizedText: String, words: Set<String>) -> Bool {
-        if keyword.contains(" ") {
-            return normalizedText.contains(keyword)
+    private static func contains(keyword: String, in detectionText: DetectionText) -> Bool {
+        let normalizedKeyword = normalized(keyword)
+
+        if normalizedKeyword.contains(" ") {
+            return detectionText.normalizedText.contains(normalizedKeyword)
         }
 
-        return words.contains(keyword)
+        return detectionText.terms.contains(normalizedKeyword)
     }
 
     private static func explanation(for mood: Mood, theme: ReflectionTheme) -> String {
@@ -122,6 +128,56 @@ enum LocalActionEngine {
         }
 
         return "This looks like a \(theme.displayName.lowercased()) theme, detected locally, and uses your \(mood.rawValue.lowercased()) mood to keep the next step small. The reflection stays on this device."
+    }
+
+    private struct DetectionText {
+        let normalizedText: String
+        let terms: Set<String>
+
+        init(_ text: String) {
+            normalizedText = LocalActionEngine.normalized(text)
+
+            var detectedTerms = Set(normalizedText.split(separator: " ").map(String.init))
+            detectedTerms.formUnion(Self.naturalLanguageTerms(in: text))
+            terms = detectedTerms
+        }
+
+        private static func naturalLanguageTerms(in text: String) -> Set<String> {
+            #if canImport(NaturalLanguage)
+            guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                return []
+            }
+
+            let tagger = NLTagger(tagSchemes: [.lemma])
+            tagger.string = text
+            let options: NLTagger.Options = [.omitPunctuation, .omitWhitespace, .joinNames]
+            var terms = Set<String>()
+
+            tagger.enumerateTags(
+                in: text.startIndex..<text.endIndex,
+                unit: .word,
+                scheme: .lemma,
+                options: options
+            ) { tag, tokenRange in
+                let candidates = [
+                    String(text[tokenRange]),
+                    tag?.rawValue
+                ].compactMap { $0 }
+
+                for candidate in candidates {
+                    let normalizedCandidate = LocalActionEngine.normalized(candidate)
+                    let candidateTerms = normalizedCandidate.split(separator: " ").map(String.init)
+                    terms.formUnion(candidateTerms)
+                }
+
+                return true
+            }
+
+            return terms
+            #else
+            return []
+            #endif
+        }
     }
 }
 
@@ -134,14 +190,17 @@ private extension ReflectionTheme {
                 "class",
                 "homework",
                 "assignment",
+                "assignments",
                 "project",
                 "teacher",
                 "grade",
                 "grades",
                 "test",
                 "quiz",
+                "quizzes",
                 "exam",
-                "study"
+                "study",
+                "studying"
             ]
         case .friendship:
             [
@@ -236,6 +295,23 @@ private extension ReflectionTheme {
             "write the question you need answered, then name who or what could help."
         case .general:
             "choose one small action you can finish before the next thing starts."
+        }
+    }
+
+    var literacyInsight: String {
+        switch self {
+        case .school:
+            "School feelings often become easier to handle when the next task is named clearly."
+        case .friendship:
+            "Friendship stress can feel less tangled when one kind sentence is separated from the whole situation."
+        case .rest:
+            "Tired feelings can be useful signals that the next step should be smaller, slower, or kinder."
+        case .pressure:
+            "Pressure often feels bigger when every task looks urgent. Separating now from later can make the next step easier to start."
+        case .uncertainty:
+            "Uncertainty often softens when one clear question gets named before trying to solve everything."
+        case .general:
+            "A feeling does not need a perfect label before it can become one small next step."
         }
     }
 }

@@ -92,6 +92,19 @@ private struct LocalActionExplanationView: View {
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
+
+            Divider()
+
+            Label("Tiny idea", systemImage: "lightbulb")
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(suggestion.literacyInsight)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
         .background(.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 8))
@@ -101,7 +114,7 @@ private struct LocalActionExplanationView: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Why this action")
-        .accessibilityValue("\(suggestion.theme.displayName). \(suggestion.explanation)")
+        .accessibilityValue("\(suggestion.theme.displayName). \(suggestion.explanation) \(suggestion.literacyInsight)")
     }
 }
 

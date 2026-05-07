@@ -9,6 +9,7 @@ import Testing
 
 @Test func reflectionThemeDetectionMatchesSimpleStudentThemes() {
     #expect(LocalActionEngine.detectTheme(in: "I have a math test and homework tonight.") == .school)
+    #expect(LocalActionEngine.detectTheme(in: "Studying for quizzes makes the evening feel busy.") == .school)
     #expect(LocalActionEngine.detectTheme(in: "My friend and I had an argument at lunch.") == .friendship)
     #expect(LocalActionEngine.detectTheme(in: "I slept badly and need a real break.") == .rest)
     #expect(LocalActionEngine.detectTheme(in: "Everything is due today and I feel too much pressure.") == .pressure)
@@ -39,6 +40,18 @@ import Testing
     #expect(tiredSchool.action == "Make it gentle: write the school task that matters most, then do the first two minutes.")
     #expect(calmSchool.action == "Keep it steady: write the school task that matters most, then do the first two minutes.")
     #expect(tiredRest.action == "Make it gentle: take a real pause with water, a stretch, or two minutes with your eyes closed.")
+}
+
+@Test func localActionEngineAddsEmotionalLiteracyInsight() {
+    let reflection = "Everything is due today and I feel too much pressure."
+    let suggestion = LocalActionEngine.suggestion(for: .stressed, reflectionText: reflection)
+
+    #expect(suggestion.theme == .pressure)
+    #expect(
+        suggestion.literacyInsight
+            == "Pressure often feels bigger when every task looks urgent. Separating now from later can make the next step easier to start."
+    )
+    #expect(!suggestion.literacyInsight.contains(reflection))
 }
 
 @Test func localActionEngineExplanationKeepsReflectionPrivate() {
