@@ -92,6 +92,7 @@ Implemented:
 
 - Add a Storm planted payoff banner connected to the newest mood plant.
 - Show the weekly seed count as part of the garden payoff.
+- Add an ambient garden atmosphere layer based on the week's mood plants.
 - Preserve Reduce Motion for payoff glow.
 
 Next:

@@ -62,7 +62,7 @@ Do not submit this paragraph unchanged. The strongest version should include one
 
 ### Creativity And Impact
 
-The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." A check-in sorts that storm into Now, Later, and Let go, then transforms the feeling into a mood-specific plant. The garden highlights the newest planted storm and shows the weekly seed count, so the return to Home feels like a payoff instead of a saved state. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
+The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." A check-in sorts that storm into Now, Later, and Let go, then transforms the feeling into a mood-specific plant. The garden highlights the newest planted storm, shows the weekly seed count, and adds a soft atmosphere based on the week's mood plants, so the return to Home feels like a payoff instead of a saved state. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
 
 ### Technical Work
 

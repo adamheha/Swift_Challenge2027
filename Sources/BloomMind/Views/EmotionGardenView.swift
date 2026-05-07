@@ -44,24 +44,31 @@ struct EmotionGardenView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            header
-
-            if let newestMood {
-                GardenPayoffBannerView(
-                    mood: newestMood,
-                    completedCount: visibleMoods.count,
-                    totalCount: safeTotalPlots
-                )
+        ZStack {
+            if !visibleMoods.isEmpty {
+                GardenAtmosphereView(moods: visibleMoods)
+                    .allowsHitTesting(false)
             }
 
-            plotLayout
+            VStack(alignment: .leading, spacing: 16) {
+                header
 
-            if let selectedMood {
-                GardenPlantDetailView(
-                    mood: selectedMood,
-                    isNewest: selectedPlotIndex == newestMoodIndex
-                )
+                if let newestMood {
+                    GardenPayoffBannerView(
+                        mood: newestMood,
+                        completedCount: visibleMoods.count,
+                        totalCount: safeTotalPlots
+                    )
+                }
+
+                plotLayout
+
+                if let selectedMood {
+                    GardenPlantDetailView(
+                        mood: selectedMood,
+                        isNewest: selectedPlotIndex == newestMoodIndex
+                    )
+                }
             }
         }
         .bloomPanel(padding: 16)
@@ -163,6 +170,72 @@ struct EmotionGardenView: View {
             newestPlantIsGrown: newestPlantIsGrown || reduceMotion
         ) {
             selectedPlotIndex = index
+        }
+    }
+}
+
+private struct GardenAtmosphereView: View {
+    let moods: [Mood]
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            Canvas { context, size in
+                drawAtmosphere(
+                    in: &context,
+                    size: size,
+                    time: reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                )
+            }
+        }
+        .opacity(0.78)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .accessibilityHidden(true)
+    }
+
+    private func drawAtmosphere(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        guard !moods.isEmpty else {
+            return
+        }
+
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let denominator = max(moods.count - 1, 1)
+
+        for (index, mood) in moods.enumerated() {
+            let progress = CGFloat(index) / CGFloat(denominator)
+            let drift = sin(time * 0.8 + Double(index) * 0.9) * 10
+            let center = CGPoint(
+                x: width * (0.12 + progress * 0.76),
+                y: height * (0.28 + CGFloat(index % 3) * 0.18) + drift
+            )
+            let radius = min(width, height) * (0.13 + CGFloat(index % 2) * 0.035)
+
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: center.x - radius,
+                    y: center.y - radius,
+                    width: radius * 2,
+                    height: radius * 2
+                )),
+                with: .color(mood.tint.opacity(0.08))
+            )
+
+            context.stroke(
+                Path(ellipseIn: CGRect(
+                    x: center.x - radius * 0.46,
+                    y: center.y - radius * 0.46,
+                    width: radius * 0.92,
+                    height: radius * 0.92
+                )),
+                with: .color(mood.tint.opacity(0.10)),
+                lineWidth: 1
+            )
         }
     }
 }

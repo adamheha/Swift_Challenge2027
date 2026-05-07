@@ -98,6 +98,7 @@ Completed in this branch:
 
 - Added a Storm planted payoff banner to the garden when at least one mood plant is growing.
 - Connected the payoff banner to the newest mood and weekly seed count.
+- Added a subtle animated garden atmosphere layer based on the week's mood plants.
 - Preserved Reduce Motion by disabling the banner glow pulse when requested.
 
 Next:

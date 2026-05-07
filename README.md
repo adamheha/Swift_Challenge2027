@@ -121,6 +121,7 @@ Progress so far:
 
 - Added a Storm planted payoff banner to the garden.
 - Connected the banner to the newest mood plant and weekly seed count.
+- Added a subtle animated garden atmosphere layer based on the week's mood plants.
 - Preserved Reduce Motion by disabling the glow pulse when requested.
 
 Next:
