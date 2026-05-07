@@ -84,6 +84,7 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm Continue can also be tapped after selecting a mood when Reflection is empty.
 - Confirm the pressure storm stays readable in light and dark appearances.
 - Confirm thought fragments appear on Growth Action and can move between Now, Later, and Let go by tap and drag/drop.
+- Confirm Reduce Motion keeps sorting and planting understandable without pulsing motion.
 - Run `swift test`.
 - Run `swift build`.
 - Confirm the ZIP package is under 25 MB.

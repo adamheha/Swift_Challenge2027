@@ -106,6 +106,7 @@ Progress so far:
 - Generated fragments from mood, detected theme, now-step, later-boundary, and release-pressure copy.
 - Kept lane selection connected to the seed commitment summary.
 - Added a brief Planting Seed completion state before returning to the garden.
+- Respect Reduce Motion for sorting and planting animations.
 
 Next:
 

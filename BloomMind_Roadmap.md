@@ -81,6 +81,7 @@ Completed in this branch:
 - Animate fragment movement between lanes with spring motion.
 - Keep the selected lane connected to the seed commitment summary.
 - Add a short Planting Seed state before returning to the garden.
+- Respect Reduce Motion for sorting and planting animations.
 
 Next:
 

@@ -78,7 +78,7 @@ Implemented:
 - Let the user sort fragments into Now, Later, and Let go with tap-to-move and drag/drop.
 - Animate fragments as they move between lanes.
 - Add a short Planting Seed state before the app returns to the garden.
-- Add a VoiceOver-friendly non-drag alternative.
+- Preserve Reduce Motion and a VoiceOver-friendly non-drag alternative.
 
 Next:
 

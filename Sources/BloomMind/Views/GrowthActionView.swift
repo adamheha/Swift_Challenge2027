@@ -145,6 +145,7 @@ private struct StormSortingView: View {
     @Binding var selectedLane: StormLaneKind
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var fragmentAssignments: [StormFragment.ID: StormLaneKind] = [:]
     @Namespace private var fragmentNamespace
 
@@ -217,7 +218,7 @@ private struct StormSortingView: View {
     }
 
     private var sortingAnimation: Animation {
-        .spring(response: 0.42, dampingFraction: 0.78)
+        reduceMotion ? .linear(duration: 0) : .spring(response: 0.42, dampingFraction: 0.78)
     }
 }
 
@@ -227,6 +228,7 @@ private struct SeedCommitmentView: View {
     let selectedLane: StormLaneKind
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var seedSize: CGFloat {
         dynamicTypeSize.isAccessibilitySize ? 62 : 54
@@ -267,7 +269,7 @@ private struct SeedCommitmentView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(selectedLane.seedTitle)
         .accessibilityValue(selectedLane.text(from: suggestion))
-        .animation(.spring(response: 0.36, dampingFraction: 0.8), value: selectedLane)
+        .animation(reduceMotion ? .linear(duration: 0) : .spring(response: 0.36, dampingFraction: 0.8), value: selectedLane)
     }
 
     private var seedBackground: LinearGradient {
@@ -285,6 +287,7 @@ private struct SeedCommitmentView: View {
 private struct PlantingSeedView: View {
     let tint: Color
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var pulse = false
 
     var body: some View {
@@ -292,7 +295,7 @@ private struct PlantingSeedView: View {
             Image(systemName: "camera.macro")
                 .font(.title3.bold())
                 .foregroundStyle(tint)
-                .scaleEffect(pulse ? 1.14 : 0.94)
+                .scaleEffect(reduceMotion ? 1 : (pulse ? 1.14 : 0.94))
                 .accessibilityHidden(true)
 
             Text("Planting seed...")
@@ -311,6 +314,11 @@ private struct PlantingSeedView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Planting seed")
         .onAppear {
+            guard !reduceMotion else {
+                pulse = true
+                return
+            }
+
             withAnimation(.easeInOut(duration: 0.42).repeatForever(autoreverses: true)) {
                 pulse = true
             }
