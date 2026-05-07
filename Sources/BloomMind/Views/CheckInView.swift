@@ -58,27 +58,23 @@ struct CheckInView: View {
                 .accessibilityValue(checkInState.reflectionAccessibilityValue)
                 .accessibilityHint(checkInState.reflectionAccessibilityHint)
 
-                TextEditor(text: $checkInState.reflectionText)
-                    .frame(minHeight: reflectionMinHeight)
-                    .padding(8)
+                TextField(
+                    "Reflection",
+                    text: $checkInState.reflectionText,
+                    prompt: Text(CheckInState.reflectionPromptText),
+                    axis: .vertical
+                )
+                    .textFieldStyle(.plain)
+                    .lineLimit(4...8)
+                    .frame(maxWidth: .infinity, minHeight: reflectionMinHeight, alignment: .topLeading)
+                    .padding(12)
                     .accessibilityLabel("Reflection")
                     .accessibilityValue(checkInState.reflectionAccessibilityValue)
                     .accessibilityHint(checkInState.reflectionAccessibilityHint)
-                    .scrollContentBackground(.hidden)
                     .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
                     .overlay {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(.green.opacity(0.2), lineWidth: 1)
-                    }
-                    .overlay {
-                        if checkInState.reflectionText.isEmpty {
-                            Text(CheckInState.reflectionPromptText)
-                                .foregroundStyle(.tertiary)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                                .padding(16)
-                                .allowsHitTesting(false)
-                                .accessibilityHidden(true)
-                        }
                     }
 
                 if !checkInState.isReflectionWithinLimit {
