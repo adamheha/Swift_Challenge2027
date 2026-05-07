@@ -105,10 +105,11 @@ Progress so far:
 - Added spring movement as fragments change lanes.
 - Generated fragments from mood, detected theme, now-step, later-boundary, and release-pressure copy.
 - Kept lane selection connected to the seed commitment summary.
+- Added a brief Planting Seed completion state before returning to the garden.
 
 Next:
 
-- Add a stronger final animation from the sorted board into the planted seed.
+- Add a stronger visual collapse from the sorted board into the planted seed.
 
 ## Final Demo And Submission Review
 

@@ -80,10 +80,11 @@ Completed in this branch:
 - Let the user drag a fragment into a different lane, while preserving tap-to-move as the fallback.
 - Animate fragment movement between lanes with spring motion.
 - Keep the selected lane connected to the seed commitment summary.
+- Add a short Planting Seed state before returning to the garden.
 
 Next:
 
-- Add a stronger final animation from the sorted board into the planted seed.
+- Add a stronger visual collapse from the sorted board into the planted seed.
 - Preserve Reduce Motion and VoiceOver alternatives.
 
 ## BloomMind 2.0 Stage 3 - Cinematic Garden Payoff

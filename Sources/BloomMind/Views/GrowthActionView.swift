@@ -6,6 +6,7 @@ struct GrowthActionView: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var selectedLane: StormLaneKind = .now
+    @State private var isPlantingSeed = false
 
     private var selectedMood: Mood {
         checkInState.selectedMood ?? .unsure
@@ -49,23 +50,44 @@ struct GrowthActionView: View {
                 tint: selectedMood.tint
             )
 
+            if isPlantingSeed {
+                PlantingSeedView(tint: selectedMood.tint)
+            }
+
             Spacer()
 
-            Button {
-                checkInState.completeCheckIn()
-                onComplete()
-            } label: {
-                Label("Plant This Seed", systemImage: "camera.macro.circle.fill")
+            Button(action: plantSeed) {
+                Label(isPlantingSeed ? "Planting Seed" : "Plant This Seed", systemImage: isPlantingSeed ? "leaf.circle.fill" : "camera.macro.circle.fill")
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
+            .disabled(isPlantingSeed)
             .accessibilityHint(CheckInState.completeActionAccessibilityHint)
         }
         .bloomPage()
         .navigationTitle("Growth Action")
+    }
+
+    private func plantSeed() {
+        guard !isPlantingSeed else {
+            return
+        }
+
+        withAnimation(.spring(response: 0.36, dampingFraction: 0.78)) {
+            isPlantingSeed = true
+        }
+
+        Task {
+            try? await Task.sleep(nanoseconds: 650_000_000)
+
+            await MainActor.run {
+                checkInState.completeCheckIn()
+                onComplete()
+            }
+        }
     }
 }
 
@@ -257,6 +279,42 @@ private struct SeedCommitmentView: View {
             startPoint: .topLeading,
             endPoint: .bottomTrailing
         )
+    }
+}
+
+private struct PlantingSeedView: View {
+    let tint: Color
+
+    @State private var pulse = false
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "camera.macro")
+                .font(.title3.bold())
+                .foregroundStyle(tint)
+                .scaleEffect(pulse ? 1.14 : 0.94)
+                .accessibilityHidden(true)
+
+            Text("Planting seed...")
+                .font(.subheadline.bold())
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer(minLength: 0)
+        }
+        .padding(12)
+        .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.28), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Planting seed")
+        .onAppear {
+            withAnimation(.easeInOut(duration: 0.42).repeatForever(autoreverses: true)) {
+                pulse = true
+            }
+        }
     }
 }
 

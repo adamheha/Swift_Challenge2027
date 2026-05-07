@@ -77,6 +77,7 @@ Implemented:
 - Convert mood, detected theme, and local action outputs into movable thought fragments.
 - Let the user sort fragments into Now, Later, and Let go with tap-to-move and drag/drop.
 - Animate fragments as they move between lanes.
+- Add a short Planting Seed state before the app returns to the garden.
 - Add a VoiceOver-friendly non-drag alternative.
 
 Next:
