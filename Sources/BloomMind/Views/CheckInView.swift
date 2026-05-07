@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct CheckInView: View {
     @Binding var checkInState: CheckInState
@@ -58,26 +59,29 @@ struct CheckInView: View {
                 .accessibilityValue(checkInState.reflectionAccessibilityValue)
                 .accessibilityHint(checkInState.reflectionAccessibilityHint)
 
-                TextField(
-                    "Reflection",
-                    text: $checkInState.reflectionText,
-                    prompt: Text(CheckInState.reflectionPromptText)
-                        .foregroundStyle(.secondary),
-                    axis: .vertical
-                )
-                    .textFieldStyle(.plain)
-                    .lineLimit(4...8)
+                ZStack(alignment: .topLeading) {
+                    ReflectionTextView(
+                        text: $checkInState.reflectionText,
+                        minHeight: reflectionMinHeight
+                    )
                     .frame(maxWidth: .infinity, minHeight: reflectionMinHeight, alignment: .topLeading)
-                    .padding(12)
-                    .foregroundStyle(.primary)
-                    .accessibilityLabel("Reflection")
-                    .accessibilityValue(checkInState.reflectionAccessibilityValue)
-                    .accessibilityHint(checkInState.reflectionAccessibilityHint)
-                    .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(.green.opacity(0.2), lineWidth: 1)
+
+                    if checkInState.reflectionText.isEmpty {
+                        Text(CheckInState.reflectionPromptText)
+                            .foregroundStyle(.secondary)
+                            .padding(12)
+                            .allowsHitTesting(false)
+                            .accessibilityHidden(true)
                     }
+                }
+                .accessibilityLabel("Reflection")
+                .accessibilityValue(checkInState.reflectionAccessibilityValue)
+                .accessibilityHint(checkInState.reflectionAccessibilityHint)
+                .background(.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(.green.opacity(0.2), lineWidth: 1)
+                }
 
                 if !checkInState.isReflectionWithinLimit {
                     Label("Keep this reflection short enough for a one-minute check-in.", systemImage: "exclamationmark.circle")
@@ -103,6 +107,86 @@ struct CheckInView: View {
         }
         .bloomPage(maxWidth: 620)
         .navigationTitle("Check-In")
+    }
+}
+
+private struct ReflectionTextView: NSViewRepresentable {
+    @Binding var text: String
+    let minHeight: CGFloat
+
+    func makeNSView(context: Context) -> NSScrollView {
+        let scrollView = NSScrollView()
+        scrollView.borderType = .noBorder
+        scrollView.drawsBackground = false
+        scrollView.hasVerticalScroller = false
+        scrollView.hasHorizontalScroller = false
+
+        let textView = NSTextView()
+        textView.delegate = context.coordinator
+        textView.string = text
+        textView.font = .preferredFont(forTextStyle: .body)
+        textView.textColor = .labelColor
+        textView.insertionPointColor = .controlAccentColor
+        textView.backgroundColor = .clear
+        textView.drawsBackground = false
+        textView.isRichText = false
+        textView.importsGraphics = false
+        textView.allowsUndo = true
+        textView.isEditable = true
+        textView.isSelectable = true
+        textView.isHorizontallyResizable = false
+        textView.isVerticallyResizable = true
+        textView.autoresizingMask = [.width]
+        textView.minSize = NSSize(width: 0, height: minHeight)
+        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+        textView.textContainerInset = NSSize(width: 12, height: 12)
+        textView.textContainer?.widthTracksTextView = true
+        textView.textContainer?.containerSize = NSSize(
+            width: scrollView.contentSize.width,
+            height: CGFloat.greatestFiniteMagnitude
+        )
+
+        scrollView.documentView = textView
+        context.coordinator.textView = textView
+        return scrollView
+    }
+
+    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+        context.coordinator.parent = self
+
+        guard let textView = scrollView.documentView as? NSTextView else {
+            return
+        }
+
+        if textView.string != text {
+            textView.string = text
+        }
+
+        textView.font = .preferredFont(forTextStyle: .body)
+        textView.textColor = .labelColor
+        textView.insertionPointColor = .controlAccentColor
+        textView.minSize = NSSize(width: 0, height: minHeight)
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
+    final class Coordinator: NSObject, NSTextViewDelegate {
+        var parent: ReflectionTextView
+        weak var textView: NSTextView?
+
+        init(parent: ReflectionTextView) {
+            self.parent = parent
+        }
+
+        func textDidChange(_ notification: Notification) {
+            guard let textView = notification.object as? NSTextView else {
+                return
+            }
+
+            parent.text = textView.string
+        }
     }
 }
 
