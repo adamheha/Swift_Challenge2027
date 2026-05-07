@@ -1,7 +1,4 @@
 import SwiftUI
-#if os(macOS)
-import AppKit
-#endif
 
 struct CheckInView: View {
     @Binding var checkInState: CheckInState
@@ -61,21 +58,10 @@ struct CheckInView: View {
                 .accessibilityValue(checkInState.reflectionAccessibilityValue)
                 .accessibilityHint(checkInState.reflectionAccessibilityHint)
 
-                ZStack(alignment: .topLeading) {
-                    ReflectionTextView(
-                        text: $checkInState.reflectionText,
-                        minHeight: reflectionMinHeight
-                    )
-                    .frame(maxWidth: .infinity, minHeight: reflectionMinHeight, alignment: .topLeading)
-
-                    if checkInState.reflectionText.isEmpty {
-                        Text(CheckInState.reflectionPromptText)
-                            .foregroundStyle(.secondary)
-                            .padding(12)
-                            .allowsHitTesting(false)
-                            .accessibilityHidden(true)
-                    }
-                }
+                ReflectionFieldView(
+                    text: $checkInState.reflectionText,
+                    minHeight: reflectionMinHeight
+                )
                 .accessibilityLabel("Reflection")
                 .accessibilityValue(checkInState.reflectionAccessibilityValue)
                 .accessibilityHint(checkInState.reflectionAccessibilityHint)
@@ -108,96 +94,24 @@ struct CheckInView: View {
     }
 }
 
-#if !os(macOS)
-private struct ReflectionTextView: View {
+private struct ReflectionFieldView: View {
     @Binding var text: String
     let minHeight: CGFloat
 
     var body: some View {
-        TextEditor(text: $text)
-            .font(.body)
-            .scrollContentBackground(.hidden)
+        TextField(
+            "Reflection",
+            text: $text,
+            prompt: Text(CheckInState.reflectionPromptText)
+                .foregroundStyle(.secondary),
+            axis: .vertical
+        )
+            .textFieldStyle(.plain)
+            .lineLimit(4...8)
+            .padding(12)
             .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .topLeading)
     }
 }
-#else
-private struct ReflectionTextView: NSViewRepresentable {
-    @Binding var text: String
-    let minHeight: CGFloat
-
-    func makeNSView(context: Context) -> FocusableReflectionNSTextView {
-        let textView = FocusableReflectionNSTextView()
-        textView.delegate = context.coordinator
-        textView.string = text
-        textView.font = .preferredFont(forTextStyle: .body)
-        textView.textColor = .labelColor
-        textView.insertionPointColor = .controlAccentColor
-        textView.backgroundColor = .clear
-        textView.drawsBackground = false
-        textView.isRichText = false
-        textView.importsGraphics = false
-        textView.allowsUndo = true
-        textView.isEditable = true
-        textView.isSelectable = true
-        textView.isHorizontallyResizable = false
-        textView.isVerticallyResizable = true
-        textView.autoresizingMask = [.width, .height]
-        textView.minSize = NSSize(width: 0, height: minHeight)
-        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-        textView.textContainerInset = NSSize(width: 12, height: 12)
-        textView.textContainer?.widthTracksTextView = true
-        return textView
-    }
-
-    func updateNSView(_ textView: FocusableReflectionNSTextView, context: Context) {
-        context.coordinator.parent = self
-
-        if textView.string != text {
-            textView.string = text
-        }
-
-        textView.font = .preferredFont(forTextStyle: .body)
-        textView.textColor = .labelColor
-        textView.insertionPointColor = .controlAccentColor
-        textView.minSize = NSSize(width: 0, height: minHeight)
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self)
-    }
-
-    final class Coordinator: NSObject, NSTextViewDelegate {
-        var parent: ReflectionTextView
-
-        init(parent: ReflectionTextView) {
-            self.parent = parent
-        }
-
-        func textDidChange(_ notification: Notification) {
-            guard let textView = notification.object as? NSTextView else {
-                return
-            }
-
-            parent.text = textView.string
-        }
-    }
-}
-
-private final class FocusableReflectionNSTextView: NSTextView {
-    override var acceptsFirstResponder: Bool {
-        true
-    }
-
-    override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
-        true
-    }
-
-    override func mouseDown(with event: NSEvent) {
-        window?.makeFirstResponder(self)
-        super.mouseDown(with: event)
-    }
-}
-#endif
 
 private struct MoodButton: View {
     let mood: Mood
