@@ -4,7 +4,7 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 2 - Interactive Sorting In Progress
+Current stage: BloomMind 2.0 Stage 2 - Interactive Sorting Complete
 
 Current branch: `codex/bloommind-2-stage-2`
 
@@ -68,7 +68,7 @@ Definition of done:
 
 ## BloomMind 2.0 Stage 2 - Interactive Sorting
 
-Status: In Progress
+Status: Complete
 
 Goal: Make the storm transformation interactive instead of only visual.
 
@@ -83,10 +83,10 @@ Completed in this branch:
 - Add a short Planting Seed state before returning to the garden.
 - Respect Reduce Motion for sorting and planting animations.
 
-Next:
+Carried forward:
 
 - Add a stronger visual collapse from the sorted board into the planted seed.
-- Preserve Reduce Motion and VoiceOver alternatives.
+- Continue preserving Reduce Motion and VoiceOver alternatives as the payoff gets more cinematic.
 
 ## BloomMind 2.0 Stage 3 - Cinematic Garden Payoff
 

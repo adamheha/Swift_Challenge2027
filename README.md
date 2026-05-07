@@ -18,7 +18,7 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 2: Interactive Sorting - in progress.
+BloomMind 2.0 Stage 2: Interactive Sorting - complete.
 
 Active branch: `codex/bloommind-2-stage-2`
 
@@ -69,7 +69,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - Stage 8: Final demo and submission package - complete.
 - Stage 9: Research-informed upgrade - superseded by 2.0.
 - BloomMind 2.0 Stage 1: Pressure Storm Pivot - complete.
-- BloomMind 2.0 Stage 2: Interactive Sorting - in progress.
+- BloomMind 2.0 Stage 2: Interactive Sorting - complete.
 - BloomMind 2.0 Stage 3: Cinematic Garden Payoff - planned.
 
 ## BloomMind 2.0 Stage 1 Target
@@ -108,9 +108,9 @@ Progress so far:
 - Added a brief Planting Seed completion state before returning to the garden.
 - Respect Reduce Motion for sorting and planting animations.
 
-Next:
+Carried forward:
 
-- Add a stronger visual collapse from the sorted board into the planted seed.
+- Add a stronger visual collapse from the sorted board into the planted seed during Stage 3.
 
 ## Final Demo And Submission Review
 
