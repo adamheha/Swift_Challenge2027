@@ -1,5 +1,7 @@
 # BloomMind Concept
 
+This document describes the original 1.x BloomMind direction. The active 2.0 direction is documented in `BloomMind_2_Concept.md`.
+
 ## One-Sentence Idea
 
 BloomMind is a privacy-first interactive reflection garden that helps students turn overwhelming school emotions into one tiny, doable next step.

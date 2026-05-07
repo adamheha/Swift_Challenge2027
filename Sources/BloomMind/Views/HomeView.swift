@@ -5,41 +5,24 @@ struct HomeView: View {
     let onStartCheckIn: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @ScaledMetric(relativeTo: .largeTitle) private var heroIconSize: CGFloat = 58
-
     private var pageSpacing: CGFloat {
-        dynamicTypeSize.isAccessibilitySize ? 22 : 28
+        dynamicTypeSize.isAccessibilitySize ? 22 : 24
+    }
+
+    private var latestMood: Mood? {
+        checkInState.gardenMoodsThisWeek.last
     }
 
     var body: some View {
         VStack(spacing: pageSpacing) {
-            VStack(spacing: 10) {
-                Image(systemName: "camera.macro")
-                    .font(.system(size: min(heroIconSize, 74), weight: .regular))
-                    .foregroundStyle(.green.gradient)
-                    .accessibilityHidden(true)
-
-                Text("BloomMind")
-                    .font(.largeTitle.bold())
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-
-                Text(checkInState.todayPrompt)
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            BloomProgressView(
-                progress: checkInState.bloomProgress,
-                percent: checkInState.bloomProgressPercent,
+            StormToBloomHeroView(
+                isCompleteToday: checkInState.hasCompletedCheckInToday(),
+                latestMood: latestMood,
+                progressPercent: checkInState.bloomProgressPercent,
                 completedCount: checkInState.completedCheckInsThisWeek,
                 goalCount: CheckInState.weeklyCheckInGoal,
-                accessibilityValue: checkInState.weeklyProgressAccessibilityValue,
-                encouragement: checkInState.bloomEncouragement
+                prompt: checkInState.todayPrompt
             )
-            .bloomPanel(padding: 22)
 
             EmotionGardenView(
                 title: CheckInState.gardenPreviewTitle,

@@ -1,5 +1,11 @@
 # BloomMind Submission Package
 
+## Current 2.0 Direction
+
+BloomMind 2.0 reframes the app around a pressure-storm transformation. Instead of opening like a calm tracker, the app opens with a moving storm of student-pressure fragments, then guides the student to turn that storm into one seed through mood naming, optional reflection, and Now / Later / Let go sorting.
+
+The old 1.x submission path is preserved as a stable foundation, but the active award-level direction is now the 2.0 pressure-storm experience.
+
 ## Latest Rules Check
 
 Checked on May 6, 2026. Apple has not published Swift Student Challenge 2027 rules yet, so this package is aligned with the latest official 2026 requirements:
@@ -19,20 +25,20 @@ Official references:
 - https://developer.apple.com/swift-student-challenge/eligibility/
 - https://developer.apple.com/swift-student-challenge/policy/
 
-## Final One-Minute Demo Path
+## Current One-Minute Demo Path
 
 Target review time: 60 seconds.
 
 1. Open BloomMind.
-2. On the Today screen, point out the weekly bloom progress, emotion garden, local privacy status, and start button.
-3. Tap Start Check-In.
+2. On the Today screen, notice the moving pressure-storm hero and the prompt to turn the storm into a seed.
+3. Tap Enter the Storm.
 4. Select Stressed.
-5. Optional: enter this short reflection to exercise local theme detection:
+5. Enter this short reflection to exercise local theme detection:
 
    `I have a project due today and feel pressure to finish everything.`
 
 6. Tap Continue.
-7. Review the generated Growth Action:
+7. Review the generated Growth Action and the Now / Later / Let go lanes:
 
    `Make it tiny: choose one thing that can wait, then start only the next tiny step.`
 
@@ -44,7 +50,7 @@ Target review time: 60 seconds.
 
 ### App Summary
 
-BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school emotions into one tiny, doable next step. The app guides a student through a short daily check-in: choose a mood, write a brief reflection, receive a small local action, and watch that feeling become part of a growing emotion garden.
+BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school pressure into one visible seed. The app opens with a moving pressure storm, guides a student to name a mood and optionally write one short reflection, sorts the moment into Now, Later, and Let go, then turns the feeling into part of a growing emotion garden.
 
 ### Personal Motivation
 
@@ -56,11 +62,11 @@ Do not submit this paragraph unchanged. The strongest version should include one
 
 ### Creativity And Impact
 
-The main creative idea is that emotions become growth. Instead of showing a generic checklist, BloomMind turns completed reflections into mood-specific plants in an emotion garden. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a gentle record of self-awareness. This makes the app feel more memorable than a standard tracker while still staying useful and quick.
+The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." A check-in sorts that storm into Now, Later, and Let go, then transforms the feeling into a mood-specific plant. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
 
 ### Technical Work
 
-BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. A local action engine uses Apple's NaturalLanguage framework when available to assist local theme detection, with transparent keyword rules as a fallback. It analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty, then combines the detected theme with the selected mood to create one tiny action and one emotional literacy micro-explanation. The reflection text stays local in the prototype and is not displayed again on the action screen.
+BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. The 2.0 pressure storm is drawn with native SwiftUI `Canvas` and `TimelineView`, with a reduced-motion path that preserves meaning. A local action engine uses Apple's NaturalLanguage framework when available to assist local theme detection, with transparent keyword rules as a fallback. It analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty, then combines the detected theme with the selected mood to create one tiny action, Now / Later / Let go sorting, and one emotional literacy micro-explanation. The reflection text stays local in the prototype and is not displayed again on the action screen.
 
 ### Privacy And Safety
 
@@ -76,6 +82,8 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm the one-minute demo path works without any network connection.
 - Confirm the Reflection field accepts typed text after clicking or tapping directly inside it.
 - Confirm Continue can also be tapped after selecting a mood when Reflection is empty.
+- Confirm the pressure storm stays readable in light and dark appearances.
+- Confirm the Now / Later / Let go cards appear on Growth Action.
 - Run `swift test`.
 - Run `swift build`.
 - Confirm the ZIP package is under 25 MB.
@@ -88,13 +96,13 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 Use this checklist when the final `BloomMind.swiftpm` package is available in the actual review environment:
 
 1. Open the package on iPad or in Swift Playgrounds.
-2. Start a check-in and select Stressed.
+2. Tap Enter the Storm and select Stressed.
 3. Either leave Reflection empty to test the quick path, or type `I have a project due today and feel pressure to finish everything.` to test local theme detection.
 4. Confirm Continue becomes enabled after selecting a mood.
-5. Confirm the Growth Action shows the pressure-themed tiny action and a Tiny idea explanation.
+5. Confirm the Growth Action shows the pressure-themed tiny action, Now / Later / Let go cards, and a Tiny idea explanation.
 6. Complete the check-in and return to Today.
 7. Tap the newest garden plant and confirm it shows a private mood-based note without reflection text.
-8. Switch the device or simulator to dark appearance and confirm text, panels, buttons, and garden notes remain readable.
+8. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
 9. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
 10. Turn on a larger text size and confirm the main flow remains scrollable and readable.
 
@@ -102,8 +110,9 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 
 This repository is a Swift Package prototype. For the final Apple upload, package it as an app playground directory named `BloomMind.swiftpm`, then ZIP that `.swiftpm` directory. Keep the final ZIP under 25 MB and verify it opens with Swift Playgrounds 4.6 or Xcode 26, or later.
 
-Stage 9 readiness notes:
+2.0 readiness notes:
 
 - The package now declares iOS and macOS platform support.
-- The reflection editor uses a unified SwiftUI vertical field for reliable typing across macOS, iPad, and Swift Playgrounds-style review environments.
+- The reflection editor uses a SwiftUI `TextEditor` with explicit focus behavior for reliable typing across macOS, iPad, and Swift Playgrounds-style review environments.
+- The pressure storm is native SwiftUI and does not require remote assets.
 - A final iPad or Swift Playgrounds smoke check is still needed before submission.

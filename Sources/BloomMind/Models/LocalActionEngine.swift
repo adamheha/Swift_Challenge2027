@@ -53,6 +53,9 @@ struct GrowthActionSuggestion: Equatable {
     let theme: ReflectionTheme
     let title: String
     let action: String
+    let nowStep: String
+    let laterStep: String
+    let releaseStep: String
     let explanation: String
     let literacyInsight: String
 }
@@ -91,6 +94,9 @@ enum LocalActionEngine {
             theme: theme,
             title: "A tiny \(theme.titleNoun) step for \(mood.rawValue.lowercased())",
             action: action,
+            nowStep: theme.nowStep,
+            laterStep: theme.laterStep,
+            releaseStep: theme.releaseStep,
             explanation: explanation(for: mood, theme: theme),
             literacyInsight: theme.literacyInsight
         )
@@ -295,6 +301,57 @@ private extension ReflectionTheme {
             "write the question you need answered, then name who or what could help."
         case .general:
             "choose one small action you can finish before the next thing starts."
+        }
+    }
+
+    var nowStep: String {
+        switch self {
+        case .school:
+            "Open the task and do the first visible two minutes."
+        case .friendship:
+            "Write one kind sentence before deciding whether to send it."
+        case .rest:
+            "Take water, a stretch, or two slow breaths before the next task."
+        case .pressure:
+            "Choose the next tiny step and make it physically visible."
+        case .uncertainty:
+            "Write the one question that would make the situation clearer."
+        case .general:
+            "Pick one action small enough to finish before the next transition."
+        }
+    }
+
+    var laterStep: String {
+        switch self {
+        case .school:
+            "Grades, the whole project, and tomorrow's tasks can wait outside this minute."
+        case .friendship:
+            "The full conversation can wait until the sentence feels honest and calm."
+        case .rest:
+            "Big planning can wait until your energy has one small refill."
+        case .pressure:
+            "Everything after the first step belongs in later, not in now."
+        case .uncertainty:
+            "The final decision can wait until the first question is answered."
+        case .general:
+            "The rest of the day can wait while this one small action gets named."
+        }
+    }
+
+    var releaseStep: String {
+        switch self {
+        case .school:
+            "You do not need to solve the entire semester in one check-in."
+        case .friendship:
+            "You do not need to read every silence as an answer."
+        case .rest:
+            "You do not need to earn rest by finishing everything first."
+        case .pressure:
+            "You do not need to carry every urgent thing at the same volume."
+        case .uncertainty:
+            "You do not need perfect certainty before asking for help."
+        case .general:
+            "You do not need a perfect label before taking one kind step."
         }
     }
 

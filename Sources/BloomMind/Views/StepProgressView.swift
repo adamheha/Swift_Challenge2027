@@ -3,7 +3,7 @@ import SwiftUI
 struct StepProgressView: View {
     let currentStep: Int
 
-    private let steps = ["Mood", "Reflect", "Action"]
+    private let steps = ["Name", "Sort", "Grow"]
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .caption) private var stepCircleSize: CGFloat = 22

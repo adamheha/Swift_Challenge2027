@@ -3,7 +3,7 @@ import Foundation
 struct CheckInState {
     static let reflectionCharacterLimit = 160
     static let weeklyCheckInGoal = 7
-    static let reflectionPromptText = "Optional: write one or two sentences about what is here right now."
+    static let reflectionPromptText = "Optional: write one or two sentences about what is spinning around you."
     static let localPrivacyDetailText = "Your reflection stays local in this prototype."
     static let completeActionAccessibilityHint = "Saves this check-in and returns to Today."
     static let gardenPreviewTitle = "Emotion garden"
@@ -31,23 +31,23 @@ struct CheckInState {
     }
 
     var todayPrompt: String {
-        hasCompletedCheckInToday() ? "Today's bloom is already growing." : "What feeling wants your attention today?"
+        hasCompletedCheckInToday() ? "Today's storm already became a seed." : "What is spinning around you today?"
     }
 
     var primaryActionTitle: String {
-        hasCompletedCheckInToday() ? "Check In Again" : "Start Check-In"
+        hasCompletedCheckInToday() ? "Transform Another Feeling" : "Enter the Storm"
     }
 
     var primaryActionAccessibilityHint: String {
-        hasCompletedCheckInToday() ? "Starts another check-in for today." : "Starts today's check-in."
+        hasCompletedCheckInToday() ? "Starts another storm-to-bloom check-in." : "Starts today's storm-to-bloom check-in."
     }
 
     var todayStatusTitle: String {
-        hasCompletedCheckInToday() ? "Today's check-in is complete" : "Ready for today's check-in"
+        hasCompletedCheckInToday() ? "Today's seed is growing" : "Ready to name the storm"
     }
 
     var todayStatusDetail: String {
-        hasCompletedCheckInToday() ? Self.localPrivacyDetailText : "One minute is enough to notice what is here."
+        hasCompletedCheckInToday() ? Self.localPrivacyDetailText : "One minute is enough to separate now from later."
     }
 
     var bloomEncouragement: String {
@@ -57,13 +57,13 @@ struct CheckInState {
 
         return switch completedCheckInsThisWeek {
         case 0:
-            "Start with one honest check-in today."
+            "A storm gets smaller when one piece becomes visible."
         case 1...3:
-            "Your bloom is beginning to take shape."
+            "Your garden is learning the shape of your week."
         case 4...6:
-            "A steady reflection habit is growing."
+            "Each seed is proof that pressure can become one step."
         default:
-            "Your weekly bloom is full. Take a quiet moment to notice it."
+            "The weekly garden is full. Let the whole storm feel less abstract."
         }
     }
 

@@ -1,16 +1,90 @@
 # BloomMind Roadmap
 
-This roadmap keeps the project organized around stage-sized work. Each stage should stay small enough to review, test, commit, and push.
+This roadmap keeps the project organized around stage-sized work. For BloomMind 2.0, stages can be bolder and larger, but each stage still needs a clear branch, verification pass, commit, and push.
 
 ## Current Status
 
-Current stage: Stage 9 - Research-Informed Upgrade In Progress
+Current stage: BloomMind 2.0 Stage 1 - Pressure Storm Pivot
 
-Current branch: `codex/bloommind-stage-9`
+Current branch: `codex/bloommind-2-stage-1`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: To be defined after Stage 9
+Next stage: BloomMind 2.0 Stage 2 - Interactive Sorting
+
+## Version 1.x Baseline
+
+Status: Preserved as foundation
+
+Stage 0 through Stage 9 built the original BloomMind: a local, accessible, privacy-first reflection garden with mood selection, short reflection, NaturalLanguage-assisted local theme detection, tiny actions, tappable plants, iOS/macOS package readiness, and tests.
+
+Decision:
+
+- Stage 9 is no longer the main creative direction.
+- The Stage 9 work remains valuable as the stable model, tests, privacy boundary, accessibility base, and local action engine.
+- BloomMind 2.0 now pushes the project from "nice mood tracker" to "memorable interactive story."
+
+## BloomMind 2.0 Stage 1 - Pressure Storm Pivot
+
+Status: In Progress
+
+Goal: Make the first minute feel surprising, visual, and emotionally specific.
+
+Core idea:
+
+- The app opens on a moving pressure storm made from student-life fragments such as deadlines, grades, messages, and "too much."
+- A check-in is framed as transforming the storm into a seed.
+- Growth Action no longer gives only one suggestion; it sorts pressure into Now, Later, and Let go.
+
+Completed in this branch:
+
+- Added a native SwiftUI `PressureStormView` using `TimelineView` and `Canvas`.
+- Rebuilt Home around a high-contrast storm-to-seed hero scene.
+- Added a live storm preview to Check-In.
+- Changed the reflection input to a focused `TextEditor` so typing works reliably in the reflection area.
+- Reframed the step flow as Name, Sort, Grow.
+- Added Now / Later / Let go outputs to the local action engine and Growth Action screen.
+- Removed the forced light appearance so the app can use the system color scheme.
+- Updated unit tests for the new 2.0 copy and action outputs.
+
+Remaining:
+
+- Smoke check the new flow in Xcode's app window and an iPad-sized preview.
+- Tune the storm labels and particles after seeing it on actual device sizes.
+- Decide whether Stage 2 should add drag-and-drop sorting or a more cinematic completion animation first.
+
+Definition of done:
+
+- `swift test` passes.
+- The Home screen immediately feels like a visual story, not a dashboard.
+- Reflection typing works by clicking/tapping inside the large reflection area.
+- The Growth Action screen clearly teaches "Now / Later / Let go."
+- Changes are committed and pushed to GitHub.
+
+## BloomMind 2.0 Stage 2 - Interactive Sorting
+
+Status: Planned
+
+Goal: Make the storm transformation interactive instead of only visual.
+
+Possible scope:
+
+- Turn reflection themes into draggable thought fragments.
+- Let the user sort fragments into Now, Later, and Let go.
+- Animate the sorted fragments into the final seed.
+- Preserve Reduce Motion and VoiceOver alternatives.
+
+## BloomMind 2.0 Stage 3 - Cinematic Garden Payoff
+
+Status: Planned
+
+Goal: Make completion feel award-level.
+
+Possible scope:
+
+- Add a stronger seed-to-plant transition.
+- Make the weekly garden feel like a living memory of storms transformed.
+- Add a one-minute demo mode with a polished reviewer path.
 
 ## Stage 0 - Award Research
 
@@ -179,7 +253,7 @@ Rules check:
 
 ## Stage 9 - Research-Informed Upgrade
 
-Status: In Progress
+Status: Superseded by BloomMind 2.0
 
 Goal: Apply the strongest patterns from public Swift Student Challenge projects: a clearer learning loop, one stronger Apple-native local technology choice, a more interactive garden, better iPad readiness, stronger visual safety, and a sharper personal story.
 
@@ -200,7 +274,7 @@ Completed so far:
 - Added iOS platform readiness and a unified SwiftUI vertical reflection field to keep typing reliable across review environments.
 - Improved light and dark appearance contrast for app backgrounds, panels, cards, and the happy mood selection state.
 
-Remaining:
+Remaining if continuing the 1.x direction:
 
 - Finalize the personal story with the applicant's own specific school-pressure moment.
 - Smoke check the `.swiftpm` app playground format on the actual submission environment when available.

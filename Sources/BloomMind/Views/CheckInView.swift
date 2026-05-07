@@ -17,14 +17,19 @@ struct CheckInView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
-            StepProgressView(currentStep: 2)
+            StepProgressView(currentStep: 1)
                 .bloomPanel(padding: 12)
 
+            CheckInStormPreviewView(
+                selectedMood: checkInState.selectedMood,
+                reflectionText: checkInState.reflectionText
+            )
+
             VStack(alignment: .leading, spacing: 8) {
-                Text("Choose your mood")
+                Text("Name the storm")
                     .font(.title.bold())
 
-                Text("Pick the closest feeling. It does not need to be perfect.")
+                Text("Pick the closest feeling. The goal is not a perfect label; it is one visible piece of the storm.")
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -42,7 +47,7 @@ struct CheckInView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text("Reflection")
+                    Text("What is spinning around you?")
                         .font(.headline)
 
                     Spacer()
@@ -98,18 +103,30 @@ private struct ReflectionFieldView: View {
     @Binding var text: String
     let minHeight: CGFloat
 
+    @FocusState private var isFocused: Bool
+
     var body: some View {
-        TextField(
-            "Reflection",
-            text: $text,
-            prompt: Text(CheckInState.reflectionPromptText)
-                .foregroundStyle(.secondary),
-            axis: .vertical
-        )
-            .textFieldStyle(.plain)
-            .lineLimit(4...8)
-            .padding(12)
-            .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .topLeading)
+        ZStack(alignment: .topLeading) {
+            TextEditor(text: $text)
+                .font(.body)
+                .scrollContentBackground(.hidden)
+                .focused($isFocused)
+                .padding(8)
+                .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .topLeading)
+
+            if text.isEmpty {
+                Text(CheckInState.reflectionPromptText)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 13)
+                    .padding(.vertical, 16)
+                    .allowsHitTesting(false)
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            isFocused = true
+        }
     }
 }
 

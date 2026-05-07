@@ -47,6 +47,9 @@ import Testing
     let suggestion = LocalActionEngine.suggestion(for: .stressed, reflectionText: reflection)
 
     #expect(suggestion.theme == .pressure)
+    #expect(suggestion.nowStep == "Choose the next tiny step and make it physically visible.")
+    #expect(suggestion.laterStep == "Everything after the first step belongs in later, not in now.")
+    #expect(suggestion.releaseStep == "You do not need to carry every urgent thing at the same volume.")
     #expect(
         suggestion.literacyInsight
             == "Pressure often feels bigger when every task looks urgent. Separating now from later can make the next step easier to start."
@@ -167,13 +170,13 @@ import Testing
 }
 
 @Test func bloomEncouragementReflectsProgressRange() {
-    #expect(CheckInState(completedCheckIns: -2).bloomEncouragement == "Start with one honest check-in today.")
-    #expect(CheckInState(completedCheckIns: 0).bloomEncouragement == "Start with one honest check-in today.")
-    #expect(CheckInState(completedCheckIns: 2).bloomEncouragement == "Your bloom is beginning to take shape.")
-    #expect(CheckInState(completedCheckIns: 5).bloomEncouragement == "A steady reflection habit is growing.")
+    #expect(CheckInState(completedCheckIns: -2).bloomEncouragement == "A storm gets smaller when one piece becomes visible.")
+    #expect(CheckInState(completedCheckIns: 0).bloomEncouragement == "A storm gets smaller when one piece becomes visible.")
+    #expect(CheckInState(completedCheckIns: 2).bloomEncouragement == "Your garden is learning the shape of your week.")
+    #expect(CheckInState(completedCheckIns: 5).bloomEncouragement == "Each seed is proof that pressure can become one step.")
     #expect(
         CheckInState(completedCheckIns: CheckInState.weeklyCheckInGoal).bloomEncouragement
-            == "Your weekly bloom is full. Take a quiet moment to notice it."
+            == "The weekly garden is full. Let the whole storm feel less abstract."
     )
 }
 
@@ -254,18 +257,18 @@ import Testing
 
 @Test func homeCopyReflectsIncompleteAndCompleteStates() {
     let notCompleted = CheckInState()
-    #expect(notCompleted.todayPrompt == "What feeling wants your attention today?")
-    #expect(notCompleted.primaryActionTitle == "Start Check-In")
-    #expect(notCompleted.primaryActionAccessibilityHint == "Starts today's check-in.")
-    #expect(notCompleted.todayStatusTitle == "Ready for today's check-in")
-    #expect(notCompleted.todayStatusDetail == "One minute is enough to notice what is here.")
+    #expect(notCompleted.todayPrompt == "What is spinning around you today?")
+    #expect(notCompleted.primaryActionTitle == "Enter the Storm")
+    #expect(notCompleted.primaryActionAccessibilityHint == "Starts today's storm-to-bloom check-in.")
+    #expect(notCompleted.todayStatusTitle == "Ready to name the storm")
+    #expect(notCompleted.todayStatusDetail == "One minute is enough to separate now from later.")
 
     var completed = CheckInState()
     completed.completeCheckIn()
-    #expect(completed.todayPrompt == "Today's bloom is already growing.")
-    #expect(completed.primaryActionTitle == "Check In Again")
-    #expect(completed.primaryActionAccessibilityHint == "Starts another check-in for today.")
-    #expect(completed.todayStatusTitle == "Today's check-in is complete")
+    #expect(completed.todayPrompt == "Today's storm already became a seed.")
+    #expect(completed.primaryActionTitle == "Transform Another Feeling")
+    #expect(completed.primaryActionAccessibilityHint == "Starts another storm-to-bloom check-in.")
+    #expect(completed.todayStatusTitle == "Today's seed is growing")
     #expect(completed.todayStatusDetail == CheckInState.localPrivacyDetailText)
 }
 
@@ -319,11 +322,11 @@ import Testing
 @Test func stepProgressAccessibilityClampsOutOfRangeSteps() {
     let beforeFirstStep = StepProgressView(currentStep: 0)
     #expect(beforeFirstStep.displayedStepNumber == 1)
-    #expect(beforeFirstStep.accessibilitySummary == "Check-in step 1 of 3, Mood")
+    #expect(beforeFirstStep.accessibilitySummary == "Check-in step 1 of 3, Name")
 
     let afterLastStep = StepProgressView(currentStep: 4)
     #expect(afterLastStep.displayedStepNumber == 3)
-    #expect(afterLastStep.accessibilitySummary == "Check-in step 3 of 3, Action")
+    #expect(afterLastStep.accessibilitySummary == "Check-in step 3 of 3, Grow")
 }
 
 @MainActor

@@ -5,7 +5,6 @@ struct GrowthActionView: View {
     let onComplete: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @ScaledMetric(relativeTo: .largeTitle) private var moodIconSize: CGFloat = 54
 
     private var selectedMood: Mood {
         checkInState.selectedMood ?? .unsure
@@ -27,26 +26,15 @@ struct GrowthActionView: View {
             StepProgressView(currentStep: 3)
                 .bloomPanel(padding: 12)
 
-            VStack(spacing: 12) {
-                Image(systemName: selectedMood.symbolName)
-                    .font(.system(size: min(moodIconSize, 72), weight: .regular))
-                    .foregroundStyle(selectedMood.tint.gradient)
-                    .accessibilityHidden(true)
+            PressureBloomTransformationView(
+                mood: selectedMood,
+                suggestion: suggestion
+            )
 
-                Text(suggestion.title)
-                    .font(.title.bold())
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text(suggestion.action)
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .bloomPanel(padding: 22)
-            .accessibilityElement(children: .combine)
+            StormSortingView(
+                suggestion: suggestion,
+                tint: selectedMood.tint
+            )
 
             LocalActionExplanationView(
                 suggestion: suggestion,
@@ -70,6 +58,119 @@ struct GrowthActionView: View {
         }
         .bloomPage()
         .navigationTitle("Growth Action")
+    }
+}
+
+private struct PressureBloomTransformationView: View {
+    let mood: Mood
+    let suggestion: GrowthActionSuggestion
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var sceneHeight: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 330 : 280
+    }
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            PressureStormView(
+                intensity: 0.28,
+                resolvedMood: mood,
+                showsLabels: false
+            )
+
+            VStack(alignment: .leading, spacing: 10) {
+                Label("Storm sorted", systemImage: mood.symbolName)
+                    .font(.caption.bold())
+                    .foregroundStyle(.white.opacity(0.9))
+
+                Text(suggestion.title)
+                    .font(.title.bold())
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(suggestion.action)
+                    .font(.headline)
+                    .foregroundStyle(.white.opacity(0.82))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(22)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(height: sceneHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(mood.tint.opacity(0.5), lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Storm sorted")
+        .accessibilityValue("\(suggestion.title). \(suggestion.action)")
+    }
+}
+
+private struct StormSortingView: View {
+    let suggestion: GrowthActionSuggestion
+    let tint: Color
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 220 : 160), spacing: 10)]
+    }
+
+    var body: some View {
+        LazyVGrid(columns: columns, spacing: 10) {
+            StormLaneCard(
+                title: "Now",
+                symbolName: "bolt.fill",
+                text: suggestion.nowStep,
+                tint: tint
+            )
+
+            StormLaneCard(
+                title: "Later",
+                symbolName: "tray",
+                text: suggestion.laterStep,
+                tint: Color.blue
+            )
+
+            StormLaneCard(
+                title: "Let go",
+                symbolName: "wind",
+                text: suggestion.releaseStep,
+                tint: Color.orange
+            )
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Sorted pressure lanes")
+    }
+}
+
+private struct StormLaneCard: View {
+    let title: String
+    let symbolName: String
+    let text: String
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: symbolName)
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 116, alignment: .topLeading)
+        .padding(14)
+        .bloomCardBackground(tint: tint)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(title)
+        .accessibilityValue(text)
     }
 }
 
