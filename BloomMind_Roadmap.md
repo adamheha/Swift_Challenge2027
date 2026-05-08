@@ -119,6 +119,8 @@ Completed in this branch:
 - Added a weekly review payoff card on Home so a partial or replayed full week reads as a coherent story.
 - Connected the review card to local garden state, including the newest mood, completion count, and dominant weekly pattern.
 - Added unit coverage for empty, partial, and complete weekly review states.
+- Added an adaptive Home layout that keeps compact screens single-column and turns iPad/Mac review widths into a two-column storm-and-garden composition.
+- Added an iPad review preview state for the complete Replay Week path.
 
 Remaining:
 

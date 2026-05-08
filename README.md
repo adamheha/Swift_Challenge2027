@@ -39,6 +39,7 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - A Storm planted garden payoff banner connected to the newest mood and weekly seed count.
 - Week memory and Replay Week affordances for reviewing a complete transformed week quickly.
 - A weekly review payoff card that summarizes the garden's current emotional pattern.
+- Adaptive Home layout that uses a two-column storm-and-garden composition on iPad/Mac review widths.
 - Native SwiftUI `Canvas` pressure-storm visuals with orbit trails, high-contrast overlays, Reduce Motion support, and VoiceOver summaries.
 - Accessibility polish for Dynamic Type, Reduce Motion, VoiceOver labels and values, mood selection, reflection entry, step progress, garden state, and completion actions.
 - Light/dark adaptive app backgrounds, panels, cards, and mood selection contrast.
@@ -143,6 +144,8 @@ Progress so far:
 - Added a weekly review payoff card on Home.
 - The review card summarizes empty, partial, and complete garden states.
 - The complete `Replay Week` path now ends with a full-week line: seven storms became seeds, with the clearest weekly pattern called out.
+- Added a wide Home layout so iPad/Mac review windows show the storm and garden payoff side by side.
+- Added an iPad review preview for the complete Replay Week path.
 - Added unit tests for weekly review state.
 
 Carried forward:

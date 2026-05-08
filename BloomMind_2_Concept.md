@@ -101,6 +101,7 @@ Implemented:
 
 - Add a weekly review payoff card that turns the garden into a short narrative summary.
 - Summarize empty, partial, and complete week states from local check-in data.
+- Adapt Home into a two-column storm-and-garden composition on iPad/Mac review widths.
 - Keep the final review path offline, private, and testable.
 
 Next:

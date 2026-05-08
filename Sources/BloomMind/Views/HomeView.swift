@@ -14,16 +14,50 @@ struct HomeView: View {
     }
 
     var body: some View {
-        VStack(spacing: pageSpacing) {
-            StormToBloomHeroView(
-                isCompleteToday: checkInState.hasCompletedCheckInToday(),
-                latestMood: latestMood,
-                progressPercent: checkInState.bloomProgressPercent,
-                completedCount: checkInState.completedCheckInsThisWeek,
-                goalCount: CheckInState.weeklyCheckInGoal,
-                prompt: checkInState.todayPrompt
-            )
+        ViewThatFits(in: .horizontal) {
+            wideLayout
+            compactLayout
+        }
+        .bloomPage(maxWidth: 980, padding: 32)
+        .navigationTitle("Today")
+    }
 
+    private var wideLayout: some View {
+        HStack(alignment: .top, spacing: 24) {
+            VStack(spacing: pageSpacing) {
+                heroSection
+                dailyActionSection
+            }
+            .frame(minWidth: 360, maxWidth: 450)
+
+            VStack(spacing: pageSpacing) {
+                gardenSection
+            }
+            .frame(minWidth: 420, maxWidth: 520)
+        }
+    }
+
+    private var compactLayout: some View {
+        VStack(spacing: pageSpacing) {
+            heroSection
+            gardenSection
+            dailyActionSection
+        }
+    }
+
+    private var heroSection: some View {
+        StormToBloomHeroView(
+            isCompleteToday: checkInState.hasCompletedCheckInToday(),
+            latestMood: latestMood,
+            progressPercent: checkInState.bloomProgressPercent,
+            completedCount: checkInState.completedCheckInsThisWeek,
+            goalCount: CheckInState.weeklyCheckInGoal,
+            prompt: checkInState.todayPrompt
+        )
+    }
+
+    private var gardenSection: some View {
+        VStack(spacing: pageSpacing) {
             EmotionGardenView(
                 title: CheckInState.gardenPreviewTitle,
                 moods: checkInState.gardenMoodsThisWeek,
@@ -33,44 +67,53 @@ struct HomeView: View {
             )
 
             WeekReviewCardView(review: checkInState.weeklyReview)
+        }
+    }
 
+    private var dailyActionSection: some View {
+        VStack(spacing: pageSpacing) {
             TodayStatusView(
                 isComplete: checkInState.hasCompletedCheckInToday(),
                 title: checkInState.todayStatusTitle,
                 detail: checkInState.todayStatusDetail
             )
 
-            Button(action: onStartCheckIn) {
-                Label(
-                    checkInState.primaryActionTitle,
-                    systemImage: "sparkles"
-                )
-                    .font(.headline)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .accessibilityHint(checkInState.primaryActionAccessibilityHint)
-
-            Button {
-                withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) {
-                    checkInState.replayDemoWeek()
-                }
-            } label: {
-                Label(CheckInState.replayWeekActionTitle, systemImage: "play.circle")
-                    .font(.headline)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
-            .accessibilityHint(CheckInState.replayWeekActionAccessibilityHint)
+            primaryActionButton
+            replayWeekButton
         }
-        .bloomPage(maxWidth: 520, padding: 32)
-        .navigationTitle("Today")
+    }
+
+    private var primaryActionButton: some View {
+        Button(action: onStartCheckIn) {
+            Label(
+                checkInState.primaryActionTitle,
+                systemImage: "sparkles"
+            )
+                .font(.headline)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .accessibilityHint(checkInState.primaryActionAccessibilityHint)
+    }
+
+    private var replayWeekButton: some View {
+        Button {
+            withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) {
+                checkInState.replayDemoWeek()
+            }
+        } label: {
+            Label(CheckInState.replayWeekActionTitle, systemImage: "play.circle")
+                .font(.headline)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.large)
+        .accessibilityHint(CheckInState.replayWeekActionAccessibilityHint)
     }
 }
 
@@ -192,6 +235,23 @@ struct HomeView_Previews: PreviewProvider {
                 )
             }
             .previewDisplayName("Home - Full Garden")
+
+            NavigationStack {
+                HomeView(
+                    checkInState: .constant(HomeViewPreviewState.fullReview),
+                    onStartCheckIn: {}
+                )
+            }
+            .previewLayout(.fixed(width: 1024, height: 768))
+            .previewDisplayName("Home - iPad Review")
         }
+    }
+}
+
+private enum HomeViewPreviewState {
+    static var fullReview: CheckInState {
+        var state = CheckInState()
+        state.replayDemoWeek()
+        return state
     }
 }

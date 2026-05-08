@@ -87,6 +87,7 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm thought fragments appear on Growth Action and can move between Now, Later, and Let go by tap and drag/drop.
 - Confirm Replay Week fills a complete sample week and shows the Week memory strip.
 - Confirm the weekly review card summarizes the completed sample week.
+- Confirm the Home screen uses a two-column storm-and-garden layout on iPad/Mac review widths and falls back to a readable single column on narrow widths.
 - Confirm Reduce Motion keeps sorting and planting understandable without pulsing motion.
 - Run `swift test`.
 - Run `swift build`.
@@ -107,9 +108,10 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 6. Complete the check-in and return to Today.
 7. Tap the newest garden plant and confirm it shows a private mood-based note without reflection text.
 8. Tap Replay Week and confirm the Week memory strip and weekly review card show a complete sample week.
-9. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
-10. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
-11. Turn on a larger text size and confirm the main flow remains scrollable and readable.
+9. Rotate or resize to a wider iPad/Mac review width and confirm Home uses the two-column storm-and-garden layout.
+10. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
+11. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
+12. Turn on a larger text size and confirm the main flow remains scrollable and readable.
 
 ## Packaging Notes
 
