@@ -51,6 +51,11 @@ struct GrowthActionView: View {
             )
 
             if isPlantingSeed {
+                SeedCollapseView(
+                    tint: selectedMood.tint,
+                    selectedLane: selectedLane
+                )
+
                 PlantingSeedView(tint: selectedMood.tint)
             }
 
@@ -81,13 +86,109 @@ struct GrowthActionView: View {
         }
 
         Task {
-            try? await Task.sleep(nanoseconds: 650_000_000)
+            try? await Task.sleep(nanoseconds: 900_000_000)
 
             await MainActor.run {
                 checkInState.completeCheckIn()
                 onComplete()
             }
         }
+    }
+}
+
+private struct SeedCollapseView: View {
+    let tint: Color
+    let selectedLane: StormLaneKind
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var progress = 0.0
+
+    var body: some View {
+        Canvas { context, size in
+            drawCollapse(in: &context, size: size)
+        }
+        .frame(height: 92)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.20), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Sorted fragments becoming a seed")
+        .accessibilityValue(selectedLane.commitmentLine)
+        .onAppear {
+            guard !reduceMotion else {
+                progress = 1
+                return
+            }
+
+            withAnimation(.easeInOut(duration: 0.72)) {
+                progress = 1
+            }
+        }
+    }
+
+    private func drawCollapse(in context: inout GraphicsContext, size: CGSize) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let center = CGPoint(x: width * 0.5, y: height * 0.52)
+        let starts: [CGPoint] = [
+            CGPoint(x: width * 0.12, y: height * 0.28),
+            CGPoint(x: width * 0.22, y: height * 0.76),
+            CGPoint(x: width * 0.38, y: height * 0.18),
+            CGPoint(x: width * 0.62, y: height * 0.78),
+            CGPoint(x: width * 0.78, y: height * 0.24),
+            CGPoint(x: width * 0.88, y: height * 0.68)
+        ]
+
+        for (index, start) in starts.enumerated() {
+            let localProgress = min(max(progress - Double(index) * 0.035, 0), 1)
+            let point = CGPoint(
+                x: start.x + (center.x - start.x) * localProgress,
+                y: start.y + (center.y - start.y) * localProgress
+            )
+            let radius = 5 + CGFloat(localProgress) * 2
+
+            var path = Path()
+            path.move(to: start)
+            path.addLine(to: point)
+            context.stroke(
+                path,
+                with: .color(tint.opacity(0.18 * (1 - localProgress))),
+                lineWidth: 1
+            )
+
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: point.x - radius,
+                    y: point.y - radius,
+                    width: radius * 2,
+                    height: radius * 2
+                )),
+                with: .color(tint.opacity(0.28 + localProgress * 0.34))
+            )
+        }
+
+        let seedRadius = 10 + CGFloat(progress) * 12
+        context.fill(
+            Path(ellipseIn: CGRect(
+                x: center.x - seedRadius,
+                y: center.y - seedRadius,
+                width: seedRadius * 2,
+                height: seedRadius * 2
+            )),
+            with: .color(tint.opacity(0.26 + progress * 0.48))
+        )
+        context.stroke(
+            Path(ellipseIn: CGRect(
+                x: center.x - seedRadius - 5,
+                y: center.y - seedRadius - 5,
+                width: seedRadius * 2 + 10,
+                height: seedRadius * 2 + 10
+            )),
+            with: .color(tint.opacity(0.20 + progress * 0.20)),
+            lineWidth: 1.4
+        )
     }
 }
 

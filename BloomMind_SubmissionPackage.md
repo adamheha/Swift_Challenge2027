@@ -43,7 +43,7 @@ Target review time: 60 seconds.
    `Make it tiny: choose one thing that can wait, then start only the next tiny step.`
 
 8. Confirm the seed commitment updates when a lane is selected, and note that BloomMind detects a pressure theme locally without sending or saving the private reflection text.
-9. Tap Plant This Seed and confirm the short Planting Seed state appears.
+9. Tap Plant This Seed and confirm the fragments collapse into a seed before the short Planting Seed state appears.
 10. Return to Today and confirm the garden shows the Storm planted payoff banner with a mood-specific plant.
 
 ## Submission Response Drafts

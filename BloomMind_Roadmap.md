@@ -99,11 +99,11 @@ Completed in this branch:
 - Added a Storm planted payoff banner to the garden when at least one mood plant is growing.
 - Connected the payoff banner to the newest mood and weekly seed count.
 - Added a subtle animated garden atmosphere layer based on the week's mood plants.
+- Added a sorted-fragments-to-seed collapse animation before planting.
 - Preserved Reduce Motion by disabling the banner glow pulse when requested.
 
 Next:
 
-- Add a stronger visual collapse from sorted fragments into the planted seed.
 - Make the weekly garden feel more like a living memory of storms transformed.
 - Add a one-minute demo mode with a polished reviewer path.
 

@@ -93,11 +93,11 @@ Implemented:
 - Add a Storm planted payoff banner connected to the newest mood plant.
 - Show the weekly seed count as part of the garden payoff.
 - Add an ambient garden atmosphere layer based on the week's mood plants.
+- Animate sorted fragments into a seed before planting.
 - Preserve Reduce Motion for payoff glow.
 
 Next:
 
-- Animate the sorted storm into a seed.
 - Grow the mood-specific plant from that seed.
 - Make the weekly garden feel like a living record of pressure transformed.
 
