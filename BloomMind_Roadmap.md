@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 3 - Cinematic Garden Payoff Complete
+Current stage: BloomMind 2.0 Stage 4 - Final Review Polish In Progress
 
-Current branch: `codex/bloommind-2-stage-3`
+Current branch: `codex/bloommind-2-stage-4`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 2.0 Stage 4 - Final Review Polish
+Next stage: BloomMind 2.0 Stage 5 - Submission Packaging and Device Review
 
 ## Version 1.x Baseline
 
@@ -106,7 +106,33 @@ Completed in this branch:
 
 Carried forward:
 
-- Stage 4 should focus on final review polish, iPad/Xcode smoke checks, packaging, and the applicant's personal story.
+- Stage 4 is now active and should finish final review polish, iPad/Xcode smoke checks, packaging, and the applicant's personal story.
+
+## BloomMind 2.0 Stage 4 - Final Review Polish
+
+Status: In Progress
+
+Goal: Make the complete one-minute experience feel ready for an evaluator: clear, emotionally specific, readable, and easy to rehearse.
+
+Completed in this branch:
+
+- Added a weekly review payoff card on Home so a partial or replayed full week reads as a coherent story.
+- Connected the review card to local garden state, including the newest mood, completion count, and dominant weekly pattern.
+- Added unit coverage for empty, partial, and complete weekly review states.
+
+Remaining:
+
+- Smoke check the app in Xcode's app window.
+- Smoke check an iPad-sized preview or actual iPad/Swift Playgrounds environment.
+- Finalize the applicant's own personal story paragraph.
+- Prepare the `.swiftpm` package checklist for the final Apple upload.
+
+Definition of done:
+
+- The one-minute demo path ends with a clear weekly payoff.
+- The app remains readable in light/dark mode and larger text sizes.
+- `swift test` and `swift build` pass.
+- The final review checklist is ready for packaging.
 
 ## Stage 0 - Award Research
 

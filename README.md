@@ -18,9 +18,9 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 3: Cinematic Garden Payoff - complete.
+BloomMind 2.0 Stage 4: Final Review Polish - in progress.
 
-Active branch: `codex/bloommind-2-stage-3`
+Active branch: `codex/bloommind-2-stage-4`
 
 Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. BloomMind 2.0 starts from that foundation and pushes the app toward a more memorable Swift Student Challenge experience.
 
@@ -38,6 +38,7 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - Tappable garden plants that reveal private mood-based revisit notes without showing reflection text.
 - A Storm planted garden payoff banner connected to the newest mood and weekly seed count.
 - Week memory and Replay Week affordances for reviewing a complete transformed week quickly.
+- A weekly review payoff card that summarizes the garden's current emotional pattern.
 - Native SwiftUI `Canvas` pressure-storm visuals with orbit trails, high-contrast overlays, Reduce Motion support, and VoiceOver summaries.
 - Accessibility polish for Dynamic Type, Reduce Motion, VoiceOver labels and values, mood selection, reflection entry, step progress, garden state, and completion actions.
 - Light/dark adaptive app backgrounds, panels, cards, and mood selection contrast.
@@ -73,6 +74,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - BloomMind 2.0 Stage 1: Pressure Storm Pivot - complete.
 - BloomMind 2.0 Stage 2: Interactive Sorting - complete.
 - BloomMind 2.0 Stage 3: Cinematic Garden Payoff - complete.
+- BloomMind 2.0 Stage 4: Final Review Polish - in progress.
 
 ## BloomMind 2.0 Stage 1 Target
 
@@ -131,6 +133,24 @@ Progress so far:
 Carried forward:
 
 - Stage 4 should focus on final review polish, iPad/Xcode smoke checks, packaging, and the applicant's personal story.
+
+## BloomMind 2.0 Stage 4 Target
+
+Stage 4 turns the finished flow into a stronger evaluator experience. The goal is for the final minute to feel complete: the storm is named, sorted, planted, remembered, and summarized.
+
+Progress so far:
+
+- Added a weekly review payoff card on Home.
+- The review card summarizes empty, partial, and complete garden states.
+- The complete `Replay Week` path now ends with a full-week line: seven storms became seeds, with the clearest weekly pattern called out.
+- Added unit tests for weekly review state.
+
+Carried forward:
+
+- Smoke check in Xcode's app window.
+- Smoke check iPad-sized layout or actual Swift Playgrounds.
+- Finalize the applicant's personal story paragraph.
+- Prepare the final `.swiftpm` packaging checklist.
 
 ## Final Demo And Submission Review
 

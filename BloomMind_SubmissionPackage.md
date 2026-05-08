@@ -51,7 +51,7 @@ Target review time: 60 seconds.
 
 ### App Summary
 
-BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school pressure into one visible seed. The app opens with a moving pressure storm, guides a student to name a mood and optionally write one short reflection, sorts the moment into Now, Later, and Let go, then turns the feeling into part of a growing emotion garden.
+BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school pressure into one visible seed. The app opens with a moving pressure storm, guides a student to name a mood and optionally write one short reflection, sorts the moment into Now, Later, and Let go, then turns the feeling into part of a growing emotion garden with a short weekly review.
 
 ### Personal Motivation
 
@@ -63,7 +63,7 @@ Do not submit this paragraph unchanged. The strongest version should include one
 
 ### Creativity And Impact
 
-The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." A check-in sorts that storm into Now, Later, and Let go, then transforms the feeling into a mood-specific plant. The garden highlights the newest planted storm, shows the weekly seed count, adds a soft atmosphere based on the week's mood plants, and includes a Week memory strip, so the return to Home feels like a payoff instead of a saved state. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
+The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." A check-in sorts that storm into Now, Later, and Let go, then transforms the feeling into a mood-specific plant. The garden highlights the newest planted storm, shows the weekly seed count, adds a soft atmosphere based on the week's mood plants, includes a Week memory strip, and ends with a short weekly review, so the return to Home feels like a payoff instead of a saved state. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
 
 ### Technical Work
 
@@ -86,6 +86,7 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm the pressure storm stays readable in light and dark appearances.
 - Confirm thought fragments appear on Growth Action and can move between Now, Later, and Let go by tap and drag/drop.
 - Confirm Replay Week fills a complete sample week and shows the Week memory strip.
+- Confirm the weekly review card summarizes the completed sample week.
 - Confirm Reduce Motion keeps sorting and planting understandable without pulsing motion.
 - Run `swift test`.
 - Run `swift build`.
@@ -105,9 +106,10 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 5. Confirm the Growth Action shows the pressure-themed tiny action, movable thought fragments, and a Tiny idea explanation.
 6. Complete the check-in and return to Today.
 7. Tap the newest garden plant and confirm it shows a private mood-based note without reflection text.
-8. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
-9. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
-10. Turn on a larger text size and confirm the main flow remains scrollable and readable.
+8. Tap Replay Week and confirm the Week memory strip and weekly review card show a complete sample week.
+9. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
+10. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
+11. Turn on a larger text size and confirm the main flow remains scrollable and readable.
 
 ## Packaging Notes
 

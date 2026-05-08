@@ -1,5 +1,17 @@
 import Foundation
 
+struct GardenWeekReview: Equatable {
+    let title: String
+    let detail: String
+    let accentMood: Mood?
+    let completedCount: Int
+    let totalCount: Int
+
+    var accessibilityValue: String {
+        "\(detail) \(completedCount) of \(totalCount) seeds planted."
+    }
+}
+
 struct CheckInState {
     static let reflectionCharacterLimit = 160
     static let weeklyCheckInGoal = 7
@@ -76,6 +88,58 @@ struct CheckInState {
         default:
             "The weekly garden is full. Let the whole storm feel less abstract."
         }
+    }
+
+    var weeklyReview: GardenWeekReview {
+        let moods = gardenMoodsThisWeek
+
+        guard let newestMood = moods.last else {
+            return GardenWeekReview(
+                title: "The garden is waiting",
+                detail: "The first storm has not become a seed yet.",
+                accentMood: nil,
+                completedCount: completedCheckInsThisWeek,
+                totalCount: Self.weeklyCheckInGoal
+            )
+        }
+
+        guard let dominantMood = Self.dominantMood(in: moods) else {
+            return GardenWeekReview(
+                title: "The garden is waiting",
+                detail: "The first storm has not become a seed yet.",
+                accentMood: nil,
+                completedCount: completedCheckInsThisWeek,
+                totalCount: Self.weeklyCheckInGoal
+            )
+        }
+
+        if completedCheckInsThisWeek >= Self.weeklyCheckInGoal {
+            return GardenWeekReview(
+                title: "A full week changed shape",
+                detail: "\(Self.weeklyGoalWord) storms became seeds. \(dominantMood.rawValue) surfaced most, and the newest seed ends as \(newestMood.rawValue.lowercased()).",
+                accentMood: newestMood,
+                completedCount: completedCheckInsThisWeek,
+                totalCount: Self.weeklyCheckInGoal
+            )
+        }
+
+        if completedCheckInsThisWeek == 1 {
+            return GardenWeekReview(
+                title: "One storm has shape now",
+                detail: "\(newestMood.rawValue) became the first seed in this week's garden.",
+                accentMood: newestMood,
+                completedCount: completedCheckInsThisWeek,
+                totalCount: Self.weeklyCheckInGoal
+            )
+        }
+
+        return GardenWeekReview(
+            title: "This week is changing shape",
+            detail: "\(completedCheckInsThisWeek) storms have become seeds. \(dominantMood.rawValue) is the clearest pattern so far.",
+            accentMood: newestMood,
+            completedCount: completedCheckInsThisWeek,
+            totalCount: Self.weeklyCheckInGoal
+        )
     }
 
     var trimmedReflectionText: String {
@@ -182,5 +246,37 @@ struct CheckInState {
         return (0..<count).map { index in
             moods[index % moods.count]
         }
+    }
+
+    private static var weeklyGoalWord: String {
+        switch weeklyCheckInGoal {
+        case 7:
+            "Seven"
+        default:
+            "\(weeklyCheckInGoal)"
+        }
+    }
+
+    private static func dominantMood(in moods: [Mood]) -> Mood? {
+        guard !moods.isEmpty else {
+            return nil
+        }
+
+        let counts = moods.reduce(into: [Mood: Int]()) { partialResult, mood in
+            partialResult[mood, default: 0] += 1
+        }
+
+        var dominant = moods[moods.index(before: moods.endIndex)]
+        var dominantCount = counts[dominant, default: 0]
+
+        for mood in moods.reversed() {
+            let count = counts[mood, default: 0]
+            if count > dominantCount {
+                dominant = mood
+                dominantCount = count
+            }
+        }
+
+        return dominant
     }
 }

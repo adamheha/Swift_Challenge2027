@@ -93,6 +93,22 @@ Implemented:
 - Add a Week memory strip and Replay Week path for a complete one-minute review.
 - Preserve Reduce Motion for payoff glow.
 
+### 2.0 Stage 4 - Final Review Polish
+
+Goal: Make the final review path feel complete, emotionally specific, and easy to rehearse.
+
+Implemented:
+
+- Add a weekly review payoff card that turns the garden into a short narrative summary.
+- Summarize empty, partial, and complete week states from local check-in data.
+- Keep the final review path offline, private, and testable.
+
+Next:
+
+- Smoke check the app in Xcode and an iPad-sized review environment.
+- Finalize the applicant's personal motivation paragraph.
+- Prepare the final `.swiftpm` packaging checklist.
+
 ## Submission Story Draft
 
 BloomMind began from a common student feeling: pressure often arrives as a storm, not a neat checklist. Deadlines, grades, messages, and uncertainty can all feel urgent at the same time. BloomMind does not try to solve a student's life or make medical claims. It gives the student one minute to make the storm visible, separate now from later, and choose one tiny step.

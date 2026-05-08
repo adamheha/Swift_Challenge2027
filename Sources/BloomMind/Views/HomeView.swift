@@ -32,6 +32,8 @@ struct HomeView: View {
                 accessibilityValue: checkInState.gardenAccessibilityValue
             )
 
+            WeekReviewCardView(review: checkInState.weeklyReview)
+
             TodayStatusView(
                 isComplete: checkInState.hasCompletedCheckInToday(),
                 title: checkInState.todayStatusTitle,
@@ -69,6 +71,56 @@ struct HomeView: View {
         }
         .bloomPage(maxWidth: 520, padding: 32)
         .navigationTitle("Today")
+    }
+}
+
+private struct WeekReviewCardView: View {
+    let review: GardenWeekReview
+
+    private var accentColor: Color {
+        review.accentMood?.tint ?? .green
+    }
+
+    private var iconName: String {
+        review.accentMood?.symbolName ?? "sparkles"
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: iconName)
+                    .font(.title3.bold())
+                    .foregroundStyle(accentColor)
+                    .frame(width: 28, height: 28)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(review.title)
+                        .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(review.detail)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+
+                Spacer(minLength: 0)
+            }
+
+            ProgressView(
+                value: Double(review.completedCount),
+                total: Double(max(review.totalCount, 1))
+            )
+            .tint(accentColor)
+            .accessibilityHidden(true)
+        }
+        .padding(14)
+        .bloomCardBackground(tint: accentColor)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(review.title)
+        .accessibilityValue(review.accessibilityValue)
     }
 }
 

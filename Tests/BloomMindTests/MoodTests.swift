@@ -180,6 +180,27 @@ import Testing
     )
 }
 
+@Test func weeklyReviewReflectsEmptyPartialAndCompleteGardens() {
+    let emptyReview = CheckInState().weeklyReview
+    #expect(emptyReview.title == "The garden is waiting")
+    #expect(emptyReview.detail == "The first storm has not become a seed yet.")
+    #expect(emptyReview.accentMood == nil)
+    #expect(emptyReview.accessibilityValue == "The first storm has not become a seed yet. 0 of 7 seeds planted.")
+
+    let partialReview = CheckInState(completedCheckIns: 3).weeklyReview
+    #expect(partialReview.title == "This week is changing shape")
+    #expect(partialReview.detail == "3 storms have become seeds. Tired is the clearest pattern so far.")
+    #expect(partialReview.accentMood == .tired)
+
+    var completeState = CheckInState()
+    completeState.replayDemoWeek()
+
+    let completeReview = completeState.weeklyReview
+    #expect(completeReview.title == "A full week changed shape")
+    #expect(completeReview.detail == "Seven storms became seeds. Calm surfaced most, and the newest seed ends as calm.")
+    #expect(completeReview.accentMood == .calm)
+}
+
 @Test func completedCheckInTracksToday() {
     var calendar = Calendar(identifier: .gregorian)
     calendar.timeZone = TimeZone(secondsFromGMT: 0)!
