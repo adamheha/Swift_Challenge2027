@@ -7,6 +7,17 @@ struct CheckInState {
     static let localPrivacyDetailText = "Your reflection stays local in this prototype."
     static let completeActionAccessibilityHint = "Plants this seed in the garden and returns to Today."
     static let gardenPreviewTitle = "Emotion garden"
+    static let replayWeekActionTitle = "Replay Week"
+    static let replayWeekActionAccessibilityHint = "Shows a complete sample week of transformed storms."
+    static let demoGardenMoods: [Mood] = [
+        .stressed,
+        .tired,
+        .unsure,
+        .calm,
+        .happy,
+        .stressed,
+        .calm
+    ]
 
     var selectedMood: Mood?
     var reflectionText = ""
@@ -150,6 +161,14 @@ struct CheckInState {
         completedCheckIns = max(completedCheckIns, 0) + 1
         lastCompletedAt = date
         gardenMoods.append(completedMood)
+        selectedMood = nil
+        reflectionText = ""
+    }
+
+    mutating func replayDemoWeek(on date: Date = Date()) {
+        completedCheckIns = Self.weeklyCheckInGoal
+        lastCompletedAt = date
+        gardenMoods = Self.demoGardenMoods
         selectedMood = nil
         reflectionText = ""
     }

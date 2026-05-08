@@ -4,7 +4,7 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 3 - Cinematic Garden Payoff In Progress
+Current stage: BloomMind 2.0 Stage 3 - Cinematic Garden Payoff Complete
 
 Current branch: `codex/bloommind-2-stage-3`
 
@@ -83,14 +83,14 @@ Completed in this branch:
 - Add a short Planting Seed state before returning to the garden.
 - Respect Reduce Motion for sorting and planting animations.
 
-Carried forward:
+Completed by Stage 3:
 
-- Add a stronger visual collapse from the sorted board into the planted seed.
-- Continue preserving Reduce Motion and VoiceOver alternatives as the payoff gets more cinematic.
+- Added the visual collapse from sorted fragments into the planted seed.
+- Continued preserving Reduce Motion and VoiceOver alternatives as the payoff became more cinematic.
 
 ## BloomMind 2.0 Stage 3 - Cinematic Garden Payoff
 
-Status: In Progress
+Status: Complete
 
 Goal: Make completion feel award-level.
 
@@ -100,12 +100,13 @@ Completed in this branch:
 - Connected the payoff banner to the newest mood and weekly seed count.
 - Added a subtle animated garden atmosphere layer based on the week's mood plants.
 - Added a sorted-fragments-to-seed collapse animation before planting.
+- Added a Week memory strip that turns the garden into a readable sequence of transformed storms.
+- Added Replay Week as a one-minute demo path for reviewing a complete transformed week.
 - Preserved Reduce Motion by disabling the banner glow pulse when requested.
 
-Next:
+Carried forward:
 
-- Make the weekly garden feel more like a living memory of storms transformed.
-- Add a one-minute demo mode with a polished reviewer path.
+- Stage 4 should focus on final review polish, iPad/Xcode smoke checks, packaging, and the applicant's personal story.
 
 ## Stage 0 - Award Research
 

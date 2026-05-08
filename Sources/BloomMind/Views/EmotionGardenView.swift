@@ -59,6 +59,11 @@ struct EmotionGardenView: View {
                         completedCount: visibleMoods.count,
                         totalCount: safeTotalPlots
                     )
+
+                    GardenMemoryStripView(
+                        moods: visibleMoods,
+                        totalCount: safeTotalPlots
+                    )
                 }
 
                 plotLayout
@@ -171,6 +176,102 @@ struct EmotionGardenView: View {
         ) {
             selectedPlotIndex = index
         }
+    }
+}
+
+private struct GardenMemoryStripView: View {
+    let moods: [Mood]
+    let totalCount: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Week memory", systemImage: "sparkles.rectangle.stack")
+                .font(.subheadline.bold())
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(Array(moods.enumerated()), id: \.offset) { index, mood in
+                        GardenMemoryChipView(
+                            index: index + 1,
+                            mood: mood
+                        )
+                    }
+
+                    ForEach(moods.count..<max(totalCount, moods.count), id: \.self) { index in
+                        GardenMemoryEmptyChipView(index: index + 1)
+                    }
+                }
+                .padding(.vertical, 1)
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Week memory")
+        .accessibilityValue(accessibilityValue)
+    }
+
+    private var accessibilityValue: String {
+        guard !moods.isEmpty else {
+            return "No transformed storms yet."
+        }
+
+        let memory = moods
+            .enumerated()
+            .map { index, mood in
+                "Seed \(index + 1): \(mood.rawValue)"
+            }
+            .joined(separator: ", ")
+
+        return memory
+    }
+}
+
+private struct GardenMemoryChipView: View {
+    let index: Int
+    let mood: Mood
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Text("\(index)")
+                .font(.caption2.bold())
+                .monospacedDigit()
+                .foregroundStyle(.white)
+                .frame(width: 20, height: 20)
+                .background(mood.tint, in: Circle())
+
+            Image(systemName: mood.symbolName)
+                .font(.caption.bold())
+                .foregroundStyle(mood.tint)
+                .accessibilityHidden(true)
+
+            Text(mood.rawValue)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.primary)
+        }
+        .padding(.horizontal, 9)
+        .padding(.vertical, 7)
+        .background(mood.tint.opacity(0.11), in: Capsule())
+        .overlay {
+            Capsule()
+                .stroke(mood.tint.opacity(0.22), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Seed \(index), \(mood.rawValue)")
+    }
+}
+
+private struct GardenMemoryEmptyChipView: View {
+    let index: Int
+
+    var body: some View {
+        Text("\(index)")
+            .font(.caption2.bold())
+            .monospacedDigit()
+            .foregroundStyle(.secondary)
+            .frame(width: 28, height: 28)
+            .background(Color.secondary.opacity(0.10), in: Circle())
+            .accessibilityLabel("Empty seed \(index)")
     }
 }
 

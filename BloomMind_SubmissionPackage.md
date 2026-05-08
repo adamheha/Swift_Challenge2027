@@ -45,6 +45,7 @@ Target review time: 60 seconds.
 8. Confirm the seed commitment updates when a lane is selected, and note that BloomMind detects a pressure theme locally without sending or saving the private reflection text.
 9. Tap Plant This Seed and confirm the fragments collapse into a seed before the short Planting Seed state appears.
 10. Return to Today and confirm the garden shows the Storm planted payoff banner with a mood-specific plant.
+11. Tap Replay Week to inspect the complete one-minute review garden.
 
 ## Submission Response Drafts
 
@@ -62,7 +63,7 @@ Do not submit this paragraph unchanged. The strongest version should include one
 
 ### Creativity And Impact
 
-The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." A check-in sorts that storm into Now, Later, and Let go, then transforms the feeling into a mood-specific plant. The garden highlights the newest planted storm, shows the weekly seed count, and adds a soft atmosphere based on the week's mood plants, so the return to Home feels like a payoff instead of a saved state. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
+The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." A check-in sorts that storm into Now, Later, and Let go, then transforms the feeling into a mood-specific plant. The garden highlights the newest planted storm, shows the weekly seed count, adds a soft atmosphere based on the week's mood plants, and includes a Week memory strip, so the return to Home feels like a payoff instead of a saved state. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
 
 ### Technical Work
 
@@ -84,6 +85,7 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm Continue can also be tapped after selecting a mood when Reflection is empty.
 - Confirm the pressure storm stays readable in light and dark appearances.
 - Confirm thought fragments appear on Growth Action and can move between Now, Later, and Let go by tap and drag/drop.
+- Confirm Replay Week fills a complete sample week and shows the Week memory strip.
 - Confirm Reduce Motion keeps sorting and planting understandable without pulsing motion.
 - Run `swift test`.
 - Run `swift build`.

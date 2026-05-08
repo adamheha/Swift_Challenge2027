@@ -18,7 +18,7 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 3: Cinematic Garden Payoff - in progress.
+BloomMind 2.0 Stage 3: Cinematic Garden Payoff - complete.
 
 Active branch: `codex/bloommind-2-stage-3`
 
@@ -37,6 +37,7 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - Emotional literacy micro-explanations that teach one small idea during the Growth Action step.
 - Tappable garden plants that reveal private mood-based revisit notes without showing reflection text.
 - A Storm planted garden payoff banner connected to the newest mood and weekly seed count.
+- Week memory and Replay Week affordances for reviewing a complete transformed week quickly.
 - Native SwiftUI `Canvas` pressure-storm visuals with orbit trails, high-contrast overlays, Reduce Motion support, and VoiceOver summaries.
 - Accessibility polish for Dynamic Type, Reduce Motion, VoiceOver labels and values, mood selection, reflection entry, step progress, garden state, and completion actions.
 - Light/dark adaptive app backgrounds, panels, cards, and mood selection contrast.
@@ -71,7 +72,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - Stage 9: Research-informed upgrade - superseded by 2.0.
 - BloomMind 2.0 Stage 1: Pressure Storm Pivot - complete.
 - BloomMind 2.0 Stage 2: Interactive Sorting - complete.
-- BloomMind 2.0 Stage 3: Cinematic Garden Payoff - in progress.
+- BloomMind 2.0 Stage 3: Cinematic Garden Payoff - complete.
 
 ## BloomMind 2.0 Stage 1 Target
 
@@ -109,9 +110,9 @@ Progress so far:
 - Added a brief Planting Seed completion state before returning to the garden.
 - Respect Reduce Motion for sorting and planting animations.
 
-Carried forward:
+Completed by Stage 3:
 
-- Add a stronger visual collapse from the sorted board into the planted seed during Stage 3.
+- Added the visual collapse from sorted fragments into the planted seed.
 
 ## BloomMind 2.0 Stage 3 Target
 
@@ -123,11 +124,13 @@ Progress so far:
 - Connected the banner to the newest mood plant and weekly seed count.
 - Added a subtle animated garden atmosphere layer based on the week's mood plants.
 - Added a sorted-fragments-to-seed collapse animation before planting.
+- Added a Week memory strip for the transformed storm sequence.
+- Added Replay Week as a one-minute review/demo path.
 - Preserved Reduce Motion by disabling the glow pulse when requested.
 
-Next:
+Carried forward:
 
-- Make the weekly garden feel more like a living memory of storms transformed.
+- Stage 4 should focus on final review polish, iPad/Xcode smoke checks, packaging, and the applicant's personal story.
 
 ## Final Demo And Submission Review
 

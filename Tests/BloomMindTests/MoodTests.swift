@@ -318,6 +318,23 @@ import Testing
     #expect(state.gardenMoodsThisWeek == Array(moods.suffix(CheckInState.weeklyCheckInGoal)))
 }
 
+@Test func replayDemoWeekFillsOneMinuteReviewPath() {
+    var state = CheckInState(
+        selectedMood: .stressed,
+        reflectionText: "Everything is loud right now.",
+        completedCheckIns: 1,
+        gardenMoods: [.stressed]
+    )
+
+    state.replayDemoWeek()
+
+    #expect(state.completedCheckInsThisWeek == CheckInState.weeklyCheckInGoal)
+    #expect(state.gardenMoodsThisWeek == CheckInState.demoGardenMoods)
+    #expect(state.selectedMood == nil)
+    #expect(state.reflectionText.isEmpty)
+    #expect(state.hasCompletedCheckInToday())
+}
+
 @MainActor
 @Test func stepProgressAccessibilityClampsOutOfRangeSteps() {
     let beforeFirstStep = StepProgressView(currentStep: 0)

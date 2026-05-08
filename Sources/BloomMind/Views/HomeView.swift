@@ -51,6 +51,21 @@ struct HomeView: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .accessibilityHint(checkInState.primaryActionAccessibilityHint)
+
+            Button {
+                withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) {
+                    checkInState.replayDemoWeek()
+                }
+            } label: {
+                Label(CheckInState.replayWeekActionTitle, systemImage: "play.circle")
+                    .font(.headline)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .accessibilityHint(CheckInState.replayWeekActionAccessibilityHint)
         }
         .bloomPage(maxWidth: 520, padding: 32)
         .navigationTitle("Today")

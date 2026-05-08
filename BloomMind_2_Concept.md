@@ -80,10 +80,6 @@ Implemented:
 - Add a short Planting Seed state before the app returns to the garden.
 - Preserve Reduce Motion and a VoiceOver-friendly non-drag alternative.
 
-Next:
-
-- Add a stronger final animation from the sorted board into the planted seed.
-
 ### 2.0 Stage 3 - Cinematic Garden Payoff
 
 Goal: Make completion feel unforgettable.
@@ -94,12 +90,8 @@ Implemented:
 - Show the weekly seed count as part of the garden payoff.
 - Add an ambient garden atmosphere layer based on the week's mood plants.
 - Animate sorted fragments into a seed before planting.
+- Add a Week memory strip and Replay Week path for a complete one-minute review.
 - Preserve Reduce Motion for payoff glow.
-
-Next:
-
-- Grow the mood-specific plant from that seed.
-- Make the weekly garden feel like a living record of pressure transformed.
 
 ## Submission Story Draft
 
