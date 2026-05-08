@@ -153,10 +153,13 @@ Completed in this branch:
 - Confirmed Apple's official site still shows the 2026 challenge and 2026 terms; no 2027-specific official rules page was published during this check.
 - Added a submission-only manifest at `Packaging/BloomMindSubmissionPackage.swift`.
 - Added `Scripts/create_submission_package.sh` to generate `SubmissionBuild/BloomMind.swiftpm.zip`.
+- Added `Scripts/verify_submission_package.sh` to verify ZIP size, contents, source safety, and standalone package build.
 - Generated a clean package ZIP with no `.DS_Store` or `__MACOSX` entries.
 - Verified the generated ZIP is 30,021 bytes, well under the 25 MB baseline limit.
 - Verified the generated `BloomMind.swiftpm` package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.
+- Verified the generated submission package with `bash Scripts/verify_submission_package.sh`.
 - Added `BloomMind_Stage5Packaging.md` with packaging commands, verification results, official sources, and remaining device-review tasks.
+- Added `BloomMind_2_Goals.md` to clarify the full BloomMind 2.0 north star, stage map, and Stage 5 role.
 
 Remaining:
 

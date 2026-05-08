@@ -10,11 +10,13 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 - `BloomMind_Concept.md`: product concept, MVP scope, user experience goals, and implementation direction.
 - `BloomMind_2_Concept.md`: BloomMind 2.0 pressure-storm concept, stage plan, and award-level product direction.
+- `BloomMind_2_Goals.md`: BloomMind 2.0 north star, required proof points, stage map, and Stage 5 scope.
 - `BloomMind_Roadmap.md`: stage plan, current status, and remaining work.
 - `BloomMind_Stage4Review.md`: Stage 4 final review snapshot, demo rehearsal script, and Stage 5 handoff.
 - `BloomMind_Stage5Packaging.md`: Stage 5 official rules refresh, packaging command, and generated ZIP verification.
 - `Packaging/BloomMindSubmissionPackage.swift`: submission-only Swift package manifest.
 - `Scripts/create_submission_package.sh`: repeatable `.swiftpm` ZIP packaging script.
+- `Scripts/verify_submission_package.sh`: repeatable submission ZIP verification script.
 - `Package.swift`: SwiftPM package for the local SwiftUI prototype.
 - `Sources/BloomMind`: SwiftUI app entry, MVP screens, local state, and mood model.
 - `Tests/BloomMindTests`: lightweight behavior checks for the MVP model.
@@ -82,6 +84,12 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - BloomMind 2.0 Stage 3: Cinematic Garden Payoff - complete.
 - BloomMind 2.0 Stage 4: Final Review Polish - complete.
 - BloomMind 2.0 Stage 5: Submission Packaging and Device Review - in progress.
+
+## BloomMind 2.0 Goal
+
+BloomMind 2.0 turns the original gentle reflection garden into a complete Swift Student Challenge experience: a visible pressure storm, a tactile Now / Later / Let go transformation, a seed-planting payoff, and a private garden that remembers growth without exposing reflection text.
+
+The whole 2.0 target is to prove visual impact, meaningful interaction, a clear emotional story, Apple-native technical execution, privacy/safety, accessibility, and final `.swiftpm` submission readiness.
 
 ## BloomMind 2.0 Stage 1 Target
 
@@ -198,6 +206,14 @@ First Stage 5 package verification:
 - ZIP contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The ZIP excludes `.DS_Store` and `__MACOSX`.
 - The generated package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.
+
+Verify the generated package with:
+
+```sh
+bash Scripts/verify_submission_package.sh
+```
+
+The verification script checks ZIP size, required files, forbidden generated files, forbidden network/telemetry-related API references, and standalone package build.
 
 ## Run and Verify
 

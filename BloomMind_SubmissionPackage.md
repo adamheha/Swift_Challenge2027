@@ -131,6 +131,12 @@ Create the current local submission package with:
 bash Scripts/create_submission_package.sh
 ```
 
+Verify the generated package with:
+
+```sh
+bash Scripts/verify_submission_package.sh
+```
+
 Current generated package verification:
 
 - ZIP path: `SubmissionBuild/BloomMind.swiftpm.zip`
@@ -138,6 +144,7 @@ Current generated package verification:
 - Contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The generated ZIP excludes `.DS_Store` and `__MACOSX`.
 - The generated `.swiftpm` package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.
+- The generated `.swiftpm` package passes `bash Scripts/verify_submission_package.sh` when Swift/Clang cache permissions are available.
 
 2.0 readiness notes:
 

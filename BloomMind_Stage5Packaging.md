@@ -44,7 +44,24 @@ The script copies only:
 
 It excludes generated files such as `.DS_Store`, keeps tests and repository docs out of the final app playground, and checks the ZIP against the 25 MB limit.
 
-## First Package Verification
+## Verification Command
+
+After creating the package, verify it with:
+
+```sh
+bash Scripts/verify_submission_package.sh
+```
+
+The verification script checks:
+
+- `SubmissionBuild/BloomMind.swiftpm.zip` exists.
+- ZIP size is under 25 MB.
+- ZIP contains `BloomMind.swiftpm/Package.swift` and `BloomMind.swiftpm/Sources/`.
+- ZIP does not include `.DS_Store`, `__MACOSX`, `.build`, `Tests`, or `DerivedData`.
+- Submitted sources do not reference network, telemetry, analytics, CloudKit, HealthKit, or CoreLocation APIs.
+- The generated `BloomMind.swiftpm` package builds by itself.
+
+## Package Verification
 
 Generated package result:
 
@@ -57,6 +74,7 @@ Generated package result:
 ```sh
 swift build --package-path SubmissionBuild/BloomMind.swiftpm
 ```
+- `bash Scripts/verify_submission_package.sh` passes when Swift/Clang cache permissions are available.
 
 ## Remaining Stage 5 Work
 
