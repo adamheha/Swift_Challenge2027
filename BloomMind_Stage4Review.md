@@ -4,14 +4,14 @@ Stage 4 status: complete from the local engineering and review-prep side.
 
 ## What Stage 4 Finished
 
-- Home now has an evaluator-ready payoff: the storm hero, garden, week memory, Replay Week, and weekly review summary all connect into one visible story.
+- Home now has an evaluator-ready payoff: the storm hero, garden, week memory, Preview Demo Week, and weekly review summary all connect into one visible story.
 - Home adapts to the review surface: compact windows stay single-column, while iPad/Mac review widths use a two-column storm-and-garden composition.
 - The Mac app window now prefers a wider review size so the first launch is closer to the intended evaluator view.
 - Xcode previews now cover the main review surfaces:
   - `Home - iPad Review`
   - `Check-In - iPad Review`
   - `Growth Action - iPad Review`
-- The final review checklist is written around the actual one-minute path and the complete Replay Week payoff.
+- The final review checklist is written around the actual one-minute path and the complete Preview Demo Week payoff.
 
 ## Local Verification
 
@@ -46,7 +46,7 @@ Use this script for the final evaluator rehearsal:
 8. Move fragments between Now, Later, and Let go by tapping or dragging.
 9. Tap Plant This Seed.
 10. Return to Today and confirm the newest plant, Storm planted banner, Week memory, and weekly review card are visible.
-11. Tap Replay Week and confirm the full-week payoff reads as a complete transformed week.
+11. Tap Preview Demo Week and confirm the full-week payoff reads as a complete transformed week without changing real check-ins.
 
 ## Stage 5 Handoff
 

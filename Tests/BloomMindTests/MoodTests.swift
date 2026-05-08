@@ -193,7 +193,7 @@ import Testing
     #expect(partialReview.accentMood == .tired)
 
     var completeState = CheckInState()
-    completeState.replayDemoWeek()
+    completeState = completeState.demoWeekPreviewState()
 
     let completeReview = completeState.weeklyReview
     #expect(completeReview.title == "A full week changed shape")
@@ -339,21 +339,24 @@ import Testing
     #expect(state.gardenMoodsThisWeek == Array(moods.suffix(CheckInState.weeklyCheckInGoal)))
 }
 
-@Test func replayDemoWeekFillsOneMinuteReviewPath() {
-    var state = CheckInState(
+@Test func demoWeekPreviewFillsReviewPathWithoutChangingRealWeek() {
+    let state = CheckInState(
         selectedMood: .stressed,
         reflectionText: "Everything is loud right now.",
         completedCheckIns: 1,
         gardenMoods: [.stressed]
     )
 
-    state.replayDemoWeek()
+    let preview = state.demoWeekPreviewState()
 
-    #expect(state.completedCheckInsThisWeek == CheckInState.weeklyCheckInGoal)
-    #expect(state.gardenMoodsThisWeek == CheckInState.demoGardenMoods)
-    #expect(state.selectedMood == nil)
-    #expect(state.reflectionText.isEmpty)
-    #expect(state.hasCompletedCheckInToday())
+    #expect(preview.completedCheckInsThisWeek == CheckInState.weeklyCheckInGoal)
+    #expect(preview.gardenMoodsThisWeek == CheckInState.demoGardenMoods)
+    #expect(preview.selectedMood == nil)
+    #expect(preview.reflectionText.isEmpty)
+    #expect(state.completedCheckInsThisWeek == 1)
+    #expect(state.gardenMoods == [.stressed])
+    #expect(state.selectedMood == .stressed)
+    #expect(state.reflectionText == "Everything is loud right now.")
 }
 
 @MainActor

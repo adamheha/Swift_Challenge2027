@@ -5,12 +5,18 @@ struct HomeView: View {
     let onStartCheckIn: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @State private var isPreviewingDemoWeek = false
+
     private var pageSpacing: CGFloat {
         dynamicTypeSize.isAccessibilitySize ? 22 : 24
     }
 
     private var latestMood: Mood? {
         checkInState.gardenMoodsThisWeek.last
+    }
+
+    private var gardenDisplayState: CheckInState {
+        isPreviewingDemoWeek ? checkInState.demoWeekPreviewState() : checkInState
     }
 
     var body: some View {
@@ -20,6 +26,12 @@ struct HomeView: View {
         }
         .bloomPage(maxWidth: 980, padding: 32)
         .navigationTitle("Today")
+        .onChange(of: checkInState.completedCheckIns) { _, _ in
+            isPreviewingDemoWeek = false
+        }
+        .onChange(of: checkInState.gardenMoods) { _, _ in
+            isPreviewingDemoWeek = false
+        }
     }
 
     private var wideLayout: some View {
@@ -60,13 +72,13 @@ struct HomeView: View {
         VStack(spacing: pageSpacing) {
             EmotionGardenView(
                 title: CheckInState.gardenPreviewTitle,
-                moods: checkInState.gardenMoodsThisWeek,
+                moods: gardenDisplayState.gardenMoodsThisWeek,
                 totalPlots: CheckInState.weeklyCheckInGoal,
-                progressText: checkInState.gardenProgressText,
-                accessibilityValue: checkInState.gardenAccessibilityValue
+                progressText: gardenDisplayState.gardenProgressText,
+                accessibilityValue: gardenDisplayState.gardenAccessibilityValue
             )
 
-            WeekReviewCardView(review: checkInState.weeklyReview)
+            WeekReviewCardView(review: gardenDisplayState.weeklyReview)
         }
     }
 
@@ -78,13 +90,20 @@ struct HomeView: View {
                 detail: checkInState.todayStatusDetail
             )
 
+            if isPreviewingDemoWeek {
+                DemoPreviewNoticeView()
+            }
+
             primaryActionButton
-            replayWeekButton
+            demoWeekButton
         }
     }
 
     private var primaryActionButton: some View {
-        Button(action: onStartCheckIn) {
+        Button {
+            isPreviewingDemoWeek = false
+            onStartCheckIn()
+        } label: {
             Label(
                 checkInState.primaryActionTitle,
                 systemImage: "sparkles"
@@ -99,13 +118,16 @@ struct HomeView: View {
         .accessibilityHint(checkInState.primaryActionAccessibilityHint)
     }
 
-    private var replayWeekButton: some View {
+    private var demoWeekButton: some View {
         Button {
             withAnimation(.spring(response: 0.42, dampingFraction: 0.82)) {
-                checkInState.replayDemoWeek()
+                isPreviewingDemoWeek.toggle()
             }
         } label: {
-            Label(CheckInState.replayWeekActionTitle, systemImage: "play.circle")
+            Label(
+                isPreviewingDemoWeek ? CheckInState.showMyWeekActionTitle : CheckInState.previewDemoWeekActionTitle,
+                systemImage: isPreviewingDemoWeek ? "person.crop.circle" : "play.circle"
+            )
                 .font(.headline)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -113,7 +135,40 @@ struct HomeView: View {
         }
         .buttonStyle(.bordered)
         .controlSize(.large)
-        .accessibilityHint(CheckInState.replayWeekActionAccessibilityHint)
+        .accessibilityHint(
+            isPreviewingDemoWeek
+                ? CheckInState.showMyWeekActionAccessibilityHint
+                : CheckInState.previewDemoWeekActionAccessibilityHint
+        )
+    }
+}
+
+private struct DemoPreviewNoticeView: View {
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "eye")
+                .font(.title3)
+                .foregroundStyle(.blue)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(CheckInState.demoWeekPreviewTitle)
+                    .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(CheckInState.demoWeekPreviewDetail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer()
+        }
+        .padding(14)
+        .bloomCardBackground(tint: .blue)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(CheckInState.demoWeekPreviewTitle)
+        .accessibilityValue(CheckInState.demoWeekPreviewDetail)
     }
 }
 
@@ -250,8 +305,6 @@ struct HomeView_Previews: PreviewProvider {
 
 private enum HomeViewPreviewState {
     static var fullReview: CheckInState {
-        var state = CheckInState()
-        state.replayDemoWeek()
-        return state
+        CheckInState().demoWeekPreviewState()
     }
 }

@@ -19,8 +19,12 @@ struct CheckInState {
     static let localPrivacyDetailText = "Your reflection stays local in this prototype."
     static let completeActionAccessibilityHint = "Plants this seed in the garden and returns to Today."
     static let gardenPreviewTitle = "Emotion garden"
-    static let replayWeekActionTitle = "Replay Week"
-    static let replayWeekActionAccessibilityHint = "Shows a complete sample week of transformed storms."
+    static let previewDemoWeekActionTitle = "Preview Demo Week"
+    static let showMyWeekActionTitle = "Show My Week"
+    static let previewDemoWeekActionAccessibilityHint = "Shows a sample completed week without changing your check-ins."
+    static let showMyWeekActionAccessibilityHint = "Returns the garden to your actual check-ins."
+    static let demoWeekPreviewTitle = "Demo preview only"
+    static let demoWeekPreviewDetail = "Your real check-ins are not changed."
     static let demoGardenMoods: [Mood] = [
         .stressed,
         .tired,
@@ -229,12 +233,13 @@ struct CheckInState {
         reflectionText = ""
     }
 
-    mutating func replayDemoWeek(on date: Date = Date()) {
-        completedCheckIns = Self.weeklyCheckInGoal
-        lastCompletedAt = date
-        gardenMoods = Self.demoGardenMoods
-        selectedMood = nil
-        reflectionText = ""
+    func demoWeekPreviewState() -> CheckInState {
+        var preview = self
+        preview.completedCheckIns = Self.weeklyCheckInGoal
+        preview.gardenMoods = Self.demoGardenMoods
+        preview.selectedMood = nil
+        preview.reflectionText = ""
+        return preview
     }
 
     private static func fallbackGardenMoods(count: Int) -> [Mood] {

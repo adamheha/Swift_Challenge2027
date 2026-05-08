@@ -42,7 +42,7 @@ Completed in this branch:
 - Added orbit trails and high-contrast text shading so the storm reads as a dramatic scene without sacrificing legibility.
 - Rebuilt Home around a high-contrast storm-to-seed hero scene.
 - Added a live storm preview to Check-In.
-- Changed the reflection input to a focused `TextEditor` so typing works reliably in the reflection area.
+- Changed the reflection input to a multiline SwiftUI field so typing works reliably in the reflection area.
 - Reframed the step flow as Name, Sort, Grow.
 - Added Now / Later / Let go outputs to the local action engine and Growth Action screen.
 - Made the Now / Later / Let go lanes tappable so the user can focus one part of the sorted storm.
@@ -101,7 +101,7 @@ Completed in this branch:
 - Added a subtle animated garden atmosphere layer based on the week's mood plants.
 - Added a sorted-fragments-to-seed collapse animation before planting.
 - Added a Week memory strip that turns the garden into a readable sequence of transformed storms.
-- Added Replay Week as a one-minute demo path for reviewing a complete transformed week.
+- Added Preview Demo Week as a one-minute demo path for reviewing a complete transformed week.
 - Preserved Reduce Motion by disabling the banner glow pulse when requested.
 
 Carried forward:
@@ -120,7 +120,7 @@ Completed in this branch:
 - Connected the review card to local garden state, including the newest mood, completion count, and dominant weekly pattern.
 - Added unit coverage for empty, partial, and complete weekly review states.
 - Added an adaptive Home layout that keeps compact screens single-column and turns iPad/Mac review widths into a two-column storm-and-garden composition.
-- Added an iPad review preview state for the complete Replay Week path.
+- Added an iPad review preview state for the complete Preview Demo Week path.
 - Tuned the Mac app window to prefer a wider review size.
 - Added iPad review previews for Home, Check-In, and Growth Action.
 - Added `BloomMind_Stage4Review.md` with the Stage 4 verification snapshot, review script, and Stage 5 handoff.
@@ -155,7 +155,7 @@ Completed in this branch:
 - Added `Scripts/create_submission_package.sh` to generate `SubmissionBuild/BloomMind.swiftpm.zip`.
 - Added `Scripts/verify_submission_package.sh` to verify ZIP size, contents, source safety, and standalone package build.
 - Generated a clean package ZIP with no `.DS_Store` or `__MACOSX` entries.
-- Verified the generated ZIP is 30,021 bytes, well under the 25 MB baseline limit.
+- Verified the generated ZIP is 30,272 bytes, well under the 25 MB baseline limit.
 - Verified the generated `BloomMind.swiftpm` package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.
 - Verified the generated submission package with `bash Scripts/verify_submission_package.sh`.
 - Added `BloomMind_Stage5Packaging.md` with packaging commands, verification results, official sources, and remaining device-review tasks.

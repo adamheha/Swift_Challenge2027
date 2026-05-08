@@ -66,7 +66,7 @@ The verification script checks:
 Generated package result:
 
 - ZIP path: `SubmissionBuild/BloomMind.swiftpm.zip`
-- ZIP size: 30,021 bytes
+- ZIP size: 30,272 bytes
 - ZIP contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`
 - No `.DS_Store` or `__MACOSX` entries in the ZIP.
 - Generated package builds with:

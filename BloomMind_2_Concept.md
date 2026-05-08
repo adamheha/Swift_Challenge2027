@@ -64,7 +64,7 @@ Implemented:
 - Orbit trails and high-contrast text shading for a stronger first impression.
 - A new Home hero: "Turn the storm into a seed."
 - A live Check-In storm preview.
-- A reliable `TextEditor` reflection field.
+- A reliable multiline reflection field.
 - Tappable Now / Later / Let go outputs in Growth Action.
 - A seed commitment summary and Plant This Seed ending.
 
@@ -90,7 +90,7 @@ Implemented:
 - Show the weekly seed count as part of the garden payoff.
 - Add an ambient garden atmosphere layer based on the week's mood plants.
 - Animate sorted fragments into a seed before planting.
-- Add a Week memory strip and Replay Week path for a complete one-minute review.
+- Add a Week memory strip and Preview Demo Week path for a complete one-minute review.
 - Preserve Reduce Motion for payoff glow.
 
 ### 2.0 Stage 4 - Final Review Polish

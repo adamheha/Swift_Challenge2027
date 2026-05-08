@@ -106,23 +106,17 @@ private struct ReflectionFieldView: View {
     @FocusState private var isFocused: Bool
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            TextEditor(text: $text)
-                .font(.body)
-                .scrollContentBackground(.hidden)
-                .focused($isFocused)
-                .padding(8)
-                .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .topLeading)
-
-            if text.isEmpty {
-                Text(CheckInState.reflectionPromptText)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 13)
-                    .padding(.vertical, 16)
-                    .allowsHitTesting(false)
-            }
-        }
+        TextField(
+            CheckInState.reflectionPromptText,
+            text: $text,
+            axis: .vertical
+        )
+        .textFieldStyle(.plain)
+        .font(.body)
+        .lineLimit(4...8)
+        .focused($isFocused)
+        .padding(12)
+        .frame(maxWidth: .infinity, minHeight: minHeight, alignment: .topLeading)
         .contentShape(Rectangle())
         .onTapGesture {
             isFocused = true

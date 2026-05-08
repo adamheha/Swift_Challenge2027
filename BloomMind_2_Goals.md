@@ -27,7 +27,7 @@ The reviewer should understand the whole idea quickly:
 
 - Stage 1 - Pressure Storm Pivot: replace the calm tracker feeling with a dramatic storm-to-seed first impression.
 - Stage 2 - Interactive Sorting: make Now / Later / Let go tactile through tappable and draggable thought fragments.
-- Stage 3 - Cinematic Garden Payoff: make completion feel rewarding with storm planted, garden atmosphere, Week memory, and Replay Week.
+- Stage 3 - Cinematic Garden Payoff: make completion feel rewarding with storm planted, garden atmosphere, Week memory, and Preview Demo Week.
 - Stage 4 - Final Review Polish: make the one-minute flow evaluator-ready with weekly review, iPad/Mac layouts, and review previews.
 - Stage 5 - Submission Packaging and Device Review: make the project packageable and verifiable as a `.swiftpm` ZIP, then test it in the final review environment.
 - Stage 6 - Final Story and Submission Rehearsal: finish the applicant's true personal story, AI disclosure, rules refresh, and final three-minute rehearsal.

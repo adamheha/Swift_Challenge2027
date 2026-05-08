@@ -43,7 +43,7 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - Emotional literacy micro-explanations that teach one small idea during the Growth Action step.
 - Tappable garden plants that reveal private mood-based revisit notes without showing reflection text.
 - A Storm planted garden payoff banner connected to the newest mood and weekly seed count.
-- Week memory and Replay Week affordances for reviewing a complete transformed week quickly.
+- Week memory and Preview Demo Week affordances for reviewing a sample complete transformed week quickly without changing real check-ins.
 - A weekly review payoff card that summarizes the garden's current emotional pattern.
 - Adaptive Home layout that uses a two-column storm-and-garden composition on iPad/Mac review widths.
 - Wider Mac review window sizing and iPad review previews for the main flow.
@@ -101,7 +101,7 @@ Progress so far:
 - Added orbit trails and high-contrast text shading to the storm scenes.
 - Rebuilt Home around a high-contrast storm-to-seed hero.
 - Added a live storm preview to Check-In.
-- Replaced the reflection input with a focused `TextEditor` to make typing reliable.
+- Replaced the reflection input with a multiline `TextField` to make typing reliable.
 - Added tappable Now / Later / Let go outputs to the local action engine and Growth Action screen.
 - Added a seed commitment summary that changes with the selected lane before planting.
 - Renamed the final completion action to Plant This Seed.
@@ -142,7 +142,7 @@ Progress so far:
 - Added a subtle animated garden atmosphere layer based on the week's mood plants.
 - Added a sorted-fragments-to-seed collapse animation before planting.
 - Added a Week memory strip for the transformed storm sequence.
-- Added Replay Week as a one-minute review/demo path.
+- Added Preview Demo Week as a one-minute review/demo path.
 - Preserved Reduce Motion by disabling the glow pulse when requested.
 
 Carried forward:
@@ -157,7 +157,7 @@ Progress so far:
 
 - Added a weekly review payoff card on Home.
 - The review card summarizes empty, partial, and complete garden states.
-- The complete `Replay Week` path now ends with a full-week line: seven storms became seeds, with the clearest weekly pattern called out.
+- The complete `Preview Demo Week` path now ends with a full-week line: seven storms became seeds, with the clearest weekly pattern called out.
 - Added a wide Home layout so iPad/Mac review windows show the storm and garden payoff side by side.
 - Added iPad review previews for Home, Check-In, and Growth Action.
 - Tuned the Mac app window toward the intended review size.
@@ -202,7 +202,7 @@ SubmissionBuild/BloomMind.swiftpm.zip
 
 First Stage 5 package verification:
 
-- ZIP size: 30,021 bytes.
+- ZIP size: 30,272 bytes.
 - ZIP contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The ZIP excludes `.DS_Store` and `__MACOSX`.
 - The generated package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.

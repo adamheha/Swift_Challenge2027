@@ -46,7 +46,7 @@ Target review time: 60 seconds.
 8. Confirm the seed commitment updates when a lane is selected, and note that BloomMind detects a pressure theme locally without sending or saving the private reflection text.
 9. Tap Plant This Seed and confirm the fragments collapse into a seed before the short Planting Seed state appears.
 10. Return to Today and confirm the garden shows the Storm planted payoff banner with a mood-specific plant.
-11. Tap Replay Week to inspect the complete one-minute review garden.
+11. Tap Preview Demo Week to inspect a sample complete-week review garden without changing real check-ins.
 
 ## Submission Response Drafts
 
@@ -92,7 +92,7 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm Continue can also be tapped after selecting a mood when Reflection is empty.
 - Confirm the pressure storm stays readable in light and dark appearances.
 - Confirm thought fragments appear on Growth Action and can move between Now, Later, and Let go by tap and drag/drop.
-- Confirm Replay Week fills a complete sample week and shows the Week memory strip.
+- Confirm Preview Demo Week shows a complete sample week and the Week memory strip without changing real check-ins.
 - Confirm the weekly review card summarizes the completed sample week.
 - Confirm the Home screen uses a two-column storm-and-garden layout on iPad/Mac review widths and falls back to a readable single column on narrow widths.
 - Confirm Reduce Motion keeps sorting and planting understandable without pulsing motion.
@@ -115,7 +115,7 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 5. Confirm the Growth Action shows the pressure-themed tiny action, movable thought fragments, and a Tiny idea explanation.
 6. Complete the check-in and return to Today.
 7. Tap the newest garden plant and confirm it shows a private mood-based note without reflection text.
-8. Tap Replay Week and confirm the Week memory strip and weekly review card show a complete sample week.
+8. Tap Preview Demo Week and confirm the Week memory strip and weekly review card show a complete sample week without changing real check-ins.
 9. Rotate or resize to a wider iPad/Mac review width and confirm Home uses the two-column storm-and-garden layout.
 10. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
 11. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
@@ -140,7 +140,7 @@ bash Scripts/verify_submission_package.sh
 Current generated package verification:
 
 - ZIP path: `SubmissionBuild/BloomMind.swiftpm.zip`
-- ZIP size: 30,021 bytes.
+- ZIP size: 30,272 bytes.
 - Contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The generated ZIP excludes `.DS_Store` and `__MACOSX`.
 - The generated `.swiftpm` package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.
@@ -149,7 +149,7 @@ Current generated package verification:
 2.0 readiness notes:
 
 - The package now declares iOS and macOS platform support.
-- The reflection editor uses a SwiftUI `TextEditor` with explicit focus behavior for reliable typing across macOS, iPad, and Swift Playgrounds-style review environments.
+- The reflection field uses a multiline SwiftUI `TextField` for reliable typing across macOS, iPad, and Swift Playgrounds-style review environments.
 - The pressure storm is native SwiftUI and does not require remote assets.
 - The source set has no network, analytics, telemetry, CloudKit, HealthKit, or CoreLocation API usage.
 - The final iPad or Swift Playgrounds smoke check moves to Stage 5 because it needs the actual review environment.
