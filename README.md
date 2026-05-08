@@ -11,6 +11,7 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 - `BloomMind_Concept.md`: product concept, MVP scope, user experience goals, and implementation direction.
 - `BloomMind_2_Concept.md`: BloomMind 2.0 pressure-storm concept, stage plan, and award-level product direction.
 - `BloomMind_Roadmap.md`: stage plan, current status, and remaining work.
+- `BloomMind_Stage4Review.md`: Stage 4 final review snapshot, demo rehearsal script, and Stage 5 handoff.
 - `Package.swift`: SwiftPM package for the local SwiftUI prototype.
 - `Sources/BloomMind`: SwiftUI app entry, MVP screens, local state, and mood model.
 - `Tests/BloomMindTests`: lightweight behavior checks for the MVP model.
@@ -18,7 +19,7 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 4: Final Review Polish - in progress.
+BloomMind 2.0 Stage 4: Final Review Polish - complete.
 
 Active branch: `codex/bloommind-2-stage-4`
 
@@ -40,6 +41,7 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - Week memory and Replay Week affordances for reviewing a complete transformed week quickly.
 - A weekly review payoff card that summarizes the garden's current emotional pattern.
 - Adaptive Home layout that uses a two-column storm-and-garden composition on iPad/Mac review widths.
+- Wider Mac review window sizing and iPad review previews for the main flow.
 - Native SwiftUI `Canvas` pressure-storm visuals with orbit trails, high-contrast overlays, Reduce Motion support, and VoiceOver summaries.
 - Accessibility polish for Dynamic Type, Reduce Motion, VoiceOver labels and values, mood selection, reflection entry, step progress, garden state, and completion actions.
 - Light/dark adaptive app backgrounds, panels, cards, and mood selection contrast.
@@ -75,7 +77,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - BloomMind 2.0 Stage 1: Pressure Storm Pivot - complete.
 - BloomMind 2.0 Stage 2: Interactive Sorting - complete.
 - BloomMind 2.0 Stage 3: Cinematic Garden Payoff - complete.
-- BloomMind 2.0 Stage 4: Final Review Polish - in progress.
+- BloomMind 2.0 Stage 4: Final Review Polish - complete.
 
 ## BloomMind 2.0 Stage 1 Target
 
@@ -145,15 +147,17 @@ Progress so far:
 - The review card summarizes empty, partial, and complete garden states.
 - The complete `Replay Week` path now ends with a full-week line: seven storms became seeds, with the clearest weekly pattern called out.
 - Added a wide Home layout so iPad/Mac review windows show the storm and garden payoff side by side.
-- Added an iPad review preview for the complete Replay Week path.
+- Added iPad review previews for Home, Check-In, and Growth Action.
+- Tuned the Mac app window toward the intended review size.
+- Added `BloomMind_Stage4Review.md` with a local verification snapshot and Stage 5 handoff.
 - Added unit tests for weekly review state.
 
-Carried forward:
+Stage 5 handoff:
 
-- Smoke check in Xcode's app window.
-- Smoke check iPad-sized layout or actual Swift Playgrounds.
-- Finalize the applicant's personal story paragraph.
-- Prepare the final `.swiftpm` packaging checklist.
+- Smoke check in a full selected Xcode app and/or Swift Playgrounds.
+- Smoke check on an actual iPad or iPad-sized simulator.
+- Replace the personal story scaffold with the applicant's true specific moment.
+- Create and verify the final `.swiftpm` ZIP package.
 
 ## Final Demo And Submission Review
 

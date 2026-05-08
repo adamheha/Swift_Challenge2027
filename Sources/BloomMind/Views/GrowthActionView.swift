@@ -766,6 +766,21 @@ struct GrowthActionView_Previews: PreviewProvider {
                 )
             }
             .previewDisplayName("Growth Action - No Reflection")
+
+            NavigationStack {
+                GrowthActionView(
+                    checkInState: .constant(
+                        CheckInState(
+                            selectedMood: .stressed,
+                            reflectionText: "I have a project due today and feel pressure to finish everything.",
+                            completedCheckIns: 2
+                        )
+                    ),
+                    onComplete: {}
+                )
+            }
+            .previewLayout(.fixed(width: 1024, height: 768))
+            .previewDisplayName("Growth Action - iPad Review")
         }
     }
 }

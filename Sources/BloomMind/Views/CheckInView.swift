@@ -197,6 +197,20 @@ struct CheckInView_Previews: PreviewProvider {
                 )
             }
             .previewDisplayName("Check-In - Selected")
+
+            NavigationStack {
+                CheckInView(
+                    checkInState: .constant(
+                        CheckInState(
+                            selectedMood: .stressed,
+                            reflectionText: "I have a project due today and feel pressure to finish everything."
+                        )
+                    ),
+                    onContinue: {}
+                )
+            }
+            .previewLayout(.fixed(width: 1024, height: 768))
+            .previewDisplayName("Check-In - iPad Review")
         }
     }
 }

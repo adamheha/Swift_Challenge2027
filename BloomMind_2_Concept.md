@@ -102,13 +102,16 @@ Implemented:
 - Add a weekly review payoff card that turns the garden into a short narrative summary.
 - Summarize empty, partial, and complete week states from local check-in data.
 - Adapt Home into a two-column storm-and-garden composition on iPad/Mac review widths.
+- Add iPad review previews for Home, Check-In, and Growth Action.
+- Tune the Mac app window toward the intended review size.
+- Add a Stage 4 review snapshot and Stage 5 handoff document.
 - Keep the final review path offline, private, and testable.
 
-Next:
+Stage 5 handoff:
 
-- Smoke check the app in Xcode and an iPad-sized review environment.
-- Finalize the applicant's personal motivation paragraph.
-- Prepare the final `.swiftpm` packaging checklist.
+- Smoke check the app in full Xcode, Swift Playgrounds, and an iPad-sized review environment.
+- Finalize the applicant's personal motivation paragraph with one true story.
+- Create and verify the final `.swiftpm` package.
 
 ## Submission Story Draft
 

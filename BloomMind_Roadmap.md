@@ -4,7 +4,7 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 4 - Final Review Polish In Progress
+Current stage: BloomMind 2.0 Stage 4 - Final Review Polish Complete
 
 Current branch: `codex/bloommind-2-stage-4`
 
@@ -110,7 +110,7 @@ Carried forward:
 
 ## BloomMind 2.0 Stage 4 - Final Review Polish
 
-Status: In Progress
+Status: Complete
 
 Goal: Make the complete one-minute experience feel ready for an evaluator: clear, emotionally specific, readable, and easy to rehearse.
 
@@ -121,13 +121,18 @@ Completed in this branch:
 - Added unit coverage for empty, partial, and complete weekly review states.
 - Added an adaptive Home layout that keeps compact screens single-column and turns iPad/Mac review widths into a two-column storm-and-garden composition.
 - Added an iPad review preview state for the complete Replay Week path.
+- Tuned the Mac app window to prefer a wider review size.
+- Added iPad review previews for Home, Check-In, and Growth Action.
+- Added `BloomMind_Stage4Review.md` with the Stage 4 verification snapshot, review script, and Stage 5 handoff.
+- Confirmed the local source set has no network, analytics, telemetry, CloudKit, HealthKit, or CoreLocation API usage.
 
-Remaining:
+Stage 5 handoff:
 
-- Smoke check the app in Xcode's app window.
-- Smoke check an iPad-sized preview or actual iPad/Swift Playgrounds environment.
-- Finalize the applicant's own personal story paragraph.
-- Prepare the `.swiftpm` package checklist for the final Apple upload.
+- Smoke check the app in a full selected Xcode app and/or Swift Playgrounds.
+- Smoke check an actual iPad or iPad-sized simulator.
+- Replace the personal motivation scaffold with the applicant's true story.
+- Create and verify the final `.swiftpm` ZIP package.
+- Refresh the official Apple rules before submission.
 
 Definition of done:
 

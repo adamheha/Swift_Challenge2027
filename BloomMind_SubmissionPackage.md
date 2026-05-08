@@ -61,6 +61,12 @@ Personal-story scaffold to customize before final submission:
 
 Do not submit this paragraph unchanged. The strongest version should include one true, specific motivation from the applicant.
 
+Stage 5 personal-story input needed:
+
+- One real school-pressure moment.
+- Why that moment felt like "everything is too much."
+- The small next step that made it easier to move.
+
 ### Creativity And Impact
 
 The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." A check-in sorts that storm into Now, Later, and Let go, then transforms the feeling into a mood-specific plant. The garden highlights the newest planted storm, shows the weekly seed count, adds a soft atmosphere based on the week's mood plants, includes a Week memory strip, and ends with a short weekly review, so the return to Home feels like a payoff instead of a saved state. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
@@ -95,6 +101,7 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm all visible app and submission writing is in English.
 - Confirm no secrets, accounts, analytics, telemetry, or network calls are included.
 - Confirm any AI usage is disclosed in the final submission form.
+- Review `BloomMind_Stage4Review.md` before creating the final package.
 
 ## Swift Playgrounds Smoke Check
 
@@ -122,4 +129,5 @@ This repository is a Swift Package prototype. For the final Apple upload, packag
 - The package now declares iOS and macOS platform support.
 - The reflection editor uses a SwiftUI `TextEditor` with explicit focus behavior for reliable typing across macOS, iPad, and Swift Playgrounds-style review environments.
 - The pressure storm is native SwiftUI and does not require remote assets.
-- A final iPad or Swift Playgrounds smoke check is still needed before submission.
+- The source set has no network, analytics, telemetry, CloudKit, HealthKit, or CoreLocation API usage.
+- The final iPad or Swift Playgrounds smoke check moves to Stage 5 because it needs the actual review environment.

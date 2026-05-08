@@ -38,7 +38,12 @@ struct BloomMindApp: App {
                     }
                 }
             }
-            .frame(minWidth: 420, minHeight: 620)
+            .frame(
+                minWidth: 700,
+                idealWidth: 980,
+                minHeight: 620,
+                idealHeight: 760
+            )
         }
     }
 }
