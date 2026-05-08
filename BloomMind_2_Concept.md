@@ -113,6 +113,23 @@ Stage 5 handoff:
 - Finalize the applicant's personal motivation paragraph with one true story.
 - Create and verify the final `.swiftpm` package.
 
+### 2.0 Stage 5 - Submission Packaging and Device Review
+
+Goal: Make the final app playground package repeatable, small, offline, and ready for device review.
+
+Implemented:
+
+- Refresh Apple's official Swift Student Challenge pages and keep the project aligned to the latest official 2026 baseline while 2027 rules are unpublished.
+- Add a submission-only package manifest without test targets.
+- Add a script that creates `SubmissionBuild/BloomMind.swiftpm.zip`.
+- Verify the generated ZIP is clean, under 25 MB, and builds as a standalone package.
+
+Next:
+
+- Open the generated package in full Xcode or Swift Playgrounds.
+- Smoke check on an iPad or iPad-sized simulator.
+- Replace the personal story scaffold with the applicant's real story.
+
 ## Submission Story Draft
 
 BloomMind began from a common student feeling: pressure often arrives as a storm, not a neat checklist. Deadlines, grades, messages, and uncertainty can all feel urgent at the same time. BloomMind does not try to solve a student's life or make medical claims. It gives the student one minute to make the storm visible, separate now from later, and choose one tiny step.

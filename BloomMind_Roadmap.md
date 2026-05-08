@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 4 - Final Review Polish Complete
+Current stage: BloomMind 2.0 Stage 5 - Submission Packaging and Device Review In Progress
 
-Current branch: `codex/bloommind-2-stage-4`
+Current branch: `codex/bloommind-2-stage-5`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 2.0 Stage 5 - Submission Packaging and Device Review
+Next stage: BloomMind 2.0 Stage 6 - Final Story and Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -140,6 +140,37 @@ Definition of done:
 - The app remains readable in light/dark mode and larger text sizes.
 - `swift test` and `swift build` pass.
 - The final review checklist is ready for packaging.
+
+## BloomMind 2.0 Stage 5 - Submission Packaging and Device Review
+
+Status: In Progress
+
+Goal: Turn the polished project into a repeatable `.swiftpm` submission package and verify the package against the latest official rules baseline.
+
+Completed in this branch:
+
+- Refreshed Apple's official Swift Student Challenge pages on May 8, 2026.
+- Confirmed Apple's official site still shows the 2026 challenge and 2026 terms; no 2027-specific official rules page was published during this check.
+- Added a submission-only manifest at `Packaging/BloomMindSubmissionPackage.swift`.
+- Added `Scripts/create_submission_package.sh` to generate `SubmissionBuild/BloomMind.swiftpm.zip`.
+- Generated a clean package ZIP with no `.DS_Store` or `__MACOSX` entries.
+- Verified the generated ZIP is 30,021 bytes, well under the 25 MB baseline limit.
+- Verified the generated `BloomMind.swiftpm` package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.
+- Added `BloomMind_Stage5Packaging.md` with packaging commands, verification results, official sources, and remaining device-review tasks.
+
+Remaining:
+
+- Open the generated package in full Xcode or Swift Playgrounds.
+- Smoke check the package on an iPad or iPad-sized simulator.
+- Refresh official rules again close to submission.
+- Replace the personal motivation scaffold with the applicant's true story.
+- Recreate the ZIP after future code changes.
+
+Definition of done:
+
+- The generated `.swiftpm` ZIP builds, is under 25 MB, and contains only the intended app playground files.
+- The final package opens in the actual review environment.
+- The final submission writing includes a true applicant story and AI disclosure.
 
 ## Stage 0 - Award Research
 

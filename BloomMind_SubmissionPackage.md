@@ -8,7 +8,7 @@ The old 1.x submission path is preserved as a stable foundation, but the active 
 
 ## Latest Rules Check
 
-Checked on May 6, 2026. Apple has not published Swift Student Challenge 2027 rules yet, so this package is aligned with the latest official 2026 requirements:
+Checked on May 8, 2026. Apple's official Swift Student Challenge pages currently show the 2026 challenge and 2026 terms. A 2027-specific official rules page was not published during this check, so this package is aligned with the latest official 2026 requirements:
 
 - Submission format: app playground in a `.swiftpm` ZIP file.
 - Offline behavior: the app should not rely on a network connection, and resources should be included locally.
@@ -22,6 +22,7 @@ Checked on May 6, 2026. Apple has not published Swift Student Challenge 2027 rul
 
 Official references:
 
+- https://developer.apple.com/swift-student-challenge/
 - https://developer.apple.com/swift-student-challenge/eligibility/
 - https://developer.apple.com/swift-student-challenge/policy/
 
@@ -123,6 +124,20 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 ## Packaging Notes
 
 This repository is a Swift Package prototype. For the final Apple upload, package it as an app playground directory named `BloomMind.swiftpm`, then ZIP that `.swiftpm` directory. Keep the final ZIP under 25 MB and verify it opens with Swift Playgrounds 4.6 or Xcode 26, or later.
+
+Create the current local submission package with:
+
+```sh
+bash Scripts/create_submission_package.sh
+```
+
+Current generated package verification:
+
+- ZIP path: `SubmissionBuild/BloomMind.swiftpm.zip`
+- ZIP size: 30,021 bytes.
+- Contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
+- The generated ZIP excludes `.DS_Store` and `__MACOSX`.
+- The generated `.swiftpm` package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.
 
 2.0 readiness notes:
 

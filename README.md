@@ -12,6 +12,9 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 - `BloomMind_2_Concept.md`: BloomMind 2.0 pressure-storm concept, stage plan, and award-level product direction.
 - `BloomMind_Roadmap.md`: stage plan, current status, and remaining work.
 - `BloomMind_Stage4Review.md`: Stage 4 final review snapshot, demo rehearsal script, and Stage 5 handoff.
+- `BloomMind_Stage5Packaging.md`: Stage 5 official rules refresh, packaging command, and generated ZIP verification.
+- `Packaging/BloomMindSubmissionPackage.swift`: submission-only Swift package manifest.
+- `Scripts/create_submission_package.sh`: repeatable `.swiftpm` ZIP packaging script.
 - `Package.swift`: SwiftPM package for the local SwiftUI prototype.
 - `Sources/BloomMind`: SwiftUI app entry, MVP screens, local state, and mood model.
 - `Tests/BloomMindTests`: lightweight behavior checks for the MVP model.
@@ -19,9 +22,9 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 4: Final Review Polish - complete.
+BloomMind 2.0 Stage 5: Submission Packaging and Device Review - in progress.
 
-Active branch: `codex/bloommind-2-stage-4`
+Active branch: `codex/bloommind-2-stage-5`
 
 Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. BloomMind 2.0 starts from that foundation and pushes the app toward a more memorable Swift Student Challenge experience.
 
@@ -78,6 +81,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - BloomMind 2.0 Stage 2: Interactive Sorting - complete.
 - BloomMind 2.0 Stage 3: Cinematic Garden Payoff - complete.
 - BloomMind 2.0 Stage 4: Final Review Polish - complete.
+- BloomMind 2.0 Stage 5: Submission Packaging and Device Review - in progress.
 
 ## BloomMind 2.0 Stage 1 Target
 
@@ -172,7 +176,28 @@ Use `BloomMind_SubmissionPackage.md` as the final review guide. The recommended 
 7. Confirm the local pressure-themed action appears with Now, Later, and Let go.
 8. Complete the check-in and confirm the emotion garden grows.
 
-Latest official rules check: on May 6, 2026, Apple had not published Swift Student Challenge 2027 rules yet. The final package is aligned with the latest official 2026 requirements: `.swiftpm` ZIP, offline behavior, 25 MB ZIP limit, Swift Playgrounds 4.6 or Xcode 26 or later, English content, individual work, and disclosed AI assistance.
+Latest official rules check: on May 8, 2026, Apple's official pages still showed the 2026 challenge and 2026 terms. No 2027-specific official rules page was published during this check. The final package is aligned with the latest official 2026 requirements: `.swiftpm` ZIP, offline behavior, 25 MB ZIP limit, Swift Playgrounds 4.6 or Xcode 26 or later, English content, individual work, and disclosed AI assistance.
+
+## Submission Package
+
+Create a fresh local submission ZIP:
+
+```sh
+bash Scripts/create_submission_package.sh
+```
+
+The generated package lives at:
+
+```text
+SubmissionBuild/BloomMind.swiftpm.zip
+```
+
+First Stage 5 package verification:
+
+- ZIP size: 30,021 bytes.
+- ZIP contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
+- The ZIP excludes `.DS_Store` and `__MACOSX`.
+- The generated package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.
 
 ## Run and Verify
 
