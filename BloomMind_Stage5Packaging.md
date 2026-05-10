@@ -83,3 +83,5 @@ swift build --package-path SubmissionBuild/BloomMind.swiftpm
 - Refresh official rules again close to submission.
 - Replace the personal motivation scaffold with the applicant's true story.
 - Recreate the ZIP after any future code changes.
+
+See `BloomMind_Stage5DeviceReview.md` for the full device-review checklist and `Scripts/collect_review_environment.sh` for local environment status.

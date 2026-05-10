@@ -137,6 +137,12 @@ Verify the generated package with:
 bash Scripts/verify_submission_package.sh
 ```
 
+Collect local review environment status with:
+
+```sh
+bash Scripts/collect_review_environment.sh
+```
+
 Current generated package verification:
 
 - ZIP path: `SubmissionBuild/BloomMind.swiftpm.zip`

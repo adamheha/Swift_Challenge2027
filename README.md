@@ -14,9 +14,11 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 - `BloomMind_Roadmap.md`: stage plan, current status, and remaining work.
 - `BloomMind_Stage4Review.md`: Stage 4 final review snapshot, demo rehearsal script, and Stage 5 handoff.
 - `BloomMind_Stage5Packaging.md`: Stage 5 official rules refresh, packaging command, and generated ZIP verification.
+- `BloomMind_Stage5DeviceReview.md`: Stage 5 full Xcode, Swift Playgrounds, and iPad smoke-check plan.
 - `Packaging/BloomMindSubmissionPackage.swift`: submission-only Swift package manifest.
 - `Scripts/create_submission_package.sh`: repeatable `.swiftpm` ZIP packaging script.
 - `Scripts/verify_submission_package.sh`: repeatable submission ZIP verification script.
+- `Scripts/collect_review_environment.sh`: local environment and package status report for device review.
 - `Package.swift`: SwiftPM package for the local SwiftUI prototype.
 - `Sources/BloomMind`: SwiftUI app entry, MVP screens, local state, and mood model.
 - `Tests/BloomMindTests`: lightweight behavior checks for the MVP model.
@@ -214,6 +216,14 @@ bash Scripts/verify_submission_package.sh
 ```
 
 The verification script checks ZIP size, required files, forbidden generated files, forbidden network/telemetry-related API references, and standalone package build.
+
+Collect the current review environment status with:
+
+```sh
+bash Scripts/collect_review_environment.sh
+```
+
+This repository currently builds under Command Line Tools, but the final Xcode/Swift Playgrounds/iPad smoke check needs a full selected Xcode app or Swift Playgrounds environment.
 
 ## Run and Verify
 

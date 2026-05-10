@@ -160,6 +160,9 @@ Completed in this branch:
 - Verified the generated submission package with `bash Scripts/verify_submission_package.sh`.
 - Added `BloomMind_Stage5Packaging.md` with packaging commands, verification results, official sources, and remaining device-review tasks.
 - Added `BloomMind_2_Goals.md` to clarify the full BloomMind 2.0 north star, stage map, and Stage 5 role.
+- Added `Scripts/collect_review_environment.sh` to report Swift, selected developer directory, Xcode availability, and current package status.
+- Added `BloomMind_Stage5DeviceReview.md` with the full Xcode, Swift Playgrounds, and iPad smoke-check plan.
+- Confirmed this environment currently has Command Line Tools selected, so the final Xcode/iPad smoke check needs to happen in a full Xcode or Swift Playgrounds environment.
 
 Remaining:
 
