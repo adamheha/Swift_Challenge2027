@@ -5,7 +5,7 @@ struct GrowthActionView: View {
     let onComplete: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @State private var selectedLane: StormLaneKind = .now
+    @State private var selectedLane: GrowthLane = .now
     @State private var isPlantingSeed = false
 
     private var selectedMood: Mood {
@@ -89,7 +89,10 @@ struct GrowthActionView: View {
             try? await Task.sleep(nanoseconds: 900_000_000)
 
             await MainActor.run {
-                checkInState.completeCheckIn()
+                checkInState.completeCheckIn(
+                    lane: selectedLane,
+                    theme: suggestion.theme
+                )
                 onComplete()
             }
         }
@@ -98,7 +101,7 @@ struct GrowthActionView: View {
 
 private struct SeedCollapseView: View {
     let tint: Color
-    let selectedLane: StormLaneKind
+    let selectedLane: GrowthLane
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var progress = 0.0
@@ -243,11 +246,11 @@ private struct PressureBloomTransformationView: View {
 private struct StormSortingView: View {
     let suggestion: GrowthActionSuggestion
     let tint: Color
-    @Binding var selectedLane: StormLaneKind
+    @Binding var selectedLane: GrowthLane
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var fragmentAssignments: [StormFragment.ID: StormLaneKind] = [:]
+    @State private var fragmentAssignments: [StormFragment.ID: GrowthLane] = [:]
     @Namespace private var fragmentNamespace
 
     private var columns: [GridItem] {
@@ -261,7 +264,7 @@ private struct StormSortingView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(StormLaneKind.allCases) { lane in
+                ForEach(GrowthLane.allCases) { lane in
                     StormLaneColumnView(
                         lane: lane,
                         fragments: fragments(in: lane),
@@ -289,13 +292,13 @@ private struct StormSortingView: View {
         .accessibilityLabel("Sorted pressure lanes")
     }
 
-    private func fragments(in lane: StormLaneKind) -> [StormFragment] {
+    private func fragments(in lane: GrowthLane) -> [StormFragment] {
         fragments.filter { fragment in
             currentLane(for: fragment) == lane
         }
     }
 
-    private func currentLane(for fragment: StormFragment) -> StormLaneKind {
+    private func currentLane(for fragment: StormFragment) -> GrowthLane {
         fragmentAssignments[fragment.id] ?? fragment.startingLane
     }
 
@@ -308,7 +311,7 @@ private struct StormSortingView: View {
         }
     }
 
-    private func moveFragments(_ fragmentIDs: [StormFragment.ID], to lane: StormLaneKind) {
+    private func moveFragments(_ fragmentIDs: [StormFragment.ID], to lane: GrowthLane) {
         withAnimation(sortingAnimation) {
             for fragmentID in fragmentIDs {
                 fragmentAssignments[fragmentID] = lane
@@ -326,7 +329,7 @@ private struct StormSortingView: View {
 private struct SeedCommitmentView: View {
     let mood: Mood
     let suggestion: GrowthActionSuggestion
-    let selectedLane: StormLaneKind
+    let selectedLane: GrowthLane
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -428,14 +431,14 @@ private struct PlantingSeedView: View {
 }
 
 private struct StormLaneColumnView: View {
-    let lane: StormLaneKind
+    let lane: GrowthLane
     let fragments: [StormFragment]
     let tint: Color
     let namespace: Namespace.ID
     let isSelected: Bool
     let onSelectLane: () -> Void
     let onMoveFragment: (StormFragment) -> Void
-    let onDropFragments: ([StormFragment.ID], StormLaneKind) -> Void
+    let onDropFragments: ([StormFragment.ID], GrowthLane) -> Void
 
     @State private var isDropTargeted = false
 
@@ -526,7 +529,7 @@ private struct StormFragment: Identifiable, Hashable {
     let id: String
     let text: String
     let symbolName: String
-    let startingLane: StormLaneKind
+    let startingLane: GrowthLane
 
     static func fragments(for suggestion: GrowthActionSuggestion) -> [StormFragment] {
         [
@@ -564,68 +567,7 @@ private struct StormFragment: Identifiable, Hashable {
     }
 }
 
-private enum StormLaneKind: CaseIterable, Identifiable {
-    case now
-    case later
-    case release
-
-    var id: String { title }
-
-    var title: String {
-        switch self {
-        case .now:
-            "Now"
-        case .later:
-            "Later"
-        case .release:
-            "Let go"
-        }
-    }
-
-    var symbolName: String {
-        switch self {
-        case .now:
-            "bolt.fill"
-        case .later:
-            "tray"
-        case .release:
-            "wind"
-        }
-    }
-
-    var commitmentLine: String {
-        switch self {
-        case .now:
-            "Start with this one visible step."
-        case .later:
-            "Park the bigger worry here for after the first step."
-        case .release:
-            "This is the pressure you do not have to carry right now."
-        }
-    }
-
-    var emptyText: String {
-        switch self {
-        case .now:
-            "No urgent piece here."
-        case .later:
-            "Nothing parked here."
-        case .release:
-            "Nothing to let go here."
-        }
-    }
-
-    var nextLane: StormLaneKind {
-        switch self {
-        case .now:
-            .later
-        case .later:
-            .release
-        case .release:
-            .now
-        }
-    }
-
+private extension GrowthLane {
     func tint(primary: Color) -> Color {
         switch self {
         case .now:
@@ -634,17 +576,6 @@ private enum StormLaneKind: CaseIterable, Identifiable {
             .blue
         case .release:
             .orange
-        }
-    }
-
-    var seedTitle: String {
-        switch self {
-        case .now:
-            "This seed starts with now."
-        case .later:
-            "This seed protects later."
-        case .release:
-            "This seed lets one thing go."
         }
     }
 

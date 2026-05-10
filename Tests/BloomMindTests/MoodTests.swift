@@ -117,6 +117,22 @@ import Testing
 
     #expect(state.gardenMoods == [.stressed])
     #expect(state.gardenMoodsThisWeek == [.calm, .stressed])
+    #expect(state.gardenSeeds == [GardenSeed(mood: .stressed)])
+    #expect(state.gardenSeedsThisWeek.map(\.mood) == [.calm, .stressed])
+}
+
+@Test func checkInCompletionStoresSeedConsequence() {
+    var state = CheckInState(
+        selectedMood: .tired,
+        reflectionText: "I slept badly and need a real break.",
+        completedCheckIns: 2
+    )
+
+    state.completeCheckIn(lane: .release, theme: .rest)
+
+    #expect(state.gardenSeeds.last == GardenSeed(mood: .tired, lane: .release, theme: .rest))
+    #expect(state.gardenSeedsThisWeek.last?.lane == .release)
+    #expect(state.gardenSeedsThisWeek.last?.theme == .rest)
 }
 
 @Test func checkInCompletionUsesUnsurePlantWhenMoodIsMissing() {
@@ -196,9 +212,53 @@ import Testing
     completeState = completeState.demoWeekPreviewState()
 
     let completeReview = completeState.weeklyReview
-    #expect(completeReview.title == "A full week changed shape")
-    #expect(completeReview.detail == "Seven storms became seeds. Calm surfaced most, and the newest seed ends as calm.")
+    #expect(completeReview.title == "This week bloomed")
+    #expect(completeReview.detail == "Seven storms became seeds. Calm surfaced most, and let go shaped the garden's ending.")
     #expect(completeReview.accentMood == .calm)
+}
+
+@Test func weeklyBloomPayoffUnlocksAfterSevenSeedsWithoutReflectionText() {
+    let reflection = "I have a project due today and feel pressure to finish everything."
+    var state = CheckInState(
+        selectedMood: .stressed,
+        reflectionText: reflection,
+        completedCheckIns: 6,
+        gardenSeeds: [
+            GardenSeed(mood: .stressed, lane: .now, theme: .pressure),
+            GardenSeed(mood: .tired, lane: .later, theme: .rest),
+            GardenSeed(mood: .unsure, lane: .release, theme: .uncertainty),
+            GardenSeed(mood: .calm, lane: .now, theme: .school),
+            GardenSeed(mood: .happy, lane: .later, theme: .friendship),
+            GardenSeed(mood: .stressed, lane: .release, theme: .pressure)
+        ]
+    )
+
+    #expect(!state.isWeeklyBloomUnlocked)
+
+    state.completeCheckIn(lane: .release, theme: .pressure)
+
+    let payoff = state.weeklyBloomPayoff
+    #expect(state.isWeeklyBloomUnlocked)
+    #expect(payoff.title == "This week bloomed")
+    #expect(payoff.subtitle == "Seven private storms became one visible garden.")
+    #expect(payoff.dominantMood == .stressed)
+    #expect(payoff.dominantLane == .release)
+    #expect(payoff.closingLine == "I can carry less and still keep growing.")
+    #expect(!payoff.story.contains(reflection))
+    #expect(!payoff.insight.contains(reflection))
+    #expect(!payoff.nextWeekIntention.contains(reflection))
+    #expect(payoff.privacyNote == "BloomMind remembers the growth pattern, not your private reflection text.")
+}
+
+@Test func weeklyBloomPayoffUsesDemoWeekForAwardPath() {
+    let preview = CheckInState().demoWeekPreviewState()
+    let payoff = preview.weeklyBloomPayoff
+
+    #expect(preview.isWeeklyBloomUnlocked)
+    #expect(payoff.dominantMood == .calm)
+    #expect(payoff.dominantLane == .release)
+    #expect(payoff.story.contains("Steadiness was the clearest color"))
+    #expect(payoff.nextWeekIntention.contains("Next week"))
 }
 
 @Test func completedCheckInTracksToday() {
@@ -298,12 +358,12 @@ import Testing
     #expect(floor.gardenAccessibilityValue == "0 of 7 plants grown. The garden is ready for today's first seed.")
 
     let partial = CheckInState(completedCheckIns: 3)
-    #expect(partial.gardenAccessibilityValue == "3 of 7 plants grown: Calm sprout, Sun bloom, Moon bell")
+    #expect(partial.gardenAccessibilityValue == "3 of 7 plants grown: Calm sprout with Now, Sun bloom with Later, Moon bell with Let go")
 
     let capped = CheckInState(completedCheckIns: 12)
     #expect(
         capped.gardenAccessibilityValue
-            == "7 of 7 plants grown: Calm sprout, Sun bloom, Moon bell, Wind grass, Question bud, Calm sprout, Sun bloom"
+            == "7 of 7 plants grown: Calm sprout with Now, Sun bloom with Later, Moon bell with Let go, Wind grass with Now, Question bud with Later, Calm sprout with Let go, Sun bloom with Now"
     )
 }
 
@@ -351,10 +411,12 @@ import Testing
 
     #expect(preview.completedCheckInsThisWeek == CheckInState.weeklyCheckInGoal)
     #expect(preview.gardenMoodsThisWeek == CheckInState.demoGardenMoods)
+    #expect(preview.gardenSeedsThisWeek == CheckInState.demoGardenSeeds)
     #expect(preview.selectedMood == nil)
     #expect(preview.reflectionText.isEmpty)
     #expect(state.completedCheckInsThisWeek == 1)
     #expect(state.gardenMoods == [.stressed])
+    #expect(state.gardenSeeds.isEmpty)
     #expect(state.selectedMood == .stressed)
     #expect(state.reflectionText == "Everything is loud right now.")
 }

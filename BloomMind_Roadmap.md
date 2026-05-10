@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 5 - Submission Packaging and Device Review In Progress
+Current stage: BloomMind 2.0 Stage 6 - Weekly Bloom Payoff and Living Garden In Progress
 
-Current branch: `codex/bloommind-2-stage-5`
+Current branch: `codex/bloommind-2-stage-6-weekly-bloom`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 2.0 Stage 6 - Final Story and Submission Rehearsal
+Next stage: BloomMind 2.0 Stage 7 - Final Story and Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -143,7 +143,7 @@ Definition of done:
 
 ## BloomMind 2.0 Stage 5 - Submission Packaging and Device Review
 
-Status: In Progress
+Status: Complete locally; real-device review still pending external environment
 
 Goal: Turn the polished project into a repeatable `.swiftpm` submission package and verify the package against the latest official rules baseline.
 
@@ -177,6 +177,37 @@ Definition of done:
 - The generated `.swiftpm` ZIP builds, is under 25 MB, and contains only the intended app playground files.
 - The final package opens in the actual review environment.
 - The final submission writing includes a true applicant story and AI disclosure.
+
+## BloomMind 2.0 Stage 6 - Weekly Bloom Payoff and Living Garden
+
+Status: In Progress
+
+Goal: Make seven completed seeds feel like a meaningful ending, not an empty counter.
+
+Completed in this branch:
+
+- Added `GardenSeed` so planted seeds store mood, local theme, and Now / Later / Let go lane.
+- Added shared `GrowthLane` model logic and connected Growth Action planting to the selected lane.
+- Updated Preview Demo Week to include mood, theme, and lane data for a complete award demo path.
+- Added living garden consequences: Now reads as roots, Later reads as buds, and Let go reads as open air.
+- Added garden accessibility values that include each plant's lane consequence.
+- Added a Weekly Bloom payoff that unlocks at 7/7 seeds with a constellation reveal, week story, local insight, closing ritual, next-week seed, and privacy note.
+- Added unit coverage for seed consequence storage, Weekly Bloom unlock, privacy-preserving copy, demo-week payoff, and updated garden accessibility values.
+- Added `BloomMind_Stage6WeeklyBloom.md` as the Stage 6 review and verification note.
+- Refreshed `SubmissionBuild/BloomMind.swiftpm.zip` with the Stage 6 sources; current ZIP size is 38,004 bytes.
+
+Remaining:
+
+- Rerun standalone `swift build` and `bash Scripts/verify_submission_package.sh` when Swift/Clang cache permissions are available.
+- Smoke check the Weekly Bloom reveal in a full Xcode or Swift Playgrounds environment.
+- Smoke check the complete path on iPad or an iPad-sized simulator.
+- Replace the personal motivation scaffold with the applicant's true story.
+
+Definition of done:
+
+- `swift test`, `swift build`, and package verification pass.
+- Preview Demo Week shows the complete seven-seed Weekly Bloom ending without mutating real check-ins.
+- The Home screen clearly answers what happens after seven seeds.
 
 ## Stage 0 - Award Research
 

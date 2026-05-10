@@ -2,7 +2,7 @@ import SwiftUI
 
 struct EmotionGardenView: View {
     let title: String
-    let moods: [Mood]
+    let seeds: [GardenSeed]
     let totalPlots: Int
     let progressText: String
     let accessibilityValue: String
@@ -16,27 +16,31 @@ struct EmotionGardenView: View {
         max(totalPlots, 0)
     }
 
+    private var visibleSeeds: [GardenSeed] {
+        Array(seeds.prefix(safeTotalPlots))
+    }
+
     private var visibleMoods: [Mood] {
-        Array(moods.prefix(safeTotalPlots))
+        visibleSeeds.map(\.mood)
     }
 
     private var newestMoodIndex: Int? {
-        visibleMoods.indices.last
+        visibleSeeds.indices.last
     }
 
-    private var newestMood: Mood? {
-        visibleMoods.last
+    private var newestSeed: GardenSeed? {
+        visibleSeeds.last
     }
 
-    private var selectedMood: Mood? {
+    private var selectedSeed: GardenSeed? {
         guard
             let selectedPlotIndex,
-            visibleMoods.indices.contains(selectedPlotIndex)
+            visibleSeeds.indices.contains(selectedPlotIndex)
         else {
             return nil
         }
 
-        return visibleMoods[selectedPlotIndex]
+        return visibleSeeds[selectedPlotIndex]
     }
 
     private var wrappedColumns: [GridItem] {
@@ -45,32 +49,34 @@ struct EmotionGardenView: View {
 
     var body: some View {
         ZStack {
-            if !visibleMoods.isEmpty {
-                GardenAtmosphereView(moods: visibleMoods)
+            if !visibleSeeds.isEmpty {
+                GardenAtmosphereView(seeds: visibleSeeds)
                     .allowsHitTesting(false)
             }
 
             VStack(alignment: .leading, spacing: 16) {
                 header
 
-                if let newestMood {
+                if let newestSeed {
                     GardenPayoffBannerView(
-                        mood: newestMood,
-                        completedCount: visibleMoods.count,
+                        seed: newestSeed,
+                        completedCount: visibleSeeds.count,
                         totalCount: safeTotalPlots
                     )
 
                     GardenMemoryStripView(
-                        moods: visibleMoods,
+                        seeds: visibleSeeds,
                         totalCount: safeTotalPlots
                     )
+
+                    GardenEcologyLineView(seeds: visibleSeeds)
                 }
 
                 plotLayout
 
-                if let selectedMood {
+                if let selectedSeed {
                     GardenPlantDetailView(
-                        mood: selectedMood,
+                        seed: selectedSeed,
                         isNewest: selectedPlotIndex == newestMoodIndex
                     )
                 }
@@ -90,7 +96,7 @@ struct EmotionGardenView: View {
     }
 
     private func animateNewestPlant() {
-        if selectedPlotIndex == nil || selectedMood == nil {
+        if selectedPlotIndex == nil || selectedSeed == nil {
             selectedPlotIndex = newestMoodIndex
         }
 
@@ -169,7 +175,7 @@ struct EmotionGardenView: View {
 
     private func plot(at index: Int) -> some View {
         EmotionGardenPlotView(
-            mood: visibleMoods.indices.contains(index) ? visibleMoods[index] : nil,
+            seed: visibleSeeds.indices.contains(index) ? visibleSeeds[index] : nil,
             isSelected: selectedPlotIndex == index,
             isNewest: newestMoodIndex == index,
             newestPlantIsGrown: newestPlantIsGrown || reduceMotion
@@ -180,7 +186,7 @@ struct EmotionGardenView: View {
 }
 
 private struct GardenMemoryStripView: View {
-    let moods: [Mood]
+    let seeds: [GardenSeed]
     let totalCount: Int
 
     var body: some View {
@@ -192,14 +198,14 @@ private struct GardenMemoryStripView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(Array(moods.enumerated()), id: \.offset) { index, mood in
+                    ForEach(Array(seeds.enumerated()), id: \.offset) { index, seed in
                         GardenMemoryChipView(
                             index: index + 1,
-                            mood: mood
+                            seed: seed
                         )
                     }
 
-                    ForEach(moods.count..<max(totalCount, moods.count), id: \.self) { index in
+                    ForEach(seeds.count..<max(totalCount, seeds.count), id: \.self) { index in
                         GardenMemoryEmptyChipView(index: index + 1)
                     }
                 }
@@ -212,14 +218,14 @@ private struct GardenMemoryStripView: View {
     }
 
     private var accessibilityValue: String {
-        guard !moods.isEmpty else {
+        guard !seeds.isEmpty else {
             return "No transformed storms yet."
         }
 
-        let memory = moods
+        let memory = seeds
             .enumerated()
-            .map { index, mood in
-                "Seed \(index + 1): \(mood.rawValue)"
+            .map { index, seed in
+                "Seed \(index + 1): \(seed.mood.rawValue), \(seed.lane.title)"
             }
             .joined(separator: ", ")
 
@@ -229,7 +235,11 @@ private struct GardenMemoryStripView: View {
 
 private struct GardenMemoryChipView: View {
     let index: Int
-    let mood: Mood
+    let seed: GardenSeed
+
+    private var mood: Mood {
+        seed.mood
+    }
 
     var body: some View {
         HStack(spacing: 6) {
@@ -245,6 +255,11 @@ private struct GardenMemoryChipView: View {
                 .foregroundStyle(mood.tint)
                 .accessibilityHidden(true)
 
+            Image(systemName: seed.lane.symbolName)
+                .font(.caption2.bold())
+                .foregroundStyle(mood.tint.opacity(0.82))
+                .accessibilityHidden(true)
+
             Text(mood.rawValue)
                 .font(.caption.weight(.medium))
                 .foregroundStyle(.primary)
@@ -257,7 +272,7 @@ private struct GardenMemoryChipView: View {
                 .stroke(mood.tint.opacity(0.22), lineWidth: 1)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Seed \(index), \(mood.rawValue)")
+        .accessibilityLabel("Seed \(index), \(mood.rawValue), \(seed.lane.title)")
     }
 }
 
@@ -275,8 +290,102 @@ private struct GardenMemoryEmptyChipView: View {
     }
 }
 
+private struct GardenEcologyLineView: View {
+    let seeds: [GardenSeed]
+
+    private var newestSeed: GardenSeed? {
+        seeds.last
+    }
+
+    private var dominantMood: Mood? {
+        dominantValue(in: seeds.map(\.mood))
+    }
+
+    private var dominantLane: GrowthLane? {
+        dominantValue(in: seeds.map(\.lane))
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: dominantLane?.symbolName ?? "sparkles")
+                .font(.subheadline.bold())
+                .foregroundStyle(newestSeed?.mood.tint ?? .green)
+                .frame(width: 22)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Living garden")
+                    .font(.subheadline.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(ecologyLine)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Living garden")
+        .accessibilityValue(ecologyLine)
+    }
+
+    private var ecologyLine: String {
+        guard let dominantMood, let dominantLane else {
+            return "The garden is waiting for its first weather pattern."
+        }
+
+        let moodPhrase = switch dominantMood {
+        case .calm:
+            "clearer light"
+        case .happy:
+            "warmer bloom"
+        case .tired:
+            "quieter night growth"
+        case .stressed:
+            "softened storm traces"
+        case .unsure:
+            "half-open question buds"
+        }
+
+        let lanePhrase = switch dominantLane {
+        case .now:
+            "stronger roots"
+        case .later:
+            "patient buds"
+        case .release:
+            "more open air"
+        }
+
+        return "\(dominantMood.rawValue) gives the garden \(moodPhrase), while \(dominantLane.title.lowercased()) adds \(lanePhrase)."
+    }
+
+    private func dominantValue<Value: Hashable>(in values: [Value]) -> Value? {
+        guard let newest = values.last else {
+            return nil
+        }
+
+        let counts = values.reduce(into: [Value: Int]()) { partialResult, value in
+            partialResult[value, default: 0] += 1
+        }
+
+        var dominant = newest
+        var dominantCount = counts[dominant, default: 0]
+
+        for value in values.reversed() {
+            let count = counts[value, default: 0]
+            if count > dominantCount {
+                dominant = value
+                dominantCount = count
+            }
+        }
+
+        return dominant
+    }
+}
+
 private struct GardenAtmosphereView: View {
-    let moods: [Mood]
+    let seeds: [GardenSeed]
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -300,15 +409,16 @@ private struct GardenAtmosphereView: View {
         size: CGSize,
         time: TimeInterval
     ) {
-        guard !moods.isEmpty else {
+        guard !seeds.isEmpty else {
             return
         }
 
         let width = max(size.width, 1)
         let height = max(size.height, 1)
-        let denominator = max(moods.count - 1, 1)
+        let denominator = max(seeds.count - 1, 1)
 
-        for (index, mood) in moods.enumerated() {
+        for (index, seed) in seeds.enumerated() {
+            let mood = seed.mood
             let progress = CGFloat(index) / CGFloat(denominator)
             let drift = sin(time * 0.8 + Double(index) * 0.9) * 10
             let center = CGPoint(
@@ -337,17 +447,94 @@ private struct GardenAtmosphereView: View {
                 with: .color(mood.tint.opacity(0.10)),
                 lineWidth: 1
             )
+
+            drawLaneConsequence(
+                seed.lane,
+                mood: mood,
+                in: &context,
+                center: center,
+                radius: radius,
+                time: time
+            )
+        }
+    }
+
+    private func drawLaneConsequence(
+        _ lane: GrowthLane,
+        mood: Mood,
+        in context: inout GraphicsContext,
+        center: CGPoint,
+        radius: CGFloat,
+        time: TimeInterval
+    ) {
+        switch lane {
+        case .now:
+            for rootIndex in 0..<3 {
+                var root = Path()
+                let angle = CGFloat(rootIndex - 1) * 0.42
+                root.move(to: CGPoint(x: center.x, y: center.y + radius * 0.25))
+                root.addQuadCurve(
+                    to: CGPoint(
+                        x: center.x + sin(angle) * radius * 0.62,
+                        y: center.y + radius * 0.74
+                    ),
+                    control: CGPoint(
+                        x: center.x + sin(angle) * radius * 0.22,
+                        y: center.y + radius * 0.52
+                    )
+                )
+                context.stroke(
+                    root,
+                    with: .color(mood.tint.opacity(0.12)),
+                    style: StrokeStyle(lineWidth: 1.4, lineCap: .round)
+                )
+            }
+        case .later:
+            let budRadius = radius * 0.13
+            let budCenter = CGPoint(
+                x: center.x + radius * 0.38,
+                y: center.y - radius * 0.30 + sin(time + center.x) * 2
+            )
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: budCenter.x - budRadius,
+                    y: budCenter.y - budRadius,
+                    width: budRadius * 2,
+                    height: budRadius * 2.3
+                )),
+                with: .color(mood.tint.opacity(0.16))
+            )
+        case .release:
+            for windIndex in 0..<2 {
+                var wind = Path()
+                let y = center.y - radius * (0.18 + CGFloat(windIndex) * 0.18)
+                wind.move(to: CGPoint(x: center.x - radius * 0.48, y: y))
+                wind.addCurve(
+                    to: CGPoint(x: center.x + radius * 0.55, y: y + sin(time) * 3),
+                    control1: CGPoint(x: center.x - radius * 0.12, y: y - 9),
+                    control2: CGPoint(x: center.x + radius * 0.24, y: y + 9)
+                )
+                context.stroke(
+                    wind,
+                    with: .color(mood.tint.opacity(0.13)),
+                    style: StrokeStyle(lineWidth: 1.2, lineCap: .round)
+                )
+            }
         }
     }
 }
 
 private struct GardenPayoffBannerView: View {
-    let mood: Mood
+    let seed: GardenSeed
     let completedCount: Int
     let totalCount: Int
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var glow = false
+
+    private var mood: Mood {
+        seed.mood
+    }
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
@@ -367,7 +554,7 @@ private struct GardenPayoffBannerView: View {
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("\(mood.rawValue) became \(mood.plantAccessibilityName.lowercased()). \(completedCount)/\(totalCount) \(seedWord) growing this week.")
+                Text("\(mood.rawValue) became \(mood.plantAccessibilityName.lowercased()). \(seed.lane.gardenConsequenceTitle) changed the garden. \(completedCount)/\(totalCount) \(seedWord) growing this week.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -383,7 +570,7 @@ private struct GardenPayoffBannerView: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Storm planted")
-        .accessibilityValue("\(mood.rawValue) became \(mood.plantAccessibilityName.lowercased()). \(completedCount) of \(totalCount) \(seedWord) growing this week.")
+        .accessibilityValue("\(mood.rawValue) became \(mood.plantAccessibilityName.lowercased()). \(seed.lane.gardenConsequenceDetail) \(completedCount) of \(totalCount) \(seedWord) growing this week.")
         .onAppear {
             guard !reduceMotion else {
                 glow = true
@@ -402,7 +589,7 @@ private struct GardenPayoffBannerView: View {
 }
 
 private struct EmotionGardenPlotView: View {
-    let mood: Mood?
+    let seed: GardenSeed?
     let isSelected: Bool
     let isNewest: Bool
     let newestPlantIsGrown: Bool
@@ -414,7 +601,11 @@ private struct EmotionGardenPlotView: View {
     @ScaledMetric(relativeTo: .body) private var plantFrameHeight: CGFloat = 78
 
     private var isGrown: Bool {
-        mood != nil
+        seed != nil
+    }
+
+    private var mood: Mood? {
+        seed?.mood
     }
 
     private var growthScale: CGFloat {
@@ -445,6 +636,14 @@ private struct EmotionGardenPlotView: View {
                     EmotionPlantView(mood: mood)
                         .scaleEffect(growthScale, anchor: .bottom)
                         .opacity(plantOpacity)
+
+                    if let seed {
+                        LaneConsequenceGlyphView(
+                            lane: seed.lane,
+                            tint: mood.tint
+                        )
+                        .offset(x: 18, y: -4)
+                    }
                 } else {
                     EmptyPlotSeedView()
                 }
@@ -506,8 +705,12 @@ private struct EmotionGardenPlotView: View {
 }
 
 private struct GardenPlantDetailView: View {
-    let mood: Mood
+    let seed: GardenSeed
     let isNewest: Bool
+
+    private var mood: Mood {
+        seed.mood
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -525,6 +728,18 @@ private struct GardenPlantDetailView: View {
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            Divider()
+
+            Label(seed.lane.gardenConsequenceTitle, systemImage: seed.lane.symbolName)
+                .font(.subheadline.bold())
+                .foregroundStyle(mood.tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(seed.lane.gardenConsequenceDetail)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
@@ -535,11 +750,29 @@ private struct GardenPlantDetailView: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(detailTitle)
-        .accessibilityValue("\(mood.gardenReflectionNote) \(mood.gardenRevisitPrompt)")
+        .accessibilityValue("\(mood.gardenReflectionNote) \(mood.gardenRevisitPrompt) \(seed.lane.gardenConsequenceDetail)")
     }
 
     private var detailTitle: String {
         isNewest ? "Newest \(mood.plantAccessibilityName)" : mood.plantAccessibilityName
+    }
+}
+
+private struct LaneConsequenceGlyphView: View {
+    let lane: GrowthLane
+    let tint: Color
+
+    var body: some View {
+        Image(systemName: lane.symbolName)
+            .font(.caption2.bold())
+            .foregroundStyle(.white)
+            .frame(width: 22, height: 22)
+            .background(tint.opacity(0.88), in: Circle())
+            .overlay {
+                Circle()
+                    .stroke(Color.white.opacity(0.72), lineWidth: 1)
+            }
+            .accessibilityHidden(true)
     }
 }
 

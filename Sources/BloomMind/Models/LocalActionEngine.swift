@@ -102,6 +102,31 @@ enum LocalActionEngine {
         )
     }
 
+    static func weeklyInsight(for seeds: [GardenSeed]) -> String {
+        guard
+            let dominantMood = dominantValue(in: seeds.map(\.mood)),
+            let dominantLane = dominantValue(in: seeds.map(\.lane))
+        else {
+            return "The garden is still learning the shape of this week."
+        }
+
+        return "\(dominantMood.weeklyInsightSentence) \(dominantLane.weeklyInsightSentence)"
+    }
+
+    static func nextWeekIntention(for seeds: [GardenSeed]) -> String {
+        guard
+            let dominantMood = dominantValue(in: seeds.map(\.mood)),
+            let dominantLane = dominantValue(in: seeds.map(\.lane)),
+            let dominantTheme = dominantValue(in: seeds.map(\.theme))
+        else {
+            return "Next week, plant one seed when a feeling becomes loud enough to name."
+        }
+
+        let themePhrase = dominantTheme.nextWeekThemePhrase
+        let lanePhrase = dominantLane.nextWeekLanePhrase
+        return "Next week, notice \(themePhrase) early and \(lanePhrase) when the storm starts to gather. \(dominantMood.nextWeekMoodReminder)"
+    }
+
     private static let detectableThemes: [ReflectionTheme] = [
         .pressure,
         .school,
@@ -134,6 +159,29 @@ enum LocalActionEngine {
         }
 
         return "This looks like a \(theme.displayName.lowercased()) theme, detected locally, and uses your \(mood.rawValue.lowercased()) mood to keep the next step small. The reflection stays on this device."
+    }
+
+    private static func dominantValue<Value: Hashable>(in values: [Value]) -> Value? {
+        guard let newest = values.last else {
+            return nil
+        }
+
+        let counts = values.reduce(into: [Value: Int]()) { partialResult, value in
+            partialResult[value, default: 0] += 1
+        }
+
+        var dominant = newest
+        var dominantCount = counts[dominant, default: 0]
+
+        for value in values.reversed() {
+            let count = counts[value, default: 0]
+            if count > dominantCount {
+                dominant = value
+                dominantCount = count
+            }
+        }
+
+        return dominant
     }
 
     private struct DetectionText {
@@ -386,6 +434,79 @@ private extension Mood {
             "Make it tiny:"
         case .unsure:
             "Make it clearer:"
+        }
+    }
+
+    var weeklyInsightSentence: String {
+        switch self {
+        case .calm:
+            "Calm showed up as a stabilizing pattern, which can make the next step easier to notice."
+        case .happy:
+            "Happy moments became part of the record, so the week is not only remembered by pressure."
+        case .tired:
+            "Tired feelings appeared as useful signals to make the next step smaller and kinder."
+        case .stressed:
+            "Stress appeared often, but naming it kept it from becoming one invisible cloud."
+        case .unsure:
+            "Uncertainty appeared often, and the garden turned it into something answerable."
+        }
+    }
+
+    var nextWeekMoodReminder: String {
+        switch self {
+        case .calm:
+            "Protect one steady thing before adding more."
+        case .happy:
+            "Let good energy count before rushing to the next demand."
+        case .tired:
+            "Make the first step smaller before the week asks for too much."
+        case .stressed:
+            "Separate the loudest task from the whole sky."
+        case .unsure:
+            "Name one question before trying to solve the whole week."
+        }
+    }
+}
+
+private extension GrowthLane {
+    var weeklyInsightSentence: String {
+        switch self {
+        case .now:
+            "Your most repeated move was choosing one visible step, so the week kept turning pressure into action."
+        case .later:
+            "Your most repeated move was giving bigger worries a place to wait, so everything did not have to happen at once."
+        case .release:
+            "Your most repeated move was letting one pressure leave the minute, so the garden gained more open air."
+        }
+    }
+
+    var nextWeekLanePhrase: String {
+        switch self {
+        case .now:
+            "choose one visible step"
+        case .later:
+            "give the bigger worry a place to wait"
+        case .release:
+            "let one thing leave this minute"
+        }
+    }
+}
+
+private extension ReflectionTheme {
+    var nextWeekThemePhrase: String {
+        switch self {
+        case .school:
+            "the school task that is getting loud"
+        case .friendship:
+            "the relationship worry before it becomes the whole day"
+        case .rest:
+            "your energy level before it turns into exhaustion"
+        case .pressure:
+            "the moment everything starts sounding urgent"
+        case .uncertainty:
+            "the question hiding inside the fog"
+        case .general:
+            "the feeling before it needs a perfect name"
         }
     }
 }

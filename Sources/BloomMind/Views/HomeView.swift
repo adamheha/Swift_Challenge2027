@@ -72,11 +72,18 @@ struct HomeView: View {
         VStack(spacing: pageSpacing) {
             EmotionGardenView(
                 title: CheckInState.gardenPreviewTitle,
-                moods: gardenDisplayState.gardenMoodsThisWeek,
+                seeds: gardenDisplayState.gardenSeedsThisWeek,
                 totalPlots: CheckInState.weeklyCheckInGoal,
                 progressText: gardenDisplayState.gardenProgressText,
                 accessibilityValue: gardenDisplayState.gardenAccessibilityValue
             )
+
+            if gardenDisplayState.isWeeklyBloomUnlocked {
+                WeeklyBloomPayoffView(
+                    payoff: gardenDisplayState.weeklyBloomPayoff,
+                    seeds: gardenDisplayState.gardenSeedsThisWeek
+                )
+            }
 
             WeekReviewCardView(review: gardenDisplayState.weeklyReview)
         }

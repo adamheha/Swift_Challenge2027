@@ -15,6 +15,7 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 - `BloomMind_Stage4Review.md`: Stage 4 final review snapshot, demo rehearsal script, and Stage 5 handoff.
 - `BloomMind_Stage5Packaging.md`: Stage 5 official rules refresh, packaging command, and generated ZIP verification.
 - `BloomMind_Stage5DeviceReview.md`: Stage 5 full Xcode, Swift Playgrounds, and iPad smoke-check plan.
+- `BloomMind_Stage6WeeklyBloom.md`: Stage 6 weekly bloom payoff, living garden, and 7/7 reveal notes.
 - `Packaging/BloomMindSubmissionPackage.swift`: submission-only Swift package manifest.
 - `Scripts/create_submission_package.sh`: repeatable `.swiftpm` ZIP packaging script.
 - `Scripts/verify_submission_package.sh`: repeatable submission ZIP verification script.
@@ -26,9 +27,9 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 5: Submission Packaging and Device Review - in progress.
+BloomMind 2.0 Stage 6: Weekly Bloom Payoff and Living Garden - in progress.
 
-Active branch: `codex/bloommind-2-stage-5`
+Active branch: `codex/bloommind-2-stage-6-weekly-bloom`
 
 Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. BloomMind 2.0 starts from that foundation and pushes the app toward a more memorable Swift Student Challenge experience.
 
@@ -47,6 +48,9 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - A Storm planted garden payoff banner connected to the newest mood and weekly seed count.
 - Week memory and Preview Demo Week affordances for reviewing a sample complete transformed week quickly without changing real check-ins.
 - A weekly review payoff card that summarizes the garden's current emotional pattern.
+- Garden seeds now remember mood, local theme, and the user's Now / Later / Let go choice.
+- The living garden changes copy, plant detail, atmosphere, and accessibility values based on those seed consequences.
+- A 7/7 Weekly Bloom payoff unlocks with a constellation reveal, week story, local emotional insight, closing ritual, next-week seed, and privacy note.
 - Adaptive Home layout that uses a two-column storm-and-garden composition on iPad/Mac review widths.
 - Wider Mac review window sizing and iPad review previews for the main flow.
 - Native SwiftUI `Canvas` pressure-storm visuals with orbit trails, high-contrast overlays, Reduce Motion support, and VoiceOver summaries.
@@ -85,13 +89,14 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - BloomMind 2.0 Stage 2: Interactive Sorting - complete.
 - BloomMind 2.0 Stage 3: Cinematic Garden Payoff - complete.
 - BloomMind 2.0 Stage 4: Final Review Polish - complete.
-- BloomMind 2.0 Stage 5: Submission Packaging and Device Review - in progress.
+- BloomMind 2.0 Stage 5: Submission Packaging and Device Review - complete locally, pending real Xcode/iPad smoke check.
+- BloomMind 2.0 Stage 6: Weekly Bloom Payoff and Living Garden - in progress.
 
 ## BloomMind 2.0 Goal
 
 BloomMind 2.0 turns the original gentle reflection garden into a complete Swift Student Challenge experience: a visible pressure storm, a tactile Now / Later / Let go transformation, a seed-planting payoff, and a private garden that remembers growth without exposing reflection text.
 
-The whole 2.0 target is to prove visual impact, meaningful interaction, a clear emotional story, Apple-native technical execution, privacy/safety, accessibility, and final `.swiftpm` submission readiness.
+The whole 2.0 target is to prove visual impact, meaningful interaction, a clear emotional story, Apple-native technical execution, privacy/safety, accessibility, and final `.swiftpm` submission readiness. The most important product upgrade is that a completed seven-seed week now resolves into a Weekly Bloom story instead of ending as a plain counter.
 
 ## BloomMind 2.0 Stage 1 Target
 
@@ -173,6 +178,20 @@ Stage 5 handoff:
 - Replace the personal story scaffold with the applicant's true specific moment.
 - Create and verify the final `.swiftpm` ZIP package.
 
+## BloomMind 2.0 Stage 6 Target
+
+Stage 6 makes the end of the weekly loop emotionally complete. After seven seeds, BloomMind should answer the user's implicit question: "What did this week become?"
+
+Progress so far:
+
+- Added `GardenSeed` so each planted seed stores mood, detected local theme, and the selected Now / Later / Let go lane.
+- Saved the selected sorting lane and detected theme when planting a seed.
+- Updated the garden so Now creates root language, Later creates bud language, and Let go creates open-air language.
+- Added a living garden line that turns the week's dominant mood and lane into a readable emotional ecology.
+- Added a 7/7 Weekly Bloom payoff with a constellation reveal, week story, local insight, closing ritual, next-week seed, and privacy note.
+- Updated Preview Demo Week so the full award path shows mood, theme, lane consequences, and the Weekly Bloom ending without changing real check-ins.
+- Added tests for seed consequence storage, Weekly Bloom unlock, privacy-preserving payoff copy, demo-week payoff, and garden accessibility values.
+
 ## Final Demo And Submission Review
 
 Use `BloomMind_SubmissionPackage.md` as the final review guide. The recommended one-minute demo path is:
@@ -184,7 +203,9 @@ Use `BloomMind_SubmissionPackage.md` as the final review guide. The recommended 
 5. Enter: `I have a project due today and feel pressure to finish everything.`
 6. Continue to the Growth Action screen.
 7. Confirm the local pressure-themed action appears with Now, Later, and Let go.
-8. Complete the check-in and confirm the emotion garden grows.
+8. Complete the check-in and confirm the emotion garden grows with a visible lane consequence.
+9. Tap Preview Demo Week.
+10. Confirm the seven-seed Weekly Bloom payoff appears and ends with a week story, insight, closing ritual, and next-week seed.
 
 Latest official rules check: on May 8, 2026, Apple's official pages still showed the 2026 challenge and 2026 terms. No 2027-specific official rules page was published during this check. The final package is aligned with the latest official 2026 requirements: `.swiftpm` ZIP, offline behavior, 25 MB ZIP limit, Swift Playgrounds 4.6 or Xcode 26 or later, English content, individual work, and disclosed AI assistance.
 
@@ -202,12 +223,12 @@ The generated package lives at:
 SubmissionBuild/BloomMind.swiftpm.zip
 ```
 
-First Stage 5 package verification:
+Current Stage 6 package refresh:
 
-- ZIP size: 30,272 bytes.
+- ZIP size: 38,004 bytes.
 - ZIP contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The ZIP excludes `.DS_Store` and `__MACOSX`.
-- The generated package builds with `swift build --package-path SubmissionBuild/BloomMind.swiftpm`.
+- The generated package includes the new `WeeklyBloomPayoffView.swift` source.
 
 Verify the generated package with:
 
