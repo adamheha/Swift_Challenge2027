@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 3.0 Stage 7 - Inner Garden World In Progress
+Current stage: BloomMind 3.1 Stage 8 - Direct Transformation Complete
 
-Current branch: `codex/bloommind-3-inner-garden-world`
+Current branch: `codex/bloommind-3-1-direct-transformation`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 3.0 Stage 8 - Final Story, Device Review, and Submission Rehearsal
+Next stage: BloomMind 3.2 Stage 9 - Device Review, Personal Story, and Final Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -211,7 +211,7 @@ Definition of done:
 
 ## BloomMind 3.0 Stage 7 - Inner Garden World
 
-Status: In Progress
+Status: Complete
 
 Goal: Make every private choice visibly change the world, so BloomMind feels less like a tracker and more like a living emotional landscape.
 
@@ -229,9 +229,37 @@ Completed in this branch:
 - Added unit coverage for live storm profiles, seed memory summaries, literacy unlocks, and return-tomorrow prompts.
 - Refreshed `SubmissionBuild/BloomMind.swiftpm.zip` with the Stage 7 sources; current ZIP size is 44,281 bytes.
 
+Completed by Stage 8:
+
+- Direct Storm Sorting turns live typed storm words into draggable fragments.
+- Drag-to-Plant turns the seed ritual into a physical interaction.
+- Garden Map zones make roots, buds, open air, and the center bloom explorable.
+- Weekly Bloom gained a true animated storm-to-seeds-to-world-to-bloom scene.
+- Completed weeks now generate a Week Artifact and archive-style ending.
+
+## BloomMind 3.1 Stage 8 - Direct Transformation
+
+Status: Complete
+
+Goal: Make the student feel that they personally changed the world: pulled the storm apart, dragged pieces into meaning, planted the seed, and watched the week become an artifact.
+
+Completed in this branch:
+
+- Added Direct Storm Sorting in Growth Action.
+- Live reflection keywords now appear as draggable storm fragments alongside mood, theme, Now, Later, and Let go fragments.
+- Added a "Pull the storm apart" header so the evaluator understands that the storm words themselves can be sorted.
+- Upgraded the seed-to-soil ritual from a plain button into Drag-to-Plant, with tap and accessibility fallbacks.
+- Added Garden Map zones: Underground Roots, Waiting Path, Open Sky, and Center Bloom.
+- Added seed evolution states: Just planted, Sprouting, Blooming, Resting, and Archived bloom.
+- Expanded seed detail cards so each seed communicates its current evolution state.
+- Added a true Weekly Bloom transformation animation: storm fragments gather, become seven seeds, land in the garden, create roots/buds/wind, and open the center bloom.
+- Added Week Artifact generation, including Weather stone, Moon pressed flower, Root compass, Question lantern, Sun archive, and Pressed bloom.
+- Reworked the archive preview so the completed week leaves a named emotional artifact instead of only a future promise.
+- Added unit coverage for seed evolution and artifact generation.
+- Refreshed `SubmissionBuild/BloomMind.swiftpm.zip` with the Stage 8 sources; current ZIP size is 49,747 bytes.
+
 Remaining:
 
-- Refresh and verify the generated `.swiftpm` package after Stage 7 changes.
 - Smoke check in full Xcode or Swift Playgrounds.
 - Smoke check on iPad or an iPad-sized simulator.
 - Replace the generic origin line with the applicant's true personal story.
@@ -239,8 +267,10 @@ Remaining:
 Definition of done:
 
 - `swift test`, `swift build`, and package verification pass.
-- The main flow clearly demonstrates input changing the storm, sorting changing the planting ritual, and planted seeds changing the world.
-- Preview Award Demo shows the complete 60-90 second evaluator path.
+- The Growth Action screen demonstrates direct storm sorting from typed words.
+- The planting ritual works by dragging the seed into the soil and by fallback tap.
+- The garden world exposes Now / Later / Let go consequences through map zones.
+- Preview Award Demo shows the complete 60-90 second path through Weekly Bloom artifact.
 
 ## Stage 0 - Award Research
 

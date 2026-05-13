@@ -83,7 +83,8 @@ struct WeeklyBloomPayoffView: View {
 
             PressedBloomArchivePreviewView(
                 seeds: seeds,
-                tint: accentColor
+                tint: accentColor,
+                artifact: payoff.artifact
             )
 
             HStack(alignment: .top, spacing: 10) {
@@ -203,6 +204,18 @@ private struct WeeklyBloomTimeLapseView: View {
                 .foregroundStyle(tint)
                 .fixedSize(horizontal: false, vertical: true)
 
+            WeeklyBloomTransformationAnimationView(
+                seeds: seeds,
+                tint: tint,
+                reveal: reveal
+            )
+            .frame(height: 188)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tint.opacity(0.24), lineWidth: 1)
+            }
+
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 8) {
                     phaseCards
@@ -254,6 +267,353 @@ private struct TimeLapsePhase {
     let count: Int
 }
 
+private struct WeeklyBloomTransformationAnimationView: View {
+    let seeds: [GardenSeed]
+    let tint: Color
+    let reveal: Bool
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            Canvas { context, size in
+                drawScene(
+                    in: &context,
+                    size: size,
+                    time: reduceMotion ? 8.8 : timeline.date.timeIntervalSinceReferenceDate
+                )
+            }
+        }
+        .background {
+            LinearGradient(
+                colors: [
+                    Color(red: 0.04, green: 0.08, blue: 0.10),
+                    tint.opacity(0.16),
+                    Color(red: 0.08, green: 0.13, blue: 0.12)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+        .overlay(alignment: .bottomLeading) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Storm -> Seeds -> World -> Bloom")
+                    .font(.caption.bold())
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.42), radius: 4, x: 0, y: 2)
+
+                Text("The animation remembers the pattern, not the private reflection text.")
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.78))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .shadow(color: .black.opacity(0.42), radius: 4, x: 0, y: 2)
+            }
+            .padding(12)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Animated week time-lapse")
+        .accessibilityValue("Storm fragments gather into seven seeds, fall into the garden world, grow roots, buds, and open air, then open the center bloom.")
+    }
+
+    private func drawScene(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        guard !seeds.isEmpty else {
+            return
+        }
+
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let cycle = reduceMotion ? 1 : time.truncatingRemainder(dividingBy: 8.8) / 8.8
+        let stormCenter = CGPoint(x: width * 0.5, y: height * 0.26)
+        let bloomCenter = CGPoint(x: width * 0.5, y: height * 0.55)
+        let groundY = height * 0.72
+        let progress = reveal ? cycle : 0
+
+        drawGround(in: &context, width: width, height: height, groundY: groundY)
+        drawStormCloud(in: &context, center: stormCenter, width: width, progress: progress)
+
+        for (index, seed) in seeds.prefix(7).enumerated() {
+            let finalX = width * (0.12 + CGFloat(index) / CGFloat(max(min(seeds.count, 7) - 1, 1)) * 0.76)
+            let seedTarget = CGPoint(x: finalX, y: groundY + CGFloat(index % 2) * 6)
+            let orbit = seedOrbitPoint(
+                center: stormCenter,
+                width: width,
+                index: index,
+                time: time
+            )
+            let staging = CGPoint(
+                x: width * (0.18 + CGFloat(index) / CGFloat(max(min(seeds.count, 7) - 1, 1)) * 0.64),
+                y: height * 0.38 + CGFloat(index % 2) * 8
+            )
+            let point = animatedSeedPoint(
+                start: orbit,
+                mid: staging,
+                end: seedTarget,
+                progress: progress
+            )
+
+            drawMovingSeed(
+                seed,
+                index: index,
+                at: point,
+                in: &context,
+                progress: progress
+            )
+
+            if progress > 0.46 {
+                let localGrowth = min(max((progress - 0.46) / 0.30, 0), 1)
+                drawLaneConsequence(
+                    seed,
+                    at: seedTarget,
+                    groundY: groundY,
+                    height: height,
+                    in: &context,
+                    progress: localGrowth,
+                    time: time
+                )
+            }
+        }
+
+        if progress > 0.68 {
+            drawCenterBloom(
+                in: &context,
+                center: bloomCenter,
+                tint: tint,
+                progress: min(max((progress - 0.68) / 0.26, 0), 1),
+                size: min(width, height) * 0.24
+            )
+        }
+    }
+
+    private func drawGround(
+        in context: inout GraphicsContext,
+        width: CGFloat,
+        height: CGFloat,
+        groundY: CGFloat
+    ) {
+        var path = Path()
+        path.move(to: CGPoint(x: 0, y: groundY))
+        path.addCurve(
+            to: CGPoint(x: width, y: groundY - 8),
+            control1: CGPoint(x: width * 0.28, y: groundY - 28),
+            control2: CGPoint(x: width * 0.68, y: groundY + 20)
+        )
+        path.addLine(to: CGPoint(x: width, y: height))
+        path.addLine(to: CGPoint(x: 0, y: height))
+        path.closeSubpath()
+
+        context.fill(
+            path,
+            with: .linearGradient(
+                Gradient(colors: [
+                    Color(red: 0.24, green: 0.36, blue: 0.24).opacity(0.76),
+                    Color(red: 0.20, green: 0.14, blue: 0.10).opacity(0.92)
+                ]),
+                startPoint: CGPoint(x: width * 0.5, y: groundY),
+                endPoint: CGPoint(x: width * 0.5, y: height)
+            )
+        )
+    }
+
+    private func drawStormCloud(
+        in context: inout GraphicsContext,
+        center: CGPoint,
+        width: CGFloat,
+        progress: Double
+    ) {
+        let opacity = max(0.05, 0.32 * (1 - progress))
+        for index in 0..<8 {
+            let angle = Double(index) / 8 * Double.pi * 2
+            let radius = width * (0.05 + CGFloat(index % 3) * 0.018)
+            let point = CGPoint(
+                x: center.x + CGFloat(cos(angle)) * radius,
+                y: center.y + CGFloat(sin(angle)) * radius * 0.52
+            )
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: point.x - radius * 0.58,
+                    y: point.y - radius * 0.36,
+                    width: radius * 1.16,
+                    height: radius * 0.72
+                )),
+                with: .color(tint.opacity(opacity))
+            )
+        }
+    }
+
+    private func seedOrbitPoint(
+        center: CGPoint,
+        width: CGFloat,
+        index: Int,
+        time: TimeInterval
+    ) -> CGPoint {
+        let angle = Double(index) / Double(max(seeds.count, 1)) * Double.pi * 2 + time * 0.9
+        let radius = width * (0.11 + CGFloat(index % 2) * 0.025)
+        return CGPoint(
+            x: center.x + CGFloat(cos(angle)) * radius,
+            y: center.y + CGFloat(sin(angle)) * radius * 0.56
+        )
+    }
+
+    private func animatedSeedPoint(
+        start: CGPoint,
+        mid: CGPoint,
+        end: CGPoint,
+        progress: Double
+    ) -> CGPoint {
+        if progress < 0.32 {
+            let t = progress / 0.32
+            return interpolate(from: start, to: mid, t: ease(t))
+        }
+
+        if progress < 0.62 {
+            let t = (progress - 0.32) / 0.30
+            return interpolate(from: mid, to: end, t: ease(t))
+        }
+
+        return end
+    }
+
+    private func drawMovingSeed(
+        _ seed: GardenSeed,
+        index: Int,
+        at point: CGPoint,
+        in context: inout GraphicsContext,
+        progress: Double
+    ) {
+        let localReveal = min(max(progress * 1.8 - Double(index) * 0.08, 0.18), 1)
+        let radius = CGFloat(7 + localReveal * 6)
+        context.fill(
+            Path(ellipseIn: CGRect(
+                x: point.x - radius,
+                y: point.y - radius,
+                width: radius * 2,
+                height: radius * 2
+            )),
+            with: .color(seed.mood.tint.opacity(0.36 + localReveal * 0.42))
+        )
+        context.stroke(
+            Path(ellipseIn: CGRect(
+                x: point.x - radius - 4,
+                y: point.y - radius - 4,
+                width: radius * 2 + 8,
+                height: radius * 2 + 8
+            )),
+            with: .color(Color.white.opacity(0.10 + localReveal * 0.22)),
+            lineWidth: 1
+        )
+    }
+
+    private func drawLaneConsequence(
+        _ seed: GardenSeed,
+        at point: CGPoint,
+        groundY: CGFloat,
+        height: CGFloat,
+        in context: inout GraphicsContext,
+        progress: Double,
+        time: TimeInterval
+    ) {
+        switch seed.lane {
+        case .now:
+            for index in 0..<3 {
+                var root = Path()
+                let progressValue = CGFloat(progress)
+                let spread = CGFloat(index - 1) * 28 * progressValue
+                root.move(to: point)
+                root.addQuadCurve(
+                    to: CGPoint(x: point.x + spread, y: groundY + 46 * progressValue),
+                    control: CGPoint(x: point.x + spread * 0.18, y: groundY + 24 * progressValue)
+                )
+                context.stroke(
+                    root,
+                    with: .color(seed.mood.tint.opacity(0.18 + progress * 0.32)),
+                    style: StrokeStyle(lineWidth: 1.8, lineCap: .round)
+                )
+            }
+        case .later:
+            let budHeight = 28 * CGFloat(progress)
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: point.x + 10,
+                    y: point.y - budHeight - 12,
+                    width: 18,
+                    height: max(2, budHeight)
+                )),
+                with: .color(seed.mood.tint.opacity(0.24 + progress * 0.34))
+            )
+        case .release:
+            var wind = Path()
+            let progressValue = CGFloat(progress)
+            let drift = CGFloat(sin(time + Double(point.x))) * 4
+            wind.move(to: CGPoint(x: point.x - 32 * progressValue, y: height * 0.32 + drift))
+            wind.addCurve(
+                to: CGPoint(x: point.x + 54 * progressValue, y: height * 0.32 - drift),
+                control1: CGPoint(x: point.x - 10, y: height * 0.25),
+                control2: CGPoint(x: point.x + 28, y: height * 0.39)
+            )
+            context.stroke(
+                wind,
+                with: .color(seed.mood.tint.opacity(0.18 + progress * 0.32)),
+                style: StrokeStyle(lineWidth: 1.5, lineCap: .round)
+            )
+        }
+    }
+
+    private func drawCenterBloom(
+        in context: inout GraphicsContext,
+        center: CGPoint,
+        tint: Color,
+        progress: Double,
+        size: CGFloat
+    ) {
+        let petalCount = 7
+        for index in 0..<petalCount {
+            let angle = Double(index) / Double(petalCount) * Double.pi * 2
+            let radius = size * CGFloat(progress)
+            let petalCenter = CGPoint(
+                x: center.x + CGFloat(cos(angle)) * radius * 0.34,
+                y: center.y + CGFloat(sin(angle)) * radius * 0.34
+            )
+            var petal = Path()
+            petal.addEllipse(in: CGRect(
+                x: petalCenter.x - radius * 0.13,
+                y: petalCenter.y - radius * 0.28,
+                width: radius * 0.26,
+                height: radius * 0.56
+            ))
+            context.fill(
+                petal.rotation(.radians(angle), anchor: petalCenter),
+                with: .color(tint.opacity(0.18 + progress * 0.48))
+            )
+        }
+
+        let core = max(4, size * 0.16 * CGFloat(progress))
+        context.fill(
+            Path(ellipseIn: CGRect(
+                x: center.x - core,
+                y: center.y - core,
+                width: core * 2,
+                height: core * 2
+            )),
+            with: .color(Color.white.opacity(0.32 + progress * 0.44))
+        )
+    }
+
+    private func interpolate(from start: CGPoint, to end: CGPoint, t: Double) -> CGPoint {
+        CGPoint(
+            x: start.x + (end.x - start.x) * CGFloat(t),
+            y: start.y + (end.y - start.y) * CGFloat(t)
+        )
+    }
+
+    private func ease(_ value: Double) -> Double {
+        value * value * (3 - 2 * value)
+    }
+}
+
 private struct PayoffLineView: View {
     let title: String
     let systemImage: String
@@ -286,6 +646,7 @@ private struct PayoffLineView: View {
 private struct PressedBloomArchivePreviewView: View {
     let seeds: [GardenSeed]
     let tint: Color
+    let artifact: WeeklyBloomArtifact
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -305,17 +666,27 @@ private struct PressedBloomArchivePreviewView: View {
                 Circle()
                     .fill(Color.white.opacity(0.68))
                     .frame(width: 14, height: 14)
+
+                Image(systemName: artifact.symbolName)
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+                    .offset(y: 26)
             }
             .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 5) {
-                Text("Past bloom preview")
+                Text(artifact.title)
                     .font(.subheadline.bold())
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("At the end of a real week, this bloom can become a pressed flower in the archive instead of disappearing.")
+                Text(artifact.detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(artifact.line)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.primary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .layoutPriority(1)
@@ -327,8 +698,8 @@ private struct PressedBloomArchivePreviewView: View {
                 .stroke(tint.opacity(0.18), lineWidth: 1)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Past bloom preview")
-        .accessibilityValue("This completed bloom can become a pressed flower in the archive instead of disappearing.")
+        .accessibilityLabel(artifact.title)
+        .accessibilityValue("\(artifact.detail) \(artifact.line)")
     }
 }
 

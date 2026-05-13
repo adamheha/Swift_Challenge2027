@@ -161,6 +161,21 @@ import Testing
     #expect(seed.privateMemorySentence == "A pressure seed became lightened by letting go without saving the private words.")
 }
 
+@Test func seedEvolutionStagesReflectWeekProgressAndLane() {
+    let seeds = [
+        GardenSeed(mood: .stressed, lane: .release, theme: .pressure),
+        GardenSeed(mood: .tired, lane: .later, theme: .rest),
+        GardenSeed(mood: .calm, lane: .now, theme: .school)
+    ]
+
+    #expect(seeds[0].evolutionStage(index: 0, totalCount: seeds.count) == .blooming)
+    #expect(seeds[1].evolutionStage(index: 1, totalCount: seeds.count) == .resting)
+    #expect(seeds[2].evolutionStage(index: 2, totalCount: seeds.count) == .justPlanted)
+
+    let fullWeek = CheckInState.demoGardenSeeds
+    #expect(fullWeek[0].evolutionStage(index: 0, totalCount: fullWeek.count) == .archived)
+}
+
 @Test func checkInCompletionUsesUnsurePlantWhenMoodIsMissing() {
     var state = CheckInState()
 
@@ -270,10 +285,13 @@ import Testing
     #expect(payoff.dominantMood == .stressed)
     #expect(payoff.dominantLane == .release)
     #expect(payoff.literacyUnlock.title == "Urgent is not the same as important")
+    #expect(payoff.artifact.title == "Weather stone")
+    #expect(payoff.artifact.line == "This was a pressure week that learned to make air.")
     #expect(payoff.closingLine == "I can carry less and still keep growing.")
     #expect(!payoff.story.contains(reflection))
     #expect(!payoff.insight.contains(reflection))
     #expect(!payoff.nextWeekIntention.contains(reflection))
+    #expect(!payoff.artifact.line.contains(reflection))
     #expect(payoff.privacyNote == "BloomMind remembers the growth pattern, not your private reflection text.")
 }
 
@@ -287,6 +305,23 @@ import Testing
     #expect(payoff.story.contains("Steadiness was the clearest color"))
     #expect(payoff.nextWeekIntention.contains("Next week"))
     #expect(payoff.literacyUnlock.detail.contains("Pressure often gets louder"))
+    #expect(payoff.artifact.title == "Weather stone")
+    #expect(payoff.accessibilityValue.contains("Weather stone"))
+}
+
+@Test func weeklyArtifactChoosesPersonalArtifactFromPattern() {
+    let tiredSeeds = [
+        GardenSeed(mood: .tired, lane: .later, theme: .rest),
+        GardenSeed(mood: .tired, lane: .now, theme: .rest),
+        GardenSeed(mood: .calm, lane: .later, theme: .school)
+    ]
+    let unsureSeeds = [
+        GardenSeed(mood: .unsure, lane: .now, theme: .uncertainty),
+        GardenSeed(mood: .calm, lane: .release, theme: .uncertainty)
+    ]
+
+    #expect(LocalActionEngine.weeklyArtifact(for: tiredSeeds).title == "Moon pressed flower")
+    #expect(LocalActionEngine.weeklyArtifact(for: unsureSeeds).title == "Question lantern")
 }
 
 @Test func returnTomorrowPromptReflectsLatestSeedOrWeeklyBloom() {

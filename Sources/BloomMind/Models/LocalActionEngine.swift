@@ -175,6 +175,69 @@ enum LocalActionEngine {
         )
     }
 
+    static func weeklyArtifact(for seeds: [GardenSeed]) -> WeeklyBloomArtifact {
+        let dominantMood = dominantValue(in: seeds.map(\.mood))
+        let dominantLane = dominantValue(in: seeds.map(\.lane))
+        let dominantTheme = dominantValue(in: seeds.map(\.theme)) ?? .general
+
+        switch (dominantMood, dominantLane, dominantTheme) {
+        case (.stressed?, .release?, _), (_, .release?, .pressure):
+            return WeeklyBloomArtifact(
+                title: "Weather stone",
+                detail: "A small artifact for a pressure week that made more air.",
+                line: "This was a pressure week that learned to make air.",
+                symbolName: "wind",
+                dominantMood: dominantMood,
+                dominantLane: dominantLane
+            )
+        case (.tired?, _, _), (_, .later?, .rest):
+            return WeeklyBloomArtifact(
+                title: "Moon pressed flower",
+                detail: "A quiet artifact for a week that protected rest and smaller steps.",
+                line: "This was a tired week that still found a softer way to grow.",
+                symbolName: "moon.stars",
+                dominantMood: dominantMood,
+                dominantLane: dominantLane
+            )
+        case (_, .now?, .school), (.calm?, .now?, _):
+            return WeeklyBloomArtifact(
+                title: "Root compass",
+                detail: "A grounded artifact for a week that kept choosing the visible next step.",
+                line: "This week turned a whole sky into one step at a time.",
+                symbolName: "arrow.down.right.circle",
+                dominantMood: dominantMood,
+                dominantLane: dominantLane
+            )
+        case (.unsure?, _, _), (_, _, .uncertainty):
+            return WeeklyBloomArtifact(
+                title: "Question lantern",
+                detail: "A soft artifact for a week that changed fog into answerable questions.",
+                line: "This week did not need certainty before it could move.",
+                symbolName: "questionmark.bubble",
+                dominantMood: dominantMood,
+                dominantLane: dominantLane
+            )
+        case (.happy?, _, _), (_, .later?, .friendship):
+            return WeeklyBloomArtifact(
+                title: "Sun archive",
+                detail: "A warm artifact for a week that remembered bright moments too.",
+                line: "This week let good energy become part of the record.",
+                symbolName: "sun.max",
+                dominantMood: dominantMood,
+                dominantLane: dominantLane
+            )
+        default:
+            return WeeklyBloomArtifact(
+                title: "Pressed bloom",
+                detail: "A private artifact for a mixed week that still became one garden.",
+                line: "This was a mixed week that still learned its shape.",
+                symbolName: "sparkles.rectangle.stack",
+                dominantMood: dominantMood,
+                dominantLane: dominantLane
+            )
+        }
+    }
+
     private static let detectableThemes: [ReflectionTheme] = [
         .pressure,
         .school,

@@ -19,6 +19,10 @@ struct GrowthActionView: View {
         )
     }
 
+    private var liveStormProfile: LiveStormProfile {
+        checkInState.liveStormProfile
+    }
+
     private var pageSpacing: CGFloat {
         dynamicTypeSize.isAccessibilitySize ? 22 : 26
     }
@@ -30,12 +34,14 @@ struct GrowthActionView: View {
 
             PressureBloomTransformationView(
                 mood: selectedMood,
-                suggestion: suggestion
+                suggestion: suggestion,
+                liveProfile: liveStormProfile
             )
 
             StormSortingView(
                 suggestion: suggestion,
                 tint: selectedMood.tint,
+                liveKeywords: liveStormProfile.keywords,
                 selectedLane: $selectedLane
             )
 
@@ -104,10 +110,13 @@ private struct SeedPlantingRitualButton: View {
     let action: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.isEnabled) private var isEnabled
     @State private var seedHover = false
+    @State private var dragOffset: CGSize = .zero
+    @State private var isDropReady = false
 
     var body: some View {
-        Button(action: action) {
+        VStack(spacing: 12) {
             VStack(spacing: 12) {
                 ZStack(alignment: .bottom) {
                     RoundedRectangle(cornerRadius: 8)
@@ -115,8 +124,8 @@ private struct SeedPlantingRitualButton: View {
                         .frame(height: 74)
                         .overlay(alignment: .top) {
                             Capsule()
-                                .fill(Color(red: 0.36, green: 0.24, blue: 0.14).opacity(0.32))
-                                .frame(width: 150, height: 12)
+                                .fill(Color(red: 0.36, green: 0.24, blue: 0.14).opacity(isDropReady ? 0.52 : 0.32))
+                                .frame(width: isDropReady ? 188 : 150, height: isDropReady ? 16 : 12)
                                 .offset(y: 12)
                         }
 
@@ -130,26 +139,27 @@ private struct SeedPlantingRitualButton: View {
 
                     ZStack {
                         Circle()
-                            .fill(mood.tint.opacity(0.22))
-                            .frame(width: 74, height: 74)
+                            .fill(mood.tint.opacity(isDropReady ? 0.32 : 0.22))
+                            .frame(width: isDropReady ? 82 : 74, height: isDropReady ? 82 : 74)
 
                         Image(systemName: isPlantingSeed ? "leaf.circle.fill" : selectedLane.symbolName)
                             .font(.title2.bold())
                             .foregroundStyle(mood.tint)
                             .accessibilityHidden(true)
                     }
-                    .offset(y: isPlantingSeed ? 9 : (seedHover ? -10 : -4))
-                    .shadow(color: mood.tint.opacity(0.22), radius: 14, x: 0, y: 8)
+                    .offset(seedOffset)
+                    .shadow(color: mood.tint.opacity(isDropReady ? 0.34 : 0.22), radius: isDropReady ? 18 : 14, x: 0, y: 8)
+                    .gesture(seedDragGesture)
                 }
                 .frame(maxWidth: .infinity)
 
                 VStack(spacing: 4) {
-                    Text(isPlantingSeed ? "Seed entering the soil" : "Press the seed into the soil")
+                    Text(ritualTitle)
                         .font(.headline)
                         .foregroundStyle(.primary)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Text(selectedLane.gardenConsequenceDetail)
+                    Text(isPlantingSeed ? selectedLane.gardenConsequenceDetail : "Drag the seed into the soil, or tap to plant. \(selectedLane.gardenConsequenceDetail)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -164,10 +174,15 @@ private struct SeedPlantingRitualButton: View {
                     .stroke(mood.tint.opacity(isPlantingSeed ? 0.46 : 0.24), lineWidth: 1)
             }
         }
-        .buttonStyle(.plain)
+        .contentShape(RoundedRectangle(cornerRadius: 8))
+        .onTapGesture(perform: triggerPlanting)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(isPlantingSeed ? "Seed entering the soil" : "Press the seed into the soil")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(isPlantingSeed ? "Seed entering the soil" : "Drag seed into the soil")
         .accessibilityValue(selectedLane.gardenConsequenceDetail)
+        .accessibilityAction(named: "Plant seed") {
+            triggerPlanting()
+        }
         .onAppear {
             guard !reduceMotion else {
                 seedHover = true
@@ -178,6 +193,73 @@ private struct SeedPlantingRitualButton: View {
                 seedHover = true
             }
         }
+    }
+
+    private var ritualTitle: String {
+        if isPlantingSeed {
+            return "Seed entering the soil"
+        }
+
+        return isDropReady ? "Release to plant the seed" : "Drag the seed into the soil"
+    }
+
+    private var seedOffset: CGSize {
+        if isPlantingSeed {
+            return CGSize(width: 0, height: 9)
+        }
+
+        let hoverY: CGFloat = seedHover ? -10 : -4
+        return CGSize(
+            width: dragOffset.width,
+            height: dragOffset.height + hoverY
+        )
+    }
+
+    private var seedDragGesture: some Gesture {
+        DragGesture(minimumDistance: 4)
+            .onChanged { value in
+                guard isEnabled, !isPlantingSeed else {
+                    return
+                }
+
+                dragOffset = CGSize(
+                    width: min(max(value.translation.width, -90), 90),
+                    height: min(max(value.translation.height, -44), 78)
+                )
+                isDropReady = value.translation.height > 34
+            }
+            .onEnded { value in
+                guard isEnabled, !isPlantingSeed else {
+                    resetDrag()
+                    return
+                }
+
+                if value.translation.height > 42 {
+                    triggerPlanting()
+                } else {
+                    withAnimation(.spring(response: 0.34, dampingFraction: 0.72)) {
+                        resetDrag()
+                    }
+                }
+            }
+    }
+
+    private func triggerPlanting() {
+        guard isEnabled, !isPlantingSeed else {
+            return
+        }
+
+        withAnimation(.spring(response: 0.32, dampingFraction: 0.74)) {
+            dragOffset = .zero
+            isDropReady = false
+        }
+
+        action()
+    }
+
+    private func resetDrag() {
+        dragOffset = .zero
+        isDropReady = false
     }
 
     private var soilGradient: LinearGradient {
@@ -350,6 +432,7 @@ private struct SeedCollapseView: View {
 private struct PressureBloomTransformationView: View {
     let mood: Mood
     let suggestion: GrowthActionSuggestion
+    let liveProfile: LiveStormProfile
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -360,9 +443,11 @@ private struct PressureBloomTransformationView: View {
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             PressureStormView(
-                intensity: 0.28,
+                intensity: max(0.30, liveProfile.intensity - 0.12),
                 resolvedMood: mood,
-                showsLabels: false
+                showsLabels: false,
+                liveKeywords: liveProfile.keywords,
+                liveTheme: liveProfile.theme
             )
 
             VStack(alignment: .leading, spacing: 10) {
@@ -378,6 +463,11 @@ private struct PressureBloomTransformationView: View {
                 Text(suggestion.action)
                     .font(.headline)
                     .foregroundStyle(.white.opacity(0.82))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(liveProfile.caption)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.72))
                     .fixedSize(horizontal: false, vertical: true)
             }
             .padding(22)
@@ -398,6 +488,7 @@ private struct PressureBloomTransformationView: View {
 private struct StormSortingView: View {
     let suggestion: GrowthActionSuggestion
     let tint: Color
+    let liveKeywords: [String]
     @Binding var selectedLane: GrowthLane
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -410,11 +501,16 @@ private struct StormSortingView: View {
     }
 
     private var fragments: [StormFragment] {
-        StormFragment.fragments(for: suggestion)
+        StormFragment.fragments(for: suggestion, liveKeywords: liveKeywords)
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            DirectStormSortingHeaderView(
+                tint: tint,
+                liveKeywords: liveKeywords
+            )
+
             LazyVGrid(columns: columns, spacing: 10) {
                 ForEach(GrowthLane.allCases) { lane in
                     StormLaneColumnView(
@@ -475,6 +571,50 @@ private struct StormSortingView: View {
 
     private var sortingAnimation: Animation {
         reduceMotion ? .linear(duration: 0) : .spring(response: 0.42, dampingFraction: 0.78)
+    }
+}
+
+private struct DirectStormSortingHeaderView: View {
+    let tint: Color
+    let liveKeywords: [String]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Pull the storm apart", systemImage: "hand.draw")
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text("Words from the storm can be dragged into Now, Later, or Let go. The seed will remember how you changed the weather.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !liveKeywords.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(Array(liveKeywords.enumerated()), id: \.offset) { _, keyword in
+                            Label(keyword, systemImage: "tornado")
+                                .font(.caption2.bold())
+                                .foregroundStyle(tint)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 5)
+                                .background(tint.opacity(0.11), in: Capsule())
+                        }
+                    }
+                    .padding(.vertical, 1)
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Pull the storm apart")
+        .accessibilityValue(liveKeywords.isEmpty ? "Use the generated fragments to sort the storm." : "Live storm words: \(liveKeywords.joined(separator: ", ")).")
     }
 }
 
@@ -683,8 +823,8 @@ private struct StormFragment: Identifiable, Hashable {
     let symbolName: String
     let startingLane: GrowthLane
 
-    static func fragments(for suggestion: GrowthActionSuggestion) -> [StormFragment] {
-        [
+    static func fragments(for suggestion: GrowthActionSuggestion, liveKeywords: [String]) -> [StormFragment] {
+        var base = [
             StormFragment(
                 id: "mood",
                 text: suggestion.mood.fragmentText,
@@ -716,6 +856,21 @@ private struct StormFragment: Identifiable, Hashable {
                 startingLane: .release
             )
         ]
+
+        for (index, keyword) in liveKeywords.prefix(5).enumerated() {
+            let lane = GrowthLane.allCases[index % GrowthLane.allCases.count]
+            base.insert(
+                StormFragment(
+                    id: "live-\(index)-\(keyword)",
+                    text: keyword,
+                    symbolName: "tornado",
+                    startingLane: lane
+                ),
+                at: min(index, base.count)
+            )
+        }
+
+        return base
     }
 }
 

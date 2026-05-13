@@ -164,6 +164,89 @@ struct GardenSeed: Equatable {
             "More open air appeared around this plant."
         }
     }
+
+    func evolutionStage(index: Int, totalCount: Int) -> SeedEvolutionStage {
+        if totalCount >= CheckInState.weeklyCheckInGoal {
+            return .archived
+        }
+
+        if index == totalCount - 1 {
+            return .justPlanted
+        }
+
+        switch lane {
+        case .now:
+            return index >= max(totalCount - 3, 0) ? .sprouting : .blooming
+        case .later:
+            return .resting
+        case .release:
+            return index >= max(totalCount - 2, 0) ? .sprouting : .blooming
+        }
+    }
+}
+
+enum SeedEvolutionStage: String, CaseIterable, Identifiable {
+    case justPlanted
+    case sprouting
+    case blooming
+    case resting
+    case archived
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .justPlanted:
+            "Just planted"
+        case .sprouting:
+            "Sprouting"
+        case .blooming:
+            "Blooming"
+        case .resting:
+            "Resting"
+        case .archived:
+            "Archived bloom"
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .justPlanted:
+            "circle.dotted"
+        case .sprouting:
+            "leaf"
+        case .blooming:
+            "camera.macro"
+        case .resting:
+            "moon.zzz"
+        case .archived:
+            "archivebox"
+        }
+    }
+
+    var detail: String {
+        switch self {
+        case .justPlanted:
+            "This seed is still warm from today's choice."
+        case .sprouting:
+            "This seed is becoming visible growth."
+        case .blooming:
+            "This seed has become part of the garden's pattern."
+        case .resting:
+            "This seed is holding something safely for later."
+        case .archived:
+            "This seed now belongs to the completed week's artifact."
+        }
+    }
+}
+
+struct WeeklyBloomArtifact: Equatable {
+    let title: String
+    let detail: String
+    let line: String
+    let symbolName: String
+    let dominantMood: Mood?
+    let dominantLane: GrowthLane?
 }
 
 struct WeeklyLiteracyUnlock: Equatable {
@@ -177,6 +260,7 @@ struct WeeklyBloomPayoff: Equatable {
     let story: String
     let insight: String
     let literacyUnlock: WeeklyLiteracyUnlock
+    let artifact: WeeklyBloomArtifact
     let closingLine: String
     let nextWeekIntention: String
     let privacyNote: String
@@ -186,7 +270,7 @@ struct WeeklyBloomPayoff: Equatable {
     let totalCount: Int
 
     var accessibilityValue: String {
-        "\(subtitle) \(story) \(insight) \(literacyUnlock.title). \(literacyUnlock.detail) \(closingLine) \(nextWeekIntention) \(completedCount) of \(totalCount) seeds complete."
+        "\(subtitle) \(story) \(insight) \(literacyUnlock.title). \(literacyUnlock.detail) \(artifact.title). \(artifact.line) \(closingLine) \(nextWeekIntention) \(completedCount) of \(totalCount) seeds complete."
     }
 }
 
@@ -366,6 +450,14 @@ struct CheckInState {
                     title: "Emotional literacy unlock",
                     detail: "A feeling does not need a perfect label before it can become one small next step."
                 ),
+                artifact: WeeklyBloomArtifact(
+                    title: "Unfinished seed",
+                    detail: "The week has not become an artifact yet.",
+                    line: "One small seed still counts.",
+                    symbolName: "circle.dotted",
+                    dominantMood: dominantMood,
+                    dominantLane: dominantLane
+                ),
                 closingLine: "One small seed still counts.",
                 nextWeekIntention: "Plant the next seed when one feeling becomes loud enough to name.",
                 privacyNote: Self.localPrivacyDetailText,
@@ -386,6 +478,7 @@ struct CheckInState {
             ),
             insight: LocalActionEngine.weeklyInsight(for: seeds),
             literacyUnlock: LocalActionEngine.weeklyLiteracyUnlock(for: seeds),
+            artifact: LocalActionEngine.weeklyArtifact(for: seeds),
             closingLine: Self.closingLine(
                 dominantMood: dominantMood,
                 dominantLane: dominantLane

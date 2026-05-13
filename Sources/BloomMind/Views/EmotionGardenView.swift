@@ -11,6 +11,7 @@ struct EmotionGardenView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var newestPlantIsGrown = true
     @State private var selectedPlotIndex: Int?
+    @State private var selectedWorldZone: GardenWorldZone = .centerBloom
 
     private var safeTotalPlots: Int {
         max(totalPlots, 0)
@@ -72,6 +73,12 @@ struct EmotionGardenView: View {
                     GardenEcologyLineView(seeds: visibleSeeds)
 
                     InnerGardenWorldView(seeds: visibleSeeds)
+
+                    GardenWorldZoneMapView(
+                        seeds: visibleSeeds,
+                        totalCount: safeTotalPlots,
+                        selectedZone: $selectedWorldZone
+                    )
                 }
 
                 plotLayout
@@ -79,7 +86,8 @@ struct EmotionGardenView: View {
                 if let selectedSeed {
                     GardenPlantDetailView(
                         seed: selectedSeed,
-                        isNewest: selectedPlotIndex == newestMoodIndex
+                        isNewest: selectedPlotIndex == newestMoodIndex,
+                        evolutionStage: selectedSeedEvolutionStage
                     )
                 }
             }
@@ -176,13 +184,245 @@ struct EmotionGardenView: View {
     }
 
     private func plot(at index: Int) -> some View {
-        EmotionGardenPlotView(
-            seed: visibleSeeds.indices.contains(index) ? visibleSeeds[index] : nil,
+        let seed = visibleSeeds.indices.contains(index) ? visibleSeeds[index] : nil
+
+        return EmotionGardenPlotView(
+            seed: seed,
+            evolutionStage: seed?.evolutionStage(index: index, totalCount: visibleSeeds.count),
             isSelected: selectedPlotIndex == index,
             isNewest: newestMoodIndex == index,
             newestPlantIsGrown: newestPlantIsGrown || reduceMotion
         ) {
             selectedPlotIndex = index
+        }
+    }
+
+    private var selectedSeedEvolutionStage: SeedEvolutionStage {
+        guard let selectedPlotIndex else {
+            return .justPlanted
+        }
+
+        return selectedSeed?.evolutionStage(
+            index: selectedPlotIndex,
+            totalCount: visibleSeeds.count
+        ) ?? .justPlanted
+    }
+}
+
+private enum GardenWorldZone: String, CaseIterable, Identifiable {
+    case roots
+    case path
+    case openSky
+    case centerBloom
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .roots:
+            "Underground roots"
+        case .path:
+            "Waiting path"
+        case .openSky:
+            "Open sky"
+        case .centerBloom:
+            "Center bloom"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .roots:
+            "bolt.fill"
+        case .path:
+            "tray"
+        case .openSky:
+            "wind"
+        case .centerBloom:
+            "sparkles"
+        }
+    }
+
+    func tint(newestMood: Mood?) -> Color {
+        switch self {
+        case .roots:
+            newestMood?.tint ?? .green
+        case .path:
+            .blue
+        case .openSky:
+            .orange
+        case .centerBloom:
+            newestMood?.tint ?? .mint
+        }
+    }
+
+    func detail(seeds: [GardenSeed], totalCount: Int) -> String {
+        let nowCount = seeds.filter { $0.lane == .now }.count
+        let laterCount = seeds.filter { $0.lane == .later }.count
+        let releaseCount = seeds.filter { $0.lane == .release }.count
+
+        switch self {
+        case .roots:
+            return nowCount == 1
+                ? "1 Now choice is holding the garden from underneath."
+                : "\(nowCount) Now choices are holding the garden from underneath."
+        case .path:
+            return laterCount == 1
+                ? "1 Later choice became a patient bud on the path."
+                : "\(laterCount) Later choices became patient buds on the path."
+        case .openSky:
+            return releaseCount == 1
+                ? "1 Let go choice opened space in the sky."
+                : "\(releaseCount) Let go choices opened space in the sky."
+        case .centerBloom:
+            return seeds.count >= totalCount
+                ? "Seven seeds have awakened the center bloom."
+                : "\(seeds.count) of \(totalCount) seeds are still moving toward the center bloom."
+        }
+    }
+}
+
+private struct GardenWorldZoneMapView: View {
+    let seeds: [GardenSeed]
+    let totalCount: Int
+    @Binding var selectedZone: GardenWorldZone
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var newestMood: Mood? {
+        seeds.last?.mood
+    }
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 180 : 136), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Garden map", systemImage: "map")
+                .font(.subheadline.bold())
+                .foregroundStyle(newestMood?.tint ?? .green)
+                .fixedSize(horizontal: false, vertical: true)
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(GardenWorldZone.allCases) { zone in
+                    Button {
+                        withAnimation(.spring(response: 0.34, dampingFraction: 0.78)) {
+                            selectedZone = zone
+                        }
+                    } label: {
+                        GardenWorldZoneButtonView(
+                            zone: zone,
+                            isSelected: selectedZone == zone,
+                            tint: zone.tint(newestMood: newestMood),
+                            detail: zone.detail(seeds: seeds, totalCount: totalCount)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(zone.title)
+                    .accessibilityValue(zone.detail(seeds: seeds, totalCount: totalCount))
+                    .accessibilityAddTraits(selectedZone == zone ? .isSelected : [])
+                }
+            }
+
+            GardenWorldZoneDetailView(
+                zone: selectedZone,
+                seeds: seeds,
+                totalCount: totalCount,
+                tint: selectedZone.tint(newestMood: newestMood)
+            )
+        }
+        .padding(12)
+        .background((newestMood?.tint ?? .green).opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke((newestMood?.tint ?? .green).opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Garden map")
+    }
+}
+
+private struct GardenWorldZoneButtonView: View {
+    let zone: GardenWorldZone
+    let isSelected: Bool
+    let tint: Color
+    let detail: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Image(systemName: zone.systemImage)
+                .font(.headline.bold())
+                .foregroundStyle(tint)
+                .accessibilityHidden(true)
+
+            Text(zone.title)
+                .font(.caption.bold())
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 112, alignment: .topLeading)
+        .padding(10)
+        .background(tint.opacity(isSelected ? 0.16 : 0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(isSelected ? 0.58 : 0.16), lineWidth: isSelected ? 2 : 1)
+        }
+    }
+}
+
+private struct GardenWorldZoneDetailView: View {
+    let zone: GardenWorldZone
+    let seeds: [GardenSeed]
+    let totalCount: Int
+    let tint: Color
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: zone.systemImage)
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .frame(width: 22)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(zone.title)
+                    .font(.subheadline.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(zone.detail(seeds: seeds, totalCount: totalCount))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(consequenceLine)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(10)
+        .background(tint.opacity(0.10), in: RoundedRectangle(cornerRadius: 8))
+    }
+
+    private var consequenceLine: String {
+        switch zone {
+        case .roots:
+            "Now choices become root structure, so one next step has a place to hold."
+        case .path:
+            "Later choices become buds and lanterns, so the bigger worry can wait without disappearing."
+        case .openSky:
+            "Let go choices become wind and starlight, so the garden can breathe."
+        case .centerBloom:
+            "When the week reaches seven seeds, the center bloom turns the whole pattern into an artifact."
         }
     }
 }
@@ -823,6 +1063,7 @@ private struct GardenPayoffBannerView: View {
 
 private struct EmotionGardenPlotView: View {
     let seed: GardenSeed?
+    let evolutionStage: SeedEvolutionStage?
     let isSelected: Bool
     let isNewest: Bool
     let newestPlantIsGrown: Bool
@@ -876,6 +1117,14 @@ private struct EmotionGardenPlotView: View {
                             tint: mood.tint
                         )
                         .offset(x: 18, y: -4)
+
+                        if let evolutionStage {
+                            SeedEvolutionGlyphView(
+                                stage: evolutionStage,
+                                tint: mood.tint
+                            )
+                            .offset(x: -18, y: -4)
+                        }
                     }
                 } else {
                     EmptyPlotSeedView()
@@ -929,7 +1178,8 @@ private struct EmotionGardenPlotView: View {
         }
 
         let newestPrefix = isNewest ? "Newest plant. " : ""
-        return "\(newestPrefix)Represents \(mood.rawValue.lowercased())."
+        let stageLine = evolutionStage.map { "\($0.title). \($0.detail)" } ?? ""
+        return "\(newestPrefix)Represents \(mood.rawValue.lowercased()). \(stageLine)"
     }
 
     private var accessibilityHint: String {
@@ -940,6 +1190,7 @@ private struct EmotionGardenPlotView: View {
 private struct GardenPlantDetailView: View {
     let seed: GardenSeed
     let isNewest: Bool
+    let evolutionStage: SeedEvolutionStage
 
     private var mood: Mood {
         seed.mood
@@ -1001,6 +1252,18 @@ private struct GardenPlantDetailView: View {
                 .foregroundStyle(.primary)
                 .fixedSize(horizontal: false, vertical: true)
 
+            Divider()
+
+            Label(evolutionStage.title, systemImage: evolutionStage.symbolName)
+                .font(.subheadline.bold())
+                .foregroundStyle(mood.tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(evolutionStage.detail)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
             Text(seed.privateMemorySentence)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -1015,11 +1278,29 @@ private struct GardenPlantDetailView: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(detailTitle)
-        .accessibilityValue("\(mood.gardenReflectionNote) \(mood.gardenRevisitPrompt) \(seed.lane.gardenConsequenceDetail) \(seed.privateMemorySentence)")
+        .accessibilityValue("\(mood.gardenReflectionNote) \(mood.gardenRevisitPrompt) \(seed.lane.gardenConsequenceDetail) \(evolutionStage.detail) \(seed.privateMemorySentence)")
     }
 
     private var detailTitle: String {
         isNewest ? "Newest \(mood.plantAccessibilityName)" : mood.plantAccessibilityName
+    }
+}
+
+private struct SeedEvolutionGlyphView: View {
+    let stage: SeedEvolutionStage
+    let tint: Color
+
+    var body: some View {
+        Image(systemName: stage.symbolName)
+            .font(.caption2.bold())
+            .foregroundStyle(tint)
+            .frame(width: 22, height: 22)
+            .background(Color.white.opacity(0.82), in: Circle())
+            .overlay {
+                Circle()
+                    .stroke(tint.opacity(0.34), lineWidth: 1)
+            }
+            .accessibilityHidden(true)
     }
 }
 

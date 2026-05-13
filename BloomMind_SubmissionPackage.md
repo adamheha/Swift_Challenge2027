@@ -1,8 +1,8 @@
 # BloomMind Submission Package
 
-## Current 2.0 Direction
+## Current 3.1 Direction
 
-BloomMind 3.0 reframes the app around an inner garden world. Instead of opening like a calm tracker, the app opens with a moving storm of student-pressure fragments, then lets the student's reflection change that storm live. The student names a mood, sorts pressure into Now, Later, and Let go, presses a seed into the soil, and watches those choices change a private garden world. A completed seven-seed week unlocks a Weekly Bloom payoff, so the story resolves into a private week shape instead of stopping at a counter.
+BloomMind 3.1 reframes the app around direct transformation. Instead of opening like a calm tracker, the app opens with a moving storm of student-pressure fragments, then lets the student's reflection change that storm live. The student names a mood, drags storm words into Now, Later, and Let go, plants the seed through a drag-to-soil ritual, and watches those choices change a private garden world. A completed seven-seed week unlocks a Weekly Bloom payoff with an animated transformation and Week Artifact, so the story resolves into a private object instead of stopping at a counter.
 
 The old 1.x submission path is preserved as a stable foundation, but the active award-level direction is now the 2.0 pressure-storm experience.
 
@@ -40,22 +40,23 @@ Target review time: 60 seconds.
 
 6. Confirm the storm responds with pressure keywords, theme color, and a stronger live weather reading.
 7. Tap Continue.
-8. Review the generated Growth Action and move several thought fragments through Now, Later, and Let go by tapping or dragging them:
+8. Review the generated Growth Action and move several thought fragments and live storm words through Now, Later, and Let go by tapping or dragging them:
 
    `Make it tiny: choose one thing that can wait, then start only the next tiny step.`
 
 9. Confirm the seed commitment updates when a lane is selected, and note that BloomMind detects a pressure theme locally without sending or saving the private reflection text.
-10. Press the seed into the soil and confirm the planting ritual changes based on Now, Later, or Let go.
+10. Drag the seed into the soil, or tap it as the fallback, and confirm the planting ritual changes based on Now, Later, or Let go.
 11. Return to Today and confirm the Inner Garden World shows mood weather, roots, buds, open air, and a mood-specific plant.
-12. Tap the newest seed and confirm the memory card shows theme, action, and world change without reflection text.
-13. Tap Preview Award Demo to inspect a sample complete-week review garden without changing real check-ins.
-14. Confirm the Weekly Bloom payoff appears with a seven-seed reveal, time-lapse, week story, emotional literacy unlock, closing ritual, next-week seed, privacy note, and archive preview.
+12. Explore the Garden Map zones for Underground Roots, Waiting Path, Open Sky, and Center Bloom.
+13. Tap the newest seed and confirm the memory card shows theme, action, world change, and seed evolution state without reflection text.
+14. Tap Preview Award Demo to inspect a sample complete-week review garden without changing real check-ins.
+15. Confirm the Weekly Bloom payoff appears with a seven-seed reveal, animated time-lapse, week story, emotional literacy unlock, Week Artifact, closing ritual, next-week seed, privacy note, and archive preview.
 
 ## Submission Response Drafts
 
 ### App Summary
 
-BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school pressure into a living inner garden. The app opens with a moving pressure storm that responds as the student types, guides the student to name a mood, sorts the moment into Now, Later, and Let go, then turns the feeling into a seed planted through a small soil ritual. Each seed changes the garden world as roots, buds, or open air. After seven seeds, the app reveals a Weekly Bloom: a private time-lapse, week story, emotional literacy unlock, closing line, next-week intention, and archive preview that remember growth without resurfacing private reflection text.
+BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school pressure into a living inner garden. The app opens with a moving pressure storm that responds as the student types, guides the student to name a mood, lets them drag storm words into Now, Later, and Let go, then turns the feeling into a seed planted through a drag-to-soil ritual. Each seed changes the garden world as roots, buds, or open air, and the garden can be explored through map zones. After seven seeds, the app reveals a Weekly Bloom: a private animated time-lapse, week story, emotional literacy unlock, Week Artifact, closing line, next-week intention, and archive preview that remember growth without resurfacing private reflection text.
 
 ### Personal Motivation
 
@@ -73,11 +74,11 @@ Stage 5 personal-story input needed:
 
 ### Creativity And Impact
 
-The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." As the student writes, the storm surfaces live keywords and theme-colored weather. A check-in sorts that storm into Now, Later, and Let go, then transforms the feeling through a seed-to-soil ritual. Each planted seed remembers the mood, local theme, and sorting choice, so Now becomes roots, Later becomes buds, and Let go becomes open air in the garden world. After seven seeds, the Weekly Bloom reveal turns the whole week into a constellation-style story with a time-lapse, emotional literacy unlock, closing ritual, next-week seed, and archive preview. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
+The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." As the student writes, the storm surfaces live keywords and theme-colored weather. A check-in lets the student pull those words apart into Now, Later, and Let go, then transforms the feeling through a drag-to-soil ritual. Each planted seed remembers the mood, local theme, and sorting choice, so Now becomes roots, Later becomes buds, and Let go becomes open air in the garden world. The Garden Map turns those consequences into explorable zones. After seven seeds, the Weekly Bloom reveal turns the whole week into a constellation-style story, animated transformation, emotional literacy unlock, Week Artifact, closing ritual, next-week seed, and archive preview. Calm, happy, tired, stressed, and unsure moods each have a different visual identity, so the garden becomes a private record of pressure transformed into growth.
 
 ### Technical Work
 
-BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. The pressure storm, inner garden world, planting ritual, and Weekly Bloom reveal are drawn with native SwiftUI `Canvas`, `TimelineView`, gradients, symbols, and shape drawing. A local action engine uses Apple's NaturalLanguage framework when available to assist local theme detection, with transparent keyword rules as a fallback. It analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty, then combines the detected theme with the selected mood to create live storm keywords, thought fragments, one tiny action, animated tap-or-drag Now / Later / Let go sorting, an emotional literacy micro-explanation, and a weekly literacy unlock. The planted seed stores only mood, detected theme, and sorting lane, then the garden and Weekly Bloom use those local values to build the world, memory cards, week story, time-lapse, and next-week intention. The reflection text stays local in the prototype and is not displayed again on the action screen or weekly summary.
+BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. The pressure storm, inner garden world, drag-to-plant ritual, garden map, and Weekly Bloom reveal are drawn with native SwiftUI `Canvas`, `TimelineView`, gradients, symbols, gestures, and shape drawing. A local action engine uses Apple's NaturalLanguage framework when available to assist local theme detection, with transparent keyword rules as a fallback. It analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty, then combines the detected theme with the selected mood to create live storm keywords, thought fragments, one tiny action, animated tap-or-drag Now / Later / Let go sorting, an emotional literacy micro-explanation, a weekly literacy unlock, and a Week Artifact. The planted seed stores only mood, detected theme, and sorting lane, then the garden and Weekly Bloom use those local values to build the world, map zones, evolution states, memory cards, week story, time-lapse, artifact, and next-week intention. The reflection text stays local in the prototype and is not displayed again on the action screen or weekly summary.
 
 ### Privacy And Safety
 
@@ -96,11 +97,15 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm Continue can also be tapped after selecting a mood when Reflection is empty.
 - Confirm the pressure storm stays readable in light and dark appearances.
 - Confirm thought fragments appear on Growth Action and can move between Now, Later, and Let go by tap and drag/drop.
-- Confirm the seed-to-soil planting ritual changes based on the selected lane.
+- Confirm typed storm words appear as draggable live fragments on Growth Action.
+- Confirm the drag-to-plant ritual works, and confirm tap still plants as the fallback.
 - Confirm Preview Award Demo shows a complete sample week and the Week memory strip without changing real check-ins.
 - Confirm the weekly review card and Weekly Bloom payoff summarize the completed sample week.
 - Confirm the Inner Garden World shows roots, buds, open air, and mood weather.
-- Confirm seed memory cards show mood, theme, tiny action, and world change without reflection text.
+- Confirm Garden Map zones explain Underground Roots, Waiting Path, Open Sky, and Center Bloom.
+- Confirm seed memory cards show mood, theme, tiny action, world change, and evolution state without reflection text.
+- Confirm Weekly Bloom shows the animated storm-to-seeds-to-world-to-bloom time-lapse.
+- Confirm Weekly Bloom includes a named Week Artifact.
 - Confirm Weekly Bloom does not display private reflection text.
 - Confirm the Home screen uses a two-column storm-and-garden layout on iPad/Mac review widths and falls back to a readable single column on narrow widths.
 - Confirm Reduce Motion keeps sorting and planting understandable without pulsing motion.
@@ -121,11 +126,11 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 3. Either leave Reflection empty to test the quick path, or type `I have a project deadline and too much to finish.` to test live storm typing and local theme detection.
 4. Confirm Continue becomes enabled after selecting a mood.
 5. Confirm the live storm responds to typed keywords.
-6. Confirm the Growth Action shows the pressure-themed tiny action, movable thought fragments, and a Tiny idea explanation.
-7. Complete the seed-to-soil ritual and return to Today.
-8. Tap the newest garden plant and confirm it shows a private memory card without reflection text.
-9. Tap Preview Award Demo and confirm the Week memory strip, weekly review card, Inner Garden World, and Weekly Bloom payoff show a complete sample week without changing real check-ins.
-10. Confirm the Weekly Bloom payoff includes the constellation reveal, time-lapse, week story, literacy unlock, closing ritual, next-week seed, privacy note, and archive preview.
+6. Confirm the Growth Action shows the pressure-themed tiny action, movable thought fragments, live storm words, and a Tiny idea explanation.
+7. Drag the seed into the soil, or tap it as fallback, and return to Today.
+8. Tap Garden Map zones and the newest plant, then confirm the private memory card avoids reflection text.
+9. Tap Preview Award Demo and confirm the Week memory strip, weekly review card, Inner Garden World, Garden Map, and Weekly Bloom payoff show a complete sample week without changing real check-ins.
+10. Confirm the Weekly Bloom payoff includes the constellation reveal, animated time-lapse, week story, literacy unlock, Week Artifact, closing ritual, next-week seed, privacy note, and archive preview.
 11. Rotate or resize to a wider iPad/Mac review width and confirm Home uses the two-column storm-and-garden layout.
 12. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
 13. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
@@ -156,17 +161,17 @@ bash Scripts/collect_review_environment.sh
 Current generated package verification:
 
 - ZIP path: `SubmissionBuild/BloomMind.swiftpm.zip`
-- ZIP size: 44,281 bytes after the Stage 7 package refresh.
+- ZIP size: 49,747 bytes after the Stage 8 package refresh.
 - Contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The generated ZIP excludes `.DS_Store` and `__MACOSX`.
-- The generated `.swiftpm` package includes the Stage 7 Inner Garden World source files.
+- The generated `.swiftpm` package includes the Stage 8 Direct Transformation source files.
 - The generated `.swiftpm` package passes `bash Scripts/verify_submission_package.sh` when Swift/Clang cache permissions are available.
 
-2.0 readiness notes:
+3.1 readiness notes:
 
 - The package now declares iOS and macOS platform support.
 - The reflection field uses a multiline SwiftUI `TextField` for reliable typing across macOS, iPad, and Swift Playgrounds-style review environments.
 - The pressure storm is native SwiftUI and does not require remote assets.
-- The live storm, inner garden world, planting ritual, seed memory cards, and Weekly Bloom payoff are local SwiftUI and use only mood, theme, and lane metadata after planting, not private reflection text.
+- The live storm, direct sorting, inner garden world, drag-to-plant ritual, garden map, seed memory cards, and Weekly Bloom payoff are local SwiftUI and use only mood, theme, and lane metadata after planting, not private reflection text.
 - The source set has no network, analytics, telemetry, CloudKit, HealthKit, or CoreLocation API usage.
 - The final iPad or Swift Playgrounds smoke check moves to Stage 5 because it needs the actual review environment.

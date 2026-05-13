@@ -1,8 +1,10 @@
-# BloomMind 2.0 And 3.0 Goals
+# BloomMind 2.0, 3.0, And 3.1 Goals
 
 BloomMind 2.0 exists to turn the original gentle mood tracker into a memorable Swift Student Challenge experience.
 
 BloomMind 3.0 extends that direction into an explorable inner world: the user's private choices should visibly change the storm, planting ritual, garden world, weekly ending, and reason to return.
+
+BloomMind 3.1 makes that world more direct: the user should pull storm words apart, drag the seed into soil, explore the consequence map, and leave the week with a named emotional artifact.
 
 ## North Star
 
@@ -16,7 +18,7 @@ The reviewer should understand the whole idea quickly:
 4. Planting the seed turns the moment into growth.
 5. The garden remembers that change without exposing private reflection text.
 6. Seven seeds reveal the shape of the week, so the user is not left asking "what now?"
-7. The completed week becomes a living landscape with memory, time-lapse, and a next seed to notice.
+7. The completed week becomes a living landscape with memory, animated time-lapse, artifact, and a next seed to notice.
 
 ## What 2.0 Must Prove
 
@@ -36,7 +38,8 @@ The reviewer should understand the whole idea quickly:
 - Stage 5 - Submission Packaging and Device Review: make the project packageable and verifiable as a `.swiftpm` ZIP, then test it in the final review environment.
 - Stage 6 - Weekly Bloom Payoff and Living Garden: make seven seeds unlock a constellation-style week story, insight, closing ritual, and next-week seed.
 - Stage 7 - Inner Garden World: add live storm typing, physical planting, spatial garden world, seed memory cards, weekly time-lapse, literacy unlocks, return hook, origin line, and archive preview.
-- Stage 8 - Final Story and Submission Rehearsal: finish the applicant's true personal story, AI disclosure, rules refresh, and final three-minute rehearsal.
+- Stage 8 - Direct Transformation: add live storm-word sorting, drag-to-plant, garden map zones, seed evolution, animated Weekly Bloom, and Week Artifacts.
+- Stage 9 - Final Story and Submission Rehearsal: finish the applicant's true personal story, AI disclosure, rules refresh, and final three-minute rehearsal.
 
 ## What Stage 5 Is Doing
 
@@ -72,3 +75,15 @@ Stage 7 is about making the app feel less empty by making cause-and-effect visib
 - Emotional literacy unlocks give the visual payoff more meaning.
 - Home gives the student a small reason to return tomorrow.
 - Preview Award Demo makes the full evaluator path easy to inspect quickly.
+
+## What Stage 8 Is Doing
+
+Stage 8 is about direct authorship:
+
+- Typed storm words become draggable fragments on Growth Action.
+- The user can drag fragments into Now, Later, and Let go instead of only reading generated guidance.
+- Planting becomes Drag-to-Plant with tap and accessibility fallbacks.
+- The garden becomes a map with Underground Roots, Waiting Path, Open Sky, and Center Bloom zones.
+- Each seed gets an evolution state so the garden feels alive after planting.
+- Weekly Bloom gets a true animated transformation scene.
+- A completed week leaves a Week Artifact such as a Weather stone, Moon pressed flower, Root compass, Question lantern, Sun archive, or Pressed bloom.
