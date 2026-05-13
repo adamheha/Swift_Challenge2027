@@ -61,14 +61,12 @@ struct GrowthActionView: View {
 
             Spacer()
 
-            Button(action: plantSeed) {
-                Label(isPlantingSeed ? "Planting Seed" : "Plant This Seed", systemImage: isPlantingSeed ? "leaf.circle.fill" : "camera.macro.circle.fill")
-                    .font(.headline)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
+            SeedPlantingRitualButton(
+                mood: selectedMood,
+                selectedLane: selectedLane,
+                isPlantingSeed: isPlantingSeed,
+                action: plantSeed
+            )
             .disabled(isPlantingSeed)
             .accessibilityHint(CheckInState.completeActionAccessibilityHint)
         }
@@ -96,6 +94,160 @@ struct GrowthActionView: View {
                 onComplete()
             }
         }
+    }
+}
+
+private struct SeedPlantingRitualButton: View {
+    let mood: Mood
+    let selectedLane: GrowthLane
+    let isPlantingSeed: Bool
+    let action: () -> Void
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var seedHover = false
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 12) {
+                ZStack(alignment: .bottom) {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(soilGradient)
+                        .frame(height: 74)
+                        .overlay(alignment: .top) {
+                            Capsule()
+                                .fill(Color(red: 0.36, green: 0.24, blue: 0.14).opacity(0.32))
+                                .frame(width: 150, height: 12)
+                                .offset(y: 12)
+                        }
+
+                    LaneRitualMarkView(
+                        lane: selectedLane,
+                        tint: mood.tint,
+                        isActive: isPlantingSeed
+                    )
+                    .frame(height: 64)
+                    .padding(.bottom, 8)
+
+                    ZStack {
+                        Circle()
+                            .fill(mood.tint.opacity(0.22))
+                            .frame(width: 74, height: 74)
+
+                        Image(systemName: isPlantingSeed ? "leaf.circle.fill" : selectedLane.symbolName)
+                            .font(.title2.bold())
+                            .foregroundStyle(mood.tint)
+                            .accessibilityHidden(true)
+                    }
+                    .offset(y: isPlantingSeed ? 9 : (seedHover ? -10 : -4))
+                    .shadow(color: mood.tint.opacity(0.22), radius: 14, x: 0, y: 8)
+                }
+                .frame(maxWidth: .infinity)
+
+                VStack(spacing: 4) {
+                    Text(isPlantingSeed ? "Seed entering the soil" : "Press the seed into the soil")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(selectedLane.gardenConsequenceDetail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(14)
+            .background(mood.tint.opacity(0.10), in: RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(mood.tint.opacity(isPlantingSeed ? 0.46 : 0.24), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(isPlantingSeed ? "Seed entering the soil" : "Press the seed into the soil")
+        .accessibilityValue(selectedLane.gardenConsequenceDetail)
+        .onAppear {
+            guard !reduceMotion else {
+                seedHover = true
+                return
+            }
+
+            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
+                seedHover = true
+            }
+        }
+    }
+
+    private var soilGradient: LinearGradient {
+        LinearGradient(
+            colors: [
+                Color(red: 0.34, green: 0.23, blue: 0.14).opacity(0.32),
+                mood.tint.opacity(0.12),
+                Color(red: 0.18, green: 0.28, blue: 0.18).opacity(0.22)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+}
+
+private struct LaneRitualMarkView: View {
+    let lane: GrowthLane
+    let tint: Color
+    let isActive: Bool
+
+    var body: some View {
+        Canvas { context, size in
+            let width = max(size.width, 1)
+            let height = max(size.height, 1)
+            let center = CGPoint(x: width * 0.5, y: height * 0.62)
+            let opacity = isActive ? 0.50 : 0.26
+
+            switch lane {
+            case .now:
+                for index in 0..<4 {
+                    var root = Path()
+                    let spread = CGFloat(index) / 3 - 0.5
+                    root.move(to: center)
+                    root.addQuadCurve(
+                        to: CGPoint(x: center.x + spread * width * 0.44, y: height * 0.98),
+                        control: CGPoint(x: center.x + spread * width * 0.16, y: height * 0.80)
+                    )
+                    context.stroke(
+                        root,
+                        with: .color(tint.opacity(opacity)),
+                        style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                    )
+                }
+            case .later:
+                for index in 0..<3 {
+                    let x = width * (0.36 + CGFloat(index) * 0.14)
+                    context.fill(
+                        Path(ellipseIn: CGRect(x: x, y: height * 0.52, width: 22, height: 30)),
+                        with: .color(tint.opacity(opacity))
+                    )
+                }
+            case .release:
+                for index in 0..<3 {
+                    var wind = Path()
+                    let y = height * (0.38 + CGFloat(index) * 0.16)
+                    wind.move(to: CGPoint(x: width * 0.25, y: y))
+                    wind.addCurve(
+                        to: CGPoint(x: width * 0.74, y: y),
+                        control1: CGPoint(x: width * 0.38, y: y - 12),
+                        control2: CGPoint(x: width * 0.58, y: y + 12)
+                    )
+                    context.stroke(
+                        wind,
+                        with: .color(tint.opacity(opacity)),
+                        style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                    )
+                }
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
 

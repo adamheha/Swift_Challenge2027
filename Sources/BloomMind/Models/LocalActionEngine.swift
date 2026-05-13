@@ -61,6 +61,37 @@ struct GrowthActionSuggestion: Equatable {
 }
 
 enum LocalActionEngine {
+    static func liveStormProfile(
+        selectedMood: Mood?,
+        reflectionText: String,
+        characterLimit: Int
+    ) -> LiveStormProfile {
+        let theme = detectTheme(in: reflectionText)
+        let trimmed = reflectionText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let progress = min(Double(trimmed.count) / Double(max(characterLimit, 1)), 1)
+        let moodRelief = selectedMood == nil ? 0 : 0.16
+        let themeLift = theme == .general ? 0 : 0.08
+        let intensity = min(max(0.34 + progress * 0.46 + themeLift - moodRelief, 0.24), 0.96)
+        let keywords = liveKeywords(in: trimmed, theme: theme)
+        let caption: String
+
+        if trimmed.isEmpty {
+            caption = "The storm is waiting for one honest phrase."
+        } else if selectedMood == nil {
+            caption = "\(theme.displayName) is starting to appear in the weather."
+        } else {
+            caption = "\(selectedMood?.rawValue ?? "This mood") is coloring a \(theme.displayName.lowercased()) storm."
+        }
+
+        return LiveStormProfile(
+            theme: theme,
+            intensity: intensity,
+            keywords: keywords,
+            caption: caption,
+            accessibilityValue: "\(theme.displayName) storm, \(Int((intensity * 100).rounded())) percent intensity. \(caption)"
+        )
+    }
+
     static func detectTheme(in reflectionText: String) -> ReflectionTheme {
         let detectionText = DetectionText(reflectionText)
 
@@ -127,6 +158,23 @@ enum LocalActionEngine {
         return "Next week, notice \(themePhrase) early and \(lanePhrase) when the storm starts to gather. \(dominantMood.nextWeekMoodReminder)"
     }
 
+    static func weeklyLiteracyUnlock(for seeds: [GardenSeed]) -> WeeklyLiteracyUnlock {
+        let theme = dominantValue(in: seeds.map(\.theme)) ?? .general
+        let mood = dominantValue(in: seeds.map(\.mood))
+
+        if theme != .general {
+            return WeeklyLiteracyUnlock(
+                title: theme.literacyUnlockTitle,
+                detail: theme.literacyUnlockDetail
+            )
+        }
+
+        return WeeklyLiteracyUnlock(
+            title: mood?.literacyUnlockTitle ?? "Growth does not need one mood",
+            detail: mood?.literacyUnlockDetail ?? "A mixed week can still have a shape when each feeling becomes one small seed."
+        )
+    }
+
     private static let detectableThemes: [ReflectionTheme] = [
         .pressure,
         .school,
@@ -141,6 +189,40 @@ enum LocalActionEngine {
             .components(separatedBy: CharacterSet.alphanumerics.inverted)
             .filter { !$0.isEmpty }
             .joined(separator: " ")
+    }
+
+    private static func liveKeywords(in text: String, theme: ReflectionTheme) -> [String] {
+        let normalizedText = normalized(text)
+        let stopWords: Set<String> = [
+            "a", "an", "and", "are", "as", "at", "be", "but", "can", "do", "for", "have",
+            "i", "in", "is", "it", "me", "my", "of", "on", "or", "so", "that", "the",
+            "this", "to", "too", "was", "with"
+        ]
+        let typedTerms = normalizedText
+            .split(separator: " ")
+            .map(String.init)
+            .filter { term in
+                term.count > 2 && !stopWords.contains(term)
+            }
+
+        let combined = typedTerms + theme.liveStormWords
+        var seen = Set<String>()
+        var result: [String] = []
+
+        for term in combined {
+            guard !seen.contains(term) else {
+                continue
+            }
+
+            seen.insert(term)
+            result.append(term)
+
+            if result.count == 5 {
+                break
+            }
+        }
+
+        return result.isEmpty ? theme.liveStormWords : result
     }
 
     private static func contains(keyword: String, in detectionText: DetectionText) -> Bool {
@@ -419,6 +501,57 @@ private extension ReflectionTheme {
             "A feeling does not need a perfect label before it can become one small next step."
         }
     }
+
+    var liveStormWords: [String] {
+        switch self {
+        case .school:
+            ["project", "homework", "grades", "deadline"]
+        case .friendship:
+            ["message", "friend", "silence", "belonging"]
+        case .rest:
+            ["tired", "rest", "energy", "pause"]
+        case .pressure:
+            ["deadline", "too much", "urgent", "finish"]
+        case .uncertainty:
+            ["what if", "maybe", "choice", "question"]
+        case .general:
+            ["weather", "thought", "feeling", "seed"]
+        }
+    }
+
+    var literacyUnlockTitle: String {
+        switch self {
+        case .school:
+            "A task is smaller than a whole future"
+        case .friendship:
+            "Silence is not always an answer"
+        case .rest:
+            "Rest is information"
+        case .pressure:
+            "Urgent is not the same as important"
+        case .uncertainty:
+            "A question is already a step"
+        case .general:
+            "Growth does not need one mood"
+        }
+    }
+
+    var literacyUnlockDetail: String {
+        switch self {
+        case .school:
+            "School pressure gets easier to move when one task is separated from the whole semester."
+        case .friendship:
+            "Relationship stress can soften when one honest sentence is separated from every imagined response."
+        case .rest:
+            "Low energy is not failure; it is a signal that the next step should become smaller."
+        case .pressure:
+            "Pressure often gets louder when everything sounds urgent. Naming one now step gives the storm a boundary."
+        case .uncertainty:
+            "Uncertainty becomes less foggy when it turns into one question that can be answered."
+        case .general:
+            "A mixed week can still have a shape when each feeling becomes one small seed."
+        }
+    }
 }
 
 private extension Mood {
@@ -464,6 +597,36 @@ private extension Mood {
             "Separate the loudest task from the whole sky."
         case .unsure:
             "Name one question before trying to solve the whole week."
+        }
+    }
+
+    var literacyUnlockTitle: String {
+        switch self {
+        case .calm:
+            "Stability is also progress"
+        case .happy:
+            "Good energy is worth noticing"
+        case .tired:
+            "Rest is information"
+        case .stressed:
+            "Urgent is not the same as important"
+        case .unsure:
+            "A question is already a step"
+        }
+    }
+
+    var literacyUnlockDetail: String {
+        switch self {
+        case .calm:
+            "A steady week still deserves attention because calm is something you can protect."
+        case .happy:
+            "Bright moments are not distractions from growth; they are part of the record too."
+        case .tired:
+            "Low energy can point toward a kinder next step instead of a bigger demand."
+        case .stressed:
+            "Stress is easier to hold when one loud thing becomes separate from the whole storm."
+        case .unsure:
+            "Uncertainty can move when it becomes one question instead of one fog."
         }
     }
 }

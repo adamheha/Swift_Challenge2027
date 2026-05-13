@@ -70,6 +70,8 @@ struct EmotionGardenView: View {
                     )
 
                     GardenEcologyLineView(seeds: visibleSeeds)
+
+                    InnerGardenWorldView(seeds: visibleSeeds)
                 }
 
                 plotLayout
@@ -381,6 +383,237 @@ private struct GardenEcologyLineView: View {
         }
 
         return dominant
+    }
+}
+
+private struct InnerGardenWorldView: View {
+    let seeds: [GardenSeed]
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var sceneHeight: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 250 : 210
+    }
+
+    private var newestMood: Mood {
+        seeds.last?.mood ?? .calm
+    }
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            TimelineView(.animation) { timeline in
+                Canvas { context, size in
+                    drawWorld(
+                        in: &context,
+                        size: size,
+                        time: reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                    )
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 5) {
+                Label("Inner garden world", systemImage: "map")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.45), radius: 5, x: 0, y: 2)
+
+                Text(worldSummary)
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.84))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .shadow(color: .black.opacity(0.45), radius: 4, x: 0, y: 2)
+            }
+            .padding(14)
+        }
+        .frame(height: sceneHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(newestMood.tint.opacity(0.34), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Inner garden world")
+        .accessibilityValue(worldSummary)
+    }
+
+    private var worldSummary: String {
+        let roots = seeds.filter { $0.lane == .now }.count
+        let buds = seeds.filter { $0.lane == .later }.count
+        let air = seeds.filter { $0.lane == .release }.count
+        return "\(roots) roots, \(buds) buds, and \(air) pieces of open air are shaping this week."
+    }
+
+    private func drawWorld(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        drawSky(in: &context, width: width, height: height)
+        drawWeather(in: &context, width: width, height: height, time: time)
+        drawGround(in: &context, width: width, height: height)
+        drawSeedConsequences(in: &context, width: width, height: height, time: time)
+        drawWorldPlants(in: &context, width: width, height: height, time: time)
+    }
+
+    private func drawSky(in context: inout GraphicsContext, width: CGFloat, height: CGFloat) {
+        context.fill(
+            Path(CGRect(x: 0, y: 0, width: width, height: height)),
+            with: .linearGradient(
+                Gradient(colors: [
+                    Color(red: 0.05, green: 0.10, blue: 0.16),
+                    newestMood.tint.opacity(0.24),
+                    Color(red: 0.09, green: 0.16, blue: 0.13)
+                ]),
+                startPoint: CGPoint(x: width * 0.12, y: 0),
+                endPoint: CGPoint(x: width, y: height)
+            )
+        )
+    }
+
+    private func drawWeather(
+        in context: inout GraphicsContext,
+        width: CGFloat,
+        height: CGFloat,
+        time: TimeInterval
+    ) {
+        for (index, seed) in seeds.enumerated() {
+            let x = width * (0.12 + CGFloat(index % 4) * 0.23)
+            let y = height * (0.16 + CGFloat(index / 4) * 0.14) + sin(time + Double(index)) * 4
+            let radius = CGFloat(24 + (index % 3) * 8)
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: x - radius,
+                    y: y - radius * 0.55,
+                    width: radius * 2.2,
+                    height: radius * 1.1
+                )),
+                with: .color(seed.mood.tint.opacity(0.12))
+            )
+        }
+    }
+
+    private func drawGround(in context: inout GraphicsContext, width: CGFloat, height: CGFloat) {
+        var ground = Path()
+        ground.move(to: CGPoint(x: 0, y: height * 0.72))
+        ground.addCurve(
+            to: CGPoint(x: width, y: height * 0.70),
+            control1: CGPoint(x: width * 0.28, y: height * 0.62),
+            control2: CGPoint(x: width * 0.70, y: height * 0.80)
+        )
+        ground.addLine(to: CGPoint(x: width, y: height))
+        ground.addLine(to: CGPoint(x: 0, y: height))
+        ground.closeSubpath()
+
+        context.fill(
+            ground,
+            with: .linearGradient(
+                Gradient(colors: [
+                    Color(red: 0.24, green: 0.36, blue: 0.24).opacity(0.86),
+                    Color(red: 0.22, green: 0.16, blue: 0.10).opacity(0.92)
+                ]),
+                startPoint: CGPoint(x: width * 0.5, y: height * 0.64),
+                endPoint: CGPoint(x: width * 0.5, y: height)
+            )
+        )
+    }
+
+    private func drawSeedConsequences(
+        in context: inout GraphicsContext,
+        width: CGFloat,
+        height: CGFloat,
+        time: TimeInterval
+    ) {
+        for (index, seed) in seeds.enumerated() {
+            let x = width * (0.11 + CGFloat(index) / CGFloat(max(seeds.count - 1, 1)) * 0.78)
+            let groundY = height * (0.72 + CGFloat(index % 2) * 0.035)
+
+            switch seed.lane {
+            case .now:
+                for rootIndex in 0..<3 {
+                    var root = Path()
+                    let spread = CGFloat(rootIndex - 1) * 0.11 * width
+                    root.move(to: CGPoint(x: x, y: groundY))
+                    root.addQuadCurve(
+                        to: CGPoint(x: x + spread, y: height * 0.96),
+                        control: CGPoint(x: x + spread * 0.18, y: height * 0.84)
+                    )
+                    context.stroke(
+                        root,
+                        with: .color(seed.mood.tint.opacity(0.34)),
+                        style: StrokeStyle(lineWidth: 1.8, lineCap: .round)
+                    )
+                }
+            case .later:
+                let budRect = CGRect(
+                    x: x + 10,
+                    y: groundY - 34 - sin(time + Double(index)) * 2,
+                    width: 22,
+                    height: 34
+                )
+                context.fill(
+                    Path(ellipseIn: budRect),
+                    with: .color(seed.mood.tint.opacity(0.44))
+                )
+            case .release:
+                for windIndex in 0..<2 {
+                    var wind = Path()
+                    let y = height * (0.34 + CGFloat(windIndex) * 0.10) + CGFloat(index % 2) * 6
+                    wind.move(to: CGPoint(x: x - 34, y: y))
+                    wind.addCurve(
+                        to: CGPoint(x: min(width - 16, x + 58), y: y + sin(time) * 4),
+                        control1: CGPoint(x: x - 10, y: y - 12),
+                        control2: CGPoint(x: x + 26, y: y + 12)
+                    )
+                    context.stroke(
+                        wind,
+                        with: .color(seed.mood.tint.opacity(0.36)),
+                        style: StrokeStyle(lineWidth: 1.4, lineCap: .round)
+                    )
+                }
+            }
+        }
+    }
+
+    private func drawWorldPlants(
+        in context: inout GraphicsContext,
+        width: CGFloat,
+        height: CGFloat,
+        time: TimeInterval
+    ) {
+        for (index, seed) in seeds.enumerated() {
+            let x = width * (0.12 + CGFloat(index) / CGFloat(max(seeds.count - 1, 1)) * 0.76)
+            let baseY = height * (0.72 + CGFloat(index % 2) * 0.035)
+            let plantHeight = height * (0.13 + CGFloat(index % 3) * 0.025)
+            var stem = Path()
+            stem.move(to: CGPoint(x: x, y: baseY))
+            stem.addQuadCurve(
+                to: CGPoint(x: x + CGFloat(index % 2 == 0 ? -1 : 1) * 8, y: baseY - plantHeight),
+                control: CGPoint(x: x + CGFloat(index % 3 - 1) * 8, y: baseY - plantHeight * 0.48)
+            )
+            context.stroke(
+                stem,
+                with: .color(seed.mood.tint.opacity(0.78)),
+                style: StrokeStyle(lineWidth: 2.4, lineCap: .round)
+            )
+
+            let bloomRadius = CGFloat(7 + index % 3)
+            let bloomCenter = CGPoint(
+                x: x + CGFloat(index % 2 == 0 ? -1 : 1) * 8,
+                y: baseY - plantHeight + sin(time * 0.8 + Double(index)) * 2
+            )
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: bloomCenter.x - bloomRadius,
+                    y: bloomCenter.y - bloomRadius,
+                    width: bloomRadius * 2,
+                    height: bloomRadius * 2
+                )),
+                with: .color(seed.mood.tint.opacity(0.86))
+            )
+        }
     }
 }
 
@@ -719,6 +952,11 @@ private struct GardenPlantDetailView: View {
                 .foregroundStyle(mood.tint)
                 .fixedSize(horizontal: false, vertical: true)
 
+            Text(seed.memoryTitle)
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
             Text(mood.gardenReflectionNote)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -740,6 +978,33 @@ private struct GardenPlantDetailView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            Divider()
+
+            Label("Seed memory", systemImage: "book.closed")
+                .font(.subheadline.bold())
+                .foregroundStyle(mood.tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(seed.memoryDetail)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(seed.tinyActionMemory)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(seed.worldChangeSummary)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(seed.privateMemorySentence)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
@@ -750,7 +1015,7 @@ private struct GardenPlantDetailView: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(detailTitle)
-        .accessibilityValue("\(mood.gardenReflectionNote) \(mood.gardenRevisitPrompt) \(seed.lane.gardenConsequenceDetail)")
+        .accessibilityValue("\(mood.gardenReflectionNote) \(mood.gardenRevisitPrompt) \(seed.lane.gardenConsequenceDetail) \(seed.privateMemorySentence)")
     }
 
     private var detailTitle: String {

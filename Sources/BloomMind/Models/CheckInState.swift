@@ -12,6 +12,14 @@ struct GardenWeekReview: Equatable {
     }
 }
 
+struct LiveStormProfile: Equatable {
+    let theme: ReflectionTheme
+    let intensity: Double
+    let keywords: [String]
+    let caption: String
+    let accessibilityValue: String
+}
+
 enum GrowthLane: String, CaseIterable, Identifiable {
     case now
     case later
@@ -122,6 +130,45 @@ struct GardenSeed: Equatable {
         self.lane = lane
         self.theme = theme
     }
+
+    var memoryTitle: String {
+        "\(theme.displayName) seed"
+    }
+
+    var memoryDetail: String {
+        "This \(mood.rawValue.lowercased()) seed became \(lane.gardenConsequenceTitle.lowercased())."
+    }
+
+    var tinyActionMemory: String {
+        switch lane {
+        case .now:
+            "The tiny action was to make one next step visible."
+        case .later:
+            "The tiny action was to give the bigger worry a place to wait."
+        case .release:
+            "The tiny action was to let one pressure leave this minute."
+        }
+    }
+
+    var privateMemorySentence: String {
+        "A \(theme.displayName.lowercased()) seed became \(lane.gardenConsequenceTitle.lowercased()) without saving the private words."
+    }
+
+    var worldChangeSummary: String {
+        switch lane {
+        case .now:
+            "Roots grew under this plant."
+        case .later:
+            "A patient bud appeared beside this plant."
+        case .release:
+            "More open air appeared around this plant."
+        }
+    }
+}
+
+struct WeeklyLiteracyUnlock: Equatable {
+    let title: String
+    let detail: String
 }
 
 struct WeeklyBloomPayoff: Equatable {
@@ -129,6 +176,7 @@ struct WeeklyBloomPayoff: Equatable {
     let subtitle: String
     let story: String
     let insight: String
+    let literacyUnlock: WeeklyLiteracyUnlock
     let closingLine: String
     let nextWeekIntention: String
     let privacyNote: String
@@ -138,7 +186,7 @@ struct WeeklyBloomPayoff: Equatable {
     let totalCount: Int
 
     var accessibilityValue: String {
-        "\(subtitle) \(story) \(insight) \(closingLine) \(nextWeekIntention) \(completedCount) of \(totalCount) seeds complete."
+        "\(subtitle) \(story) \(insight) \(literacyUnlock.title). \(literacyUnlock.detail) \(closingLine) \(nextWeekIntention) \(completedCount) of \(totalCount) seeds complete."
     }
 }
 
@@ -149,12 +197,13 @@ struct CheckInState {
     static let localPrivacyDetailText = "Your reflection stays local in this prototype."
     static let completeActionAccessibilityHint = "Plants this seed in the garden and returns to Today."
     static let gardenPreviewTitle = "Emotion garden"
-    static let previewDemoWeekActionTitle = "Preview Demo Week"
+    static let previewDemoWeekActionTitle = "Preview Award Demo"
     static let showMyWeekActionTitle = "Show My Week"
     static let previewDemoWeekActionAccessibilityHint = "Shows a sample completed week without changing your check-ins."
     static let showMyWeekActionAccessibilityHint = "Returns the garden to your actual check-ins."
-    static let demoWeekPreviewTitle = "Demo preview only"
+    static let demoWeekPreviewTitle = "Guided award demo"
     static let demoWeekPreviewDetail = "Your real check-ins are not changed."
+    static let originLine = "BloomMind was made for the moment when school pressure stops feeling like tasks and starts feeling like weather."
     static let demoGardenMoods: [Mood] = [
         .stressed,
         .tired,
@@ -234,6 +283,14 @@ struct CheckInState {
         }
     }
 
+    var liveStormProfile: LiveStormProfile {
+        LocalActionEngine.liveStormProfile(
+            selectedMood: selectedMood,
+            reflectionText: reflectionText,
+            characterLimit: Self.reflectionCharacterLimit
+        )
+    }
+
     var weeklyReview: GardenWeekReview {
         let seeds = gardenSeedsThisWeek
         let moods = seeds.map(\.mood)
@@ -305,6 +362,10 @@ struct CheckInState {
                 subtitle: "\(completedCheckInsThisWeek) of \(Self.weeklyCheckInGoal) seeds are planted.",
                 story: "The garden is still collecting the shape of this week.",
                 insight: "One honest check-in is enough to make the storm less abstract.",
+                literacyUnlock: WeeklyLiteracyUnlock(
+                    title: "Emotional literacy unlock",
+                    detail: "A feeling does not need a perfect label before it can become one small next step."
+                ),
                 closingLine: "One small seed still counts.",
                 nextWeekIntention: "Plant the next seed when one feeling becomes loud enough to name.",
                 privacyNote: Self.localPrivacyDetailText,
@@ -324,6 +385,7 @@ struct CheckInState {
                 dominantTheme: dominantTheme
             ),
             insight: LocalActionEngine.weeklyInsight(for: seeds),
+            literacyUnlock: LocalActionEngine.weeklyLiteracyUnlock(for: seeds),
             closingLine: Self.closingLine(
                 dominantMood: dominantMood,
                 dominantLane: dominantLane
@@ -335,6 +397,25 @@ struct CheckInState {
             completedCount: completedCheckInsThisWeek,
             totalCount: Self.weeklyCheckInGoal
         )
+    }
+
+    var returnTomorrowPrompt: String {
+        if isWeeklyBloomUnlocked {
+            return weeklyBloomPayoff.nextWeekIntention
+        }
+
+        guard let newestSeed = gardenSeedsThisWeek.last else {
+            return "Tomorrow, notice one feeling before it turns into weather."
+        }
+
+        switch newestSeed.lane {
+        case .now:
+            return "Tomorrow, let one loud task become one visible next step."
+        case .later:
+            return "Tomorrow, try parking one worry in Later before it takes over."
+        case .release:
+            return "Tomorrow, let one small thing become air before carrying it."
+        }
     }
 
     var trimmedReflectionText: String {

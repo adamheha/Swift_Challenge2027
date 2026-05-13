@@ -57,6 +57,22 @@ import Testing
     #expect(!suggestion.literacyInsight.contains(reflection))
 }
 
+@Test func liveStormProfileReflectsTypingAndMoodWithoutSavingText() {
+    let reflection = "I have a project deadline and too much to finish."
+    let profile = LocalActionEngine.liveStormProfile(
+        selectedMood: .stressed,
+        reflectionText: reflection,
+        characterLimit: CheckInState.reflectionCharacterLimit
+    )
+
+    #expect(profile.theme == .pressure)
+    #expect(profile.keywords.contains("project"))
+    #expect(profile.keywords.contains("deadline"))
+    #expect(profile.caption == "Stressed is coloring a pressure storm.")
+    #expect(profile.intensity > 0.34)
+    #expect(profile.accessibilityValue.contains("Pressure storm"))
+}
+
 @Test func localActionEngineExplanationKeepsReflectionPrivate() {
     let reflection = "My friend Maya ignored my message and I felt left out."
     let suggestion = LocalActionEngine.suggestion(
@@ -133,6 +149,16 @@ import Testing
     #expect(state.gardenSeeds.last == GardenSeed(mood: .tired, lane: .release, theme: .rest))
     #expect(state.gardenSeedsThisWeek.last?.lane == .release)
     #expect(state.gardenSeedsThisWeek.last?.theme == .rest)
+}
+
+@Test func gardenSeedMemorySummariesStayPrivate() {
+    let seed = GardenSeed(mood: .stressed, lane: .release, theme: .pressure)
+
+    #expect(seed.memoryTitle == "Pressure seed")
+    #expect(seed.memoryDetail == "This stressed seed became lightened by letting go.")
+    #expect(seed.tinyActionMemory == "The tiny action was to let one pressure leave this minute.")
+    #expect(seed.worldChangeSummary == "More open air appeared around this plant.")
+    #expect(seed.privateMemorySentence == "A pressure seed became lightened by letting go without saving the private words.")
 }
 
 @Test func checkInCompletionUsesUnsurePlantWhenMoodIsMissing() {
@@ -243,6 +269,7 @@ import Testing
     #expect(payoff.subtitle == "Seven private storms became one visible garden.")
     #expect(payoff.dominantMood == .stressed)
     #expect(payoff.dominantLane == .release)
+    #expect(payoff.literacyUnlock.title == "Urgent is not the same as important")
     #expect(payoff.closingLine == "I can carry less and still keep growing.")
     #expect(!payoff.story.contains(reflection))
     #expect(!payoff.insight.contains(reflection))
@@ -259,6 +286,23 @@ import Testing
     #expect(payoff.dominantLane == .release)
     #expect(payoff.story.contains("Steadiness was the clearest color"))
     #expect(payoff.nextWeekIntention.contains("Next week"))
+    #expect(payoff.literacyUnlock.detail.contains("Pressure often gets louder"))
+}
+
+@Test func returnTomorrowPromptReflectsLatestSeedOrWeeklyBloom() {
+    let empty = CheckInState()
+    #expect(empty.returnTomorrowPrompt == "Tomorrow, notice one feeling before it turns into weather.")
+
+    let partial = CheckInState(
+        completedCheckIns: 1,
+        gardenSeeds: [
+            GardenSeed(mood: .calm, lane: .later, theme: .school)
+        ]
+    )
+    #expect(partial.returnTomorrowPrompt == "Tomorrow, try parking one worry in Later before it takes over.")
+
+    let full = CheckInState().demoWeekPreviewState()
+    #expect(full.returnTomorrowPrompt.contains("Next week"))
 }
 
 @Test func completedCheckInTracksToday() {

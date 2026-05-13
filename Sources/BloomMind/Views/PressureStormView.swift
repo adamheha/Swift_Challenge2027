@@ -4,12 +4,29 @@ struct PressureStormView: View {
     let intensity: Double
     let resolvedMood: Mood?
     let showsLabels: Bool
+    let liveKeywords: [String]
+    let liveTheme: ReflectionTheme
+
+    init(
+        intensity: Double,
+        resolvedMood: Mood?,
+        showsLabels: Bool,
+        liveKeywords: [String] = [],
+        liveTheme: ReflectionTheme = .general
+    ) {
+        self.intensity = intensity
+        self.resolvedMood = resolvedMood
+        self.showsLabels = showsLabels
+        self.liveKeywords = liveKeywords
+        self.liveTheme = liveTheme
+    }
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorScheme) private var colorScheme
 
     private var clampedIntensity: Double {
-        min(max(intensity, 0), 1)
+        let liveLift = min(Double(liveKeywords.count) * 0.035, 0.16)
+        return min(max(intensity + liveLift, 0), 1)
     }
 
     private var isResolved: Bool {
@@ -17,7 +34,7 @@ struct PressureStormView: View {
     }
 
     private var baseTint: Color {
-        resolvedMood?.tint ?? Color(red: 0.15, green: 0.72, blue: 0.88)
+        resolvedMood?.tint ?? liveTheme.stormTint
     }
 
     var body: some View {
@@ -40,7 +57,19 @@ struct PressureStormView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(isResolved ? "Resolved pressure storm" : "Pressure storm")
-        .accessibilityValue(isResolved ? "The storm has become a mood-colored bloom." : "Thought fragments are moving around the center.")
+        .accessibilityValue(stormAccessibilityValue)
+    }
+
+    private var stormAccessibilityValue: String {
+        if isResolved {
+            return "The storm has become a mood-colored bloom."
+        }
+
+        guard !liveKeywords.isEmpty else {
+            return "Thought fragments are moving around the center."
+        }
+
+        return "\(liveTheme.displayName) storm with live fragments: \(liveKeywords.joined(separator: ", "))."
     }
 
     private var backgroundColors: [Color] {
@@ -72,11 +101,13 @@ struct PressureStormView: View {
         drawCenterGlow(in: &context, center: center, shortestSide: shortestSide)
         drawOrbitTrails(in: &context, center: center, shortestSide: shortestSide, time: time)
 
-        for particle in StormParticle.samples {
-            let speed = particle.speed * (isResolved ? 0.22 : 1)
+        let particles = StormParticle.samples + StormParticle.liveSamples(for: liveKeywords, themeTint: liveTheme.stormTint)
+
+        for particle in particles {
+            let speed = particle.speed * (isResolved ? 0.22 : 1) * (0.78 + clampedIntensity * 0.42)
             let angle = particle.angle + (time * speed)
             let radius = shortestSide * particle.radius * resolvedPull
-            let wave = sin((time * particle.waveSpeed) + particle.angle) * shortestSide * particle.wave
+            let wave = sin((time * particle.waveSpeed * (0.8 + clampedIntensity * 0.5)) + particle.angle) * shortestSide * particle.wave
             let point = CGPoint(
                 x: center.x + cos(angle) * radius + cos(angle * 0.5) * wave,
                 y: center.y + sin(angle) * radius + sin(angle * 0.7) * wave
@@ -282,18 +313,22 @@ struct CheckInStormPreviewView: View {
     let selectedMood: Mood?
     let reflectionText: String
 
-    private var intensity: Double {
-        let reflectionProgress = min(Double(reflectionText.count) / Double(CheckInState.reflectionCharacterLimit), 1)
-        let selectedMoodRelief = selectedMood == nil ? 0 : 0.22
-        return max(0.28, 0.9 - reflectionProgress * 0.34 - selectedMoodRelief)
+    private var profile: LiveStormProfile {
+        LocalActionEngine.liveStormProfile(
+            selectedMood: selectedMood,
+            reflectionText: reflectionText,
+            characterLimit: CheckInState.reflectionCharacterLimit
+        )
     }
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             PressureStormView(
-                intensity: intensity,
+                intensity: profile.intensity,
                 resolvedMood: selectedMood,
-                showsLabels: selectedMood == nil
+                showsLabels: true,
+                liveKeywords: profile.keywords,
+                liveTheme: profile.theme
             )
 
             LinearGradient(
@@ -313,16 +348,57 @@ struct CheckInStormPreviewView: View {
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.45), radius: 6, x: 0, y: 2)
 
-                Text(selectedMood == nil ? "Tap the closest mood, then give one sentence to the storm." : "The storm is already starting to gather into one seed.")
+                Text(profile.caption)
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.82))
                     .fixedSize(horizontal: false, vertical: true)
+
+                LiveStormWordRowView(
+                    keywords: profile.keywords,
+                    tint: selectedMood?.tint ?? profile.theme.stormTint
+                )
             }
             .padding(16)
         }
         .frame(minHeight: 190)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(selectedMood == nil ? "Name the weather" : "\(selectedMood?.rawValue ?? "Mood") found")
+        .accessibilityValue(profile.accessibilityValue)
+    }
+}
+
+private struct LiveStormWordRowView: View {
+    let keywords: [String]
+    let tint: Color
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 7) {
+                chips
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                chips
+            }
+        }
+        .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private var chips: some View {
+        ForEach(Array(keywords.prefix(4).enumerated()), id: \.offset) { _, keyword in
+            Text(keyword)
+                .font(.caption2.bold())
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 5)
+                .background(tint.opacity(0.42), in: Capsule())
+                .overlay {
+                    Capsule()
+                        .stroke(Color.white.opacity(0.18), lineWidth: 1)
+                }
+        }
     }
 }
 
@@ -348,4 +424,44 @@ private struct StormParticle {
         StormParticle(label: "future", angle: 5.2, radius: 0.26, size: 0.023, speed: 0.72, wave: 0.024, waveSpeed: 1.6, opacity: 0.72, color: Color(red: 0.35, green: 0.86, blue: 1.00), labelOffset: CGSize(width: -24, height: 15)),
         StormParticle(label: "finish", angle: 5.9, radius: 0.44, size: 0.020, speed: -0.38, wave: 0.016, waveSpeed: 1.0, opacity: 0.64, color: Color(red: 0.68, green: 1.00, blue: 0.48), labelOffset: CGSize(width: 12, height: -18))
     ]
+
+    static func liveSamples(for keywords: [String], themeTint: Color) -> [StormParticle] {
+        keywords.prefix(5).enumerated().map { index, keyword in
+            let indexDouble = Double(index)
+            return StormParticle(
+                label: keyword,
+                angle: 0.65 + indexDouble * 1.17,
+                radius: 0.23 + CGFloat(index % 3) * 0.075,
+                size: 0.020 + CGFloat(index % 2) * 0.006,
+                speed: (index.isMultiple(of: 2) ? 0.70 : -0.64) + indexDouble * 0.035,
+                wave: 0.026 + CGFloat(index % 2) * 0.006,
+                waveSpeed: 1.15 + indexDouble * 0.16,
+                opacity: 0.78,
+                color: themeTint.opacity(0.95),
+                labelOffset: CGSize(
+                    width: index.isMultiple(of: 2) ? 16 : -32,
+                    height: index.isMultiple(of: 2) ? -16 : 17
+                )
+            )
+        }
+    }
+}
+
+private extension ReflectionTheme {
+    var stormTint: Color {
+        switch self {
+        case .school:
+            Color(red: 0.42, green: 0.72, blue: 1.00)
+        case .friendship:
+            Color(red: 0.88, green: 0.50, blue: 0.86)
+        case .rest:
+            Color(red: 0.42, green: 0.60, blue: 1.00)
+        case .pressure:
+            Color(red: 1.00, green: 0.48, blue: 0.22)
+        case .uncertainty:
+            Color(red: 0.70, green: 0.54, blue: 1.00)
+        case .general:
+            Color(red: 0.15, green: 0.72, blue: 0.88)
+        }
+    }
 }

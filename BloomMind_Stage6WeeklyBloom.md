@@ -9,7 +9,7 @@ Make seven completed check-ins unlock a memorable emotional ending:
 - The week becomes a single bloom, not just seven separate plants.
 - The garden summarizes mood, theme, and Now / Later / Let go choices without showing private reflection text.
 - Every sorting choice leaves a visible consequence in the garden.
-- Preview Demo Week can show the complete award demo path in under 90 seconds.
+- Preview Award Demo can show the complete award demo path in under 90 seconds.
 
 ## Completed
 
@@ -19,14 +19,14 @@ Make seven completed check-ins unlock a memorable emotional ending:
 - Added a living garden line that describes the week's mood weather and lane consequence.
 - Added lane consequence glyphs and private plant notes so Now becomes roots, Later becomes buds, and Let go becomes open air.
 - Added a Weekly Bloom payoff that unlocks at 7/7 seeds with a constellation-style reveal, week story, local insight, closing ritual, next-week seed, and privacy note.
-- Updated Preview Demo Week so it includes mood, theme, and lane data for the full award path.
+- Updated Preview Award Demo so it includes mood, theme, and lane data for the full award path.
 - Added unit tests for seed consequence storage, weekly bloom unlock, demo-week payoff, privacy-preserving summary text, and updated accessibility copy.
 - Refreshed the generated submission ZIP with the Stage 6 source files; current size is 38,004 bytes.
 
 ## Demo Path
 
 1. Open BloomMind.
-2. Tap Preview Demo Week from Today.
+2. Tap Preview Award Demo from Today.
 3. Confirm the garden fills with seven mood-specific seeds.
 4. Confirm the living garden line explains the week's emotional ecology.
 5. Confirm the Weekly Bloom payoff appears with "This week bloomed."

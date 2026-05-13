@@ -60,7 +60,7 @@ Check:
 - The app launches to Today.
 - Reflection accepts typed text.
 - Continue works after selecting a mood, even if Reflection is empty.
-- Preview Demo Week shows a sample full week without changing real check-ins.
+- Preview Award Demo shows a sample full week without changing real check-ins.
 - Weekly Bloom appears after the sample full week and does not show private reflection text.
 - Show My Week returns to the user's actual week.
 - The main one-minute path finishes in under 3 minutes.
@@ -88,7 +88,7 @@ Check:
 6. Move at least one fragment between Now, Later, and Let go.
 7. Tap Plant This Seed.
 8. Confirm the garden shows the newest plant, Storm planted banner, Week memory, and weekly review card.
-9. Tap Preview Demo Week.
+9. Tap Preview Award Demo.
 10. Confirm the sample full week appears without changing real check-ins.
 11. Confirm Weekly Bloom shows the seven-seed reveal, week story, insight, closing ritual, and next-week seed.
 12. Tap Show My Week.

@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 2.0 Stage 6 - Weekly Bloom Payoff and Living Garden In Progress
+Current stage: BloomMind 3.0 Stage 7 - Inner Garden World In Progress
 
-Current branch: `codex/bloommind-2-stage-6-weekly-bloom`
+Current branch: `codex/bloommind-3-inner-garden-world`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 2.0 Stage 7 - Final Story and Submission Rehearsal
+Next stage: BloomMind 3.0 Stage 8 - Final Story, Device Review, and Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -180,7 +180,7 @@ Definition of done:
 
 ## BloomMind 2.0 Stage 6 - Weekly Bloom Payoff and Living Garden
 
-Status: In Progress
+Status: Complete
 
 Goal: Make seven completed seeds feel like a meaningful ending, not an empty counter.
 
@@ -208,6 +208,39 @@ Definition of done:
 - `swift test`, `swift build`, and package verification pass.
 - Preview Demo Week shows the complete seven-seed Weekly Bloom ending without mutating real check-ins.
 - The Home screen clearly answers what happens after seven seeds.
+
+## BloomMind 3.0 Stage 7 - Inner Garden World
+
+Status: In Progress
+
+Goal: Make every private choice visibly change the world, so BloomMind feels less like a tracker and more like a living emotional landscape.
+
+Completed in this branch:
+
+- Added Live Storm Typing so reflection text changes storm intensity, theme color, visible keywords, and accessibility feedback.
+- Added a seed-to-soil planting ritual in Growth Action so planting feels physical instead of only button-like.
+- Added an Inner Garden World scene with sky, mood weather, roots, buds, open air, and world plants.
+- Expanded seed memory cards with theme, tiny action, lane consequence, world-change summary, and a privacy-preserving memory sentence.
+- Added Weekly Bloom time-lapse phases: Storm, Seeds, World, Bloom.
+- Added Emotional Literacy Unlocks based on dominant week theme or mood.
+- Added Return Tomorrow prompt so Home gives the student a reason to come back.
+- Added a student-origin line and reframed Preview Award Demo as the guided evaluator path.
+- Added a pressed-bloom archive preview as the first step toward Garden Archive.
+- Added unit coverage for live storm profiles, seed memory summaries, literacy unlocks, and return-tomorrow prompts.
+- Refreshed `SubmissionBuild/BloomMind.swiftpm.zip` with the Stage 7 sources; current ZIP size is 44,281 bytes.
+
+Remaining:
+
+- Refresh and verify the generated `.swiftpm` package after Stage 7 changes.
+- Smoke check in full Xcode or Swift Playgrounds.
+- Smoke check on iPad or an iPad-sized simulator.
+- Replace the generic origin line with the applicant's true personal story.
+
+Definition of done:
+
+- `swift test`, `swift build`, and package verification pass.
+- The main flow clearly demonstrates input changing the storm, sorting changing the planting ritual, and planted seeds changing the world.
+- Preview Award Demo shows the complete 60-90 second evaluator path.
 
 ## Stage 0 - Award Research
 

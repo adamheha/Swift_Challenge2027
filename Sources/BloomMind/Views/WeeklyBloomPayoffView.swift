@@ -32,6 +32,12 @@ struct WeeklyBloomPayoffView: View {
                     .stroke(accentColor.opacity(0.34), lineWidth: 1)
             }
 
+            WeeklyBloomTimeLapseView(
+                seeds: seeds,
+                tint: accentColor,
+                reveal: reveal || reduceMotion
+            )
+
             VStack(alignment: .leading, spacing: 10) {
                 Text("Your week had a shape")
                     .font(.headline)
@@ -54,6 +60,13 @@ struct WeeklyBloomPayoffView: View {
                 )
 
                 PayoffLineView(
+                    title: payoff.literacyUnlock.title,
+                    systemImage: "graduationcap",
+                    text: payoff.literacyUnlock.detail,
+                    tint: accentColor
+                )
+
+                PayoffLineView(
                     title: "Closing ritual",
                     systemImage: "quote.bubble",
                     text: payoff.closingLine,
@@ -67,6 +80,11 @@ struct WeeklyBloomPayoffView: View {
                     tint: accentColor
                 )
             }
+
+            PressedBloomArchivePreviewView(
+                seeds: seeds,
+                tint: accentColor
+            )
 
             HStack(alignment: .top, spacing: 10) {
                 Image(systemName: "lock.shield")
@@ -137,6 +155,105 @@ struct WeeklyBloomPayoffView: View {
     }
 }
 
+private struct WeeklyBloomTimeLapseView: View {
+    let seeds: [GardenSeed]
+    let tint: Color
+    let reveal: Bool
+
+    private var phases: [TimeLapsePhase] {
+        [
+            TimeLapsePhase(
+                title: "Storm",
+                detail: "The week began as moving pressure.",
+                systemImage: "tornado",
+                count: seeds.count
+            ),
+            TimeLapsePhase(
+                title: "Seeds",
+                detail: "\(seeds.count) moments were named.",
+                systemImage: "circle.hexagongrid",
+                count: seeds.count
+            ),
+            TimeLapsePhase(
+                title: "World",
+                detail: "\(laneSummary) shaped the garden.",
+                systemImage: "map",
+                count: seeds.count
+            ),
+            TimeLapsePhase(
+                title: "Bloom",
+                detail: "The week became one memory.",
+                systemImage: "sparkles",
+                count: seeds.count
+            )
+        ]
+    }
+
+    private var laneSummary: String {
+        let roots = seeds.filter { $0.lane == .now }.count
+        let buds = seeds.filter { $0.lane == .later }.count
+        let air = seeds.filter { $0.lane == .release }.count
+        return "\(roots) roots, \(buds) buds, \(air) winds"
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Week time-lapse", systemImage: "timeline.selection")
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 8) {
+                    phaseCards
+                }
+
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 128), spacing: 8)], spacing: 8) {
+                    phaseCards
+                }
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Week time-lapse")
+        .accessibilityValue(phases.map { "\($0.title): \($0.detail)" }.joined(separator: ". "))
+    }
+
+    @ViewBuilder
+    private var phaseCards: some View {
+        ForEach(Array(phases.enumerated()), id: \.offset) { index, phase in
+            VStack(alignment: .leading, spacing: 7) {
+                Image(systemName: phase.systemImage)
+                    .font(.headline.bold())
+                    .foregroundStyle(tint)
+                    .accessibilityHidden(true)
+
+                Text(phase.title)
+                    .font(.caption.bold())
+                    .foregroundStyle(.primary)
+
+                Text(phase.detail)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(10)
+            .background(tint.opacity(reveal ? 0.10 + Double(index) * 0.018 : 0.04), in: RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tint.opacity(reveal ? 0.22 : 0.08), lineWidth: 1)
+            }
+        }
+    }
+}
+
+private struct TimeLapsePhase {
+    let title: String
+    let detail: String
+    let systemImage: String
+    let count: Int
+}
+
 private struct PayoffLineView: View {
     let title: String
     let systemImage: String
@@ -163,6 +280,55 @@ private struct PayoffLineView: View {
             }
             .layoutPriority(1)
         }
+    }
+}
+
+private struct PressedBloomArchivePreviewView: View {
+    let seeds: [GardenSeed]
+    let tint: Color
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(tint.opacity(0.12))
+                    .frame(width: 68, height: 82)
+
+                ForEach(Array(seeds.prefix(7).enumerated()), id: \.offset) { index, seed in
+                    Capsule()
+                        .fill(seed.mood.tint.opacity(0.72))
+                        .frame(width: 10, height: 28)
+                        .rotationEffect(.degrees(Double(index) * 360 / Double(max(seeds.count, 1))))
+                        .offset(y: -15)
+                }
+
+                Circle()
+                    .fill(Color.white.opacity(0.68))
+                    .frame(width: 14, height: 14)
+            }
+            .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 5) {
+                Text("Past bloom preview")
+                    .font(.subheadline.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("At the end of a real week, this bloom can become a pressed flower in the archive instead of disappearing.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .padding(12)
+        .background(tint.opacity(0.09), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Past bloom preview")
+        .accessibilityValue("This completed bloom can become a pressed flower in the archive instead of disappearing.")
     }
 }
 

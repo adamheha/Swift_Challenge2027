@@ -16,6 +16,7 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 - `BloomMind_Stage5Packaging.md`: Stage 5 official rules refresh, packaging command, and generated ZIP verification.
 - `BloomMind_Stage5DeviceReview.md`: Stage 5 full Xcode, Swift Playgrounds, and iPad smoke-check plan.
 - `BloomMind_Stage6WeeklyBloom.md`: Stage 6 weekly bloom payoff, living garden, and 7/7 reveal notes.
+- `BloomMind_Stage7InnerGardenWorld.md`: BloomMind 3.0 live storm, inner garden world, and richer weekly ending notes.
 - `Packaging/BloomMindSubmissionPackage.swift`: submission-only Swift package manifest.
 - `Scripts/create_submission_package.sh`: repeatable `.swiftpm` ZIP packaging script.
 - `Scripts/verify_submission_package.sh`: repeatable submission ZIP verification script.
@@ -27,9 +28,9 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 2.0 Stage 6: Weekly Bloom Payoff and Living Garden - in progress.
+BloomMind 3.0 Stage 7: Inner Garden World - in progress.
 
-Active branch: `codex/bloommind-2-stage-6-weekly-bloom`
+Active branch: `codex/bloommind-3-inner-garden-world`
 
 Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. BloomMind 2.0 starts from that foundation and pushes the app toward a more memorable Swift Student Challenge experience.
 
@@ -38,7 +39,9 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - SwiftUI app shell with a typed navigation flow.
 - Home screen with a moving pressure-storm hero, weekly bloom progress, an interactive emotion garden, and today-completion feedback.
 - Check-in screen with mood selection, selected-state checkmark, a live storm preview, optional reflection input, and a three-step progress indicator.
+- Live Storm Typing that changes storm intensity, theme color, and visible keywords as the user writes a reflection.
 - Growth action screen with local mood-and-theme suggested actions, tappable thought-fragment sorting, Now / Later / Let go lanes, seed commitment, and a private theme explanation.
+- A seed-to-soil planting ritual that previews whether the seed becomes roots, buds, or open air.
 - Mood-specific SwiftUI plant visuals that grow from completed local check-ins.
 - Local-only reflection theme detection for school, friendship, rest, pressure, and uncertainty.
 - Local-only state for the active check-in, weekly progress, latest completion time, and garden mood history.
@@ -46,11 +49,13 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - Emotional literacy micro-explanations that teach one small idea during the Growth Action step.
 - Tappable garden plants that reveal private mood-based revisit notes without showing reflection text.
 - A Storm planted garden payoff banner connected to the newest mood and weekly seed count.
-- Week memory and Preview Demo Week affordances for reviewing a sample complete transformed week quickly without changing real check-ins.
+- Week memory and Preview Award Demo affordances for reviewing a sample complete transformed week quickly without changing real check-ins.
 - A weekly review payoff card that summarizes the garden's current emotional pattern.
 - Garden seeds now remember mood, local theme, and the user's Now / Later / Let go choice.
 - The living garden changes copy, plant detail, atmosphere, and accessibility values based on those seed consequences.
+- Inner Garden World scene with mood weather, roots, buds, open air, and world plants.
 - A 7/7 Weekly Bloom payoff unlocks with a constellation reveal, week story, local emotional insight, closing ritual, next-week seed, and privacy note.
+- Weekly Bloom time-lapse phases, emotional literacy unlocks, a return-tomorrow hook, and a pressed-bloom archive preview.
 - Adaptive Home layout that uses a two-column storm-and-garden composition on iPad/Mac review widths.
 - Wider Mac review window sizing and iPad review previews for the main flow.
 - Native SwiftUI `Canvas` pressure-storm visuals with orbit trails, high-contrast overlays, Reduce Motion support, and VoiceOver summaries.
@@ -90,7 +95,8 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - BloomMind 2.0 Stage 3: Cinematic Garden Payoff - complete.
 - BloomMind 2.0 Stage 4: Final Review Polish - complete.
 - BloomMind 2.0 Stage 5: Submission Packaging and Device Review - complete locally, pending real Xcode/iPad smoke check.
-- BloomMind 2.0 Stage 6: Weekly Bloom Payoff and Living Garden - in progress.
+- BloomMind 2.0 Stage 6: Weekly Bloom Payoff and Living Garden - complete.
+- BloomMind 3.0 Stage 7: Inner Garden World - in progress.
 
 ## BloomMind 2.0 Goal
 
@@ -192,6 +198,21 @@ Progress so far:
 - Updated Preview Demo Week so the full award path shows mood, theme, lane consequences, and the Weekly Bloom ending without changing real check-ins.
 - Added tests for seed consequence storage, Weekly Bloom unlock, privacy-preserving payoff copy, demo-week payoff, and garden accessibility values.
 
+## BloomMind 3.0 Stage 7 Target
+
+Stage 7 makes BloomMind feel like a living world instead of a completed checklist.
+
+Progress so far:
+
+- Added Live Storm Typing so reflection text changes storm keywords, theme color, intensity, and accessibility feedback.
+- Added a seed-to-soil planting ritual with lane-specific roots, buds, or open-air visuals.
+- Added an Inner Garden World scene with mood weather, spatial roots/buds/wind, and world plants.
+- Expanded seed detail into a private memory card with mood, theme, tiny action, world change, and no private reflection text.
+- Added Weekly Bloom time-lapse phases: Storm, Seeds, World, Bloom.
+- Added Emotional Literacy Unlocks, Return Tomorrow prompt, personal origin line, and Past Bloom archive preview.
+- Reframed Preview Award Demo as the guided evaluator path.
+- Added tests for live storm profiles, seed memory summaries, literacy unlocks, and return-tomorrow prompts.
+
 ## Final Demo And Submission Review
 
 Use `BloomMind_SubmissionPackage.md` as the final review guide. The recommended one-minute demo path is:
@@ -200,12 +221,13 @@ Use `BloomMind_SubmissionPackage.md` as the final review guide. The recommended 
 2. Notice the pressure-storm hero.
 3. Tap Enter the Storm.
 4. Select Stressed.
-5. Enter: `I have a project due today and feel pressure to finish everything.`
+5. Enter: `I have a project deadline and too much to finish.`
 6. Continue to the Growth Action screen.
 7. Confirm the local pressure-themed action appears with Now, Later, and Let go.
-8. Complete the check-in and confirm the emotion garden grows with a visible lane consequence.
-9. Tap Preview Demo Week.
-10. Confirm the seven-seed Weekly Bloom payoff appears and ends with a week story, insight, closing ritual, and next-week seed.
+8. Press the seed into the soil and confirm the chosen lane changes the ritual.
+9. Return to Today and inspect the Inner Garden World plus seed memory card.
+10. Tap Preview Award Demo.
+11. Confirm the seven-seed Weekly Bloom payoff appears with time-lapse, emotional literacy unlock, closing ritual, next-week seed, and archive preview.
 
 Latest official rules check: on May 8, 2026, Apple's official pages still showed the 2026 challenge and 2026 terms. No 2027-specific official rules page was published during this check. The final package is aligned with the latest official 2026 requirements: `.swiftpm` ZIP, offline behavior, 25 MB ZIP limit, Swift Playgrounds 4.6 or Xcode 26 or later, English content, individual work, and disclosed AI assistance.
 
@@ -223,12 +245,13 @@ The generated package lives at:
 SubmissionBuild/BloomMind.swiftpm.zip
 ```
 
-Current Stage 6 package refresh:
+Current Stage 7 package refresh:
 
-- ZIP size: 38,004 bytes.
+- ZIP size: 44,281 bytes.
 - ZIP contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The ZIP excludes `.DS_Store` and `__MACOSX`.
 - The generated package includes the new `WeeklyBloomPayoffView.swift` source.
+- The generated package verifies with `bash Scripts/verify_submission_package.sh`.
 
 Verify the generated package with:
 

@@ -32,6 +32,9 @@ struct HomeView: View {
         .onChange(of: checkInState.gardenMoods) { _, _ in
             isPreviewingDemoWeek = false
         }
+        .onChange(of: checkInState.gardenSeeds) { _, _ in
+            isPreviewingDemoWeek = false
+        }
     }
 
     private var wideLayout: some View {
@@ -96,6 +99,15 @@ struct HomeView: View {
                 title: checkInState.todayStatusTitle,
                 detail: checkInState.todayStatusDetail
             )
+
+            OriginLineView()
+
+            if !gardenDisplayState.gardenSeedsThisWeek.isEmpty {
+                TomorrowSeedCardView(
+                    prompt: gardenDisplayState.returnTomorrowPrompt,
+                    tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green
+                )
+            }
 
             if isPreviewingDemoWeek {
                 DemoPreviewNoticeView()
@@ -163,7 +175,7 @@ private struct DemoPreviewNoticeView: View {
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(CheckInState.demoWeekPreviewDetail)
+                Text("\(CheckInState.demoWeekPreviewDetail) This guided award demo shows storm, sorting, living garden, time-lapse, and Weekly Bloom in one path.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -175,7 +187,62 @@ private struct DemoPreviewNoticeView: View {
         .bloomCardBackground(tint: .blue)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(CheckInState.demoWeekPreviewTitle)
-        .accessibilityValue(CheckInState.demoWeekPreviewDetail)
+        .accessibilityValue("\(CheckInState.demoWeekPreviewDetail) This guided award demo shows the complete BloomMind story.")
+    }
+}
+
+private struct OriginLineView: View {
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "quote.opening")
+                .font(.subheadline.bold())
+                .foregroundStyle(.green)
+                .frame(width: 22)
+                .accessibilityHidden(true)
+
+            Text(CheckInState.originLine)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .layoutPriority(1)
+        }
+        .padding(12)
+        .bloomCardBackground(tint: .green)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("BloomMind origin")
+        .accessibilityValue(CheckInState.originLine)
+    }
+}
+
+private struct TomorrowSeedCardView: View {
+    let prompt: String
+    let tint: Color
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "calendar.badge.clock")
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .frame(width: 22)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Tomorrow's tiny seed")
+                    .font(.subheadline.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(prompt)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .padding(12)
+        .bloomCardBackground(tint: tint)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Tomorrow's tiny seed")
+        .accessibilityValue(prompt)
     }
 }
 
