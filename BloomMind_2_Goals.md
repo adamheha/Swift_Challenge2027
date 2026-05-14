@@ -1,10 +1,12 @@
-# BloomMind 2.0, 3.0, And 3.1 Goals
+# BloomMind 2.0, 3.0, 3.1, And 3.2 Goals
 
 BloomMind 2.0 exists to turn the original gentle mood tracker into a memorable Swift Student Challenge experience.
 
 BloomMind 3.0 extends that direction into an explorable inner world: the user's private choices should visibly change the storm, planting ritual, garden world, weekly ending, and reason to return.
 
 BloomMind 3.1 makes that world more direct: the user should pull storm words apart, drag the seed into soil, explore the consequence map, and leave the week with a named emotional artifact.
+
+BloomMind 3.2 adds emotional physics: Now should feel heavy enough to root, Later should feel suspended, Let go should feel light, and the garden should have an X-Ray layer that reveals what those choices changed.
 
 ## North Star
 
@@ -18,7 +20,7 @@ The reviewer should understand the whole idea quickly:
 4. Planting the seed turns the moment into growth.
 5. The garden remembers that change without exposing private reflection text.
 6. Seven seeds reveal the shape of the week, so the user is not left asking "what now?"
-7. The completed week becomes a living landscape with memory, animated time-lapse, artifact, and a next seed to notice.
+7. The completed week becomes a living landscape with memory, animated time-lapse, artifact, private museum shelf, and a next seed to notice.
 
 ## What 2.0 Must Prove
 
@@ -39,7 +41,8 @@ The reviewer should understand the whole idea quickly:
 - Stage 6 - Weekly Bloom Payoff and Living Garden: make seven seeds unlock a constellation-style week story, insight, closing ritual, and next-week seed.
 - Stage 7 - Inner Garden World: add live storm typing, physical planting, spatial garden world, seed memory cards, weekly time-lapse, literacy unlocks, return hook, origin line, and archive preview.
 - Stage 8 - Direct Transformation: add live storm-word sorting, drag-to-plant, garden map zones, seed evolution, animated Weekly Bloom, and Week Artifacts.
-- Stage 9 - Final Story and Submission Rehearsal: finish the applicant's true personal story, AI disclosure, rules refresh, and final three-minute rehearsal.
+- Stage 9 - Emotional Physics: add privacy ritual, emotional physics fragments, Focus Sprout, Garden X-Ray, stronger first-five-seconds hero, and private museum shelf.
+- Stage 10 - Final Story and Submission Rehearsal: finish the applicant's true personal story, AI disclosure, rules refresh, and final three-minute rehearsal.
 
 ## What Stage 5 Is Doing
 
@@ -87,3 +90,14 @@ Stage 8 is about direct authorship:
 - Each seed gets an evolution state so the garden feels alive after planting.
 - Weekly Bloom gets a true animated transformation scene.
 - A completed week leaves a Week Artifact such as a Weather stone, Moon pressed flower, Root compass, Question lantern, Sun archive, or Pressed bloom.
+
+## What Stage 9 Is Doing
+
+Stage 9 is about physical consequence and trust:
+
+- The private reflection becomes a visible privacy ritual instead of disappearing silently.
+- Now / Later / Let go fragments use different weight, hover, and lightness treatments.
+- A Now choice can start a Focus Sprout without becoming a productivity system.
+- The garden gains Surface and X-Ray views.
+- X-Ray view shows the hidden roots, buds, wind trails, and completed-week center links.
+- Weekly Bloom's artifact enters a private museum shelf so the ending feels collectible.

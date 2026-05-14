@@ -20,6 +20,13 @@ struct LiveStormProfile: Equatable {
     let accessibilityValue: String
 }
 
+struct ReflectionPrivacyRitual: Equatable {
+    let title: String
+    let detail: String
+    let fragments: [String]
+    let accessibilityValue: String
+}
+
 enum GrowthLane: String, CaseIterable, Identifiable {
     case now
     case later
@@ -112,6 +119,50 @@ enum GrowthLane: String, CaseIterable, Identifiable {
             "This choice becomes an unopened bud, keeping the bigger worry outside this minute."
         case .release:
             "This choice leaves more open air in the garden because one pressure was allowed to pass."
+        }
+    }
+
+    var physicsTitle: String {
+        switch self {
+        case .now:
+            "Heavy enough to root"
+        case .later:
+            "Held in suspension"
+        case .release:
+            "Light enough to become air"
+        }
+    }
+
+    var physicsDetail: String {
+        switch self {
+        case .now:
+            "Now fragments land with weight and press roots into the soil."
+        case .later:
+            "Later fragments hover as patient buds, visible but not urgent."
+        case .release:
+            "Let go fragments lose weight and dissolve into wind."
+        }
+    }
+
+    var physicsSymbolName: String {
+        switch self {
+        case .now:
+            "arrow.down.to.line"
+        case .later:
+            "circle.dotted"
+        case .release:
+            "sparkles"
+        }
+    }
+
+    var focusSproutLine: String {
+        switch self {
+        case .now:
+            "Start one tiny minute. The root grows because beginning counts."
+        case .later:
+            "This worry can wait as a bud while the first step gets room."
+        case .release:
+            "This pressure can become air before it becomes another task."
         }
     }
 }
@@ -373,6 +424,10 @@ struct CheckInState {
             reflectionText: reflectionText,
             characterLimit: Self.reflectionCharacterLimit
         )
+    }
+
+    var reflectionPrivacyRitual: ReflectionPrivacyRitual {
+        LocalActionEngine.reflectionPrivacyRitual(for: liveStormProfile)
     }
 
     var weeklyReview: GardenWeekReview {

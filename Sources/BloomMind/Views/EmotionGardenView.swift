@@ -12,6 +12,7 @@ struct EmotionGardenView: View {
     @State private var newestPlantIsGrown = true
     @State private var selectedPlotIndex: Int?
     @State private var selectedWorldZone: GardenWorldZone = .centerBloom
+    @State private var gardenVisionMode: GardenVisionMode = .surface
 
     private var safeTotalPlots: Int {
         max(totalPlots, 0)
@@ -72,7 +73,19 @@ struct EmotionGardenView: View {
 
                     GardenEcologyLineView(seeds: visibleSeeds)
 
-                    InnerGardenWorldView(seeds: visibleSeeds)
+                    GardenVisionModePicker(
+                        selectedMode: $gardenVisionMode,
+                        tint: newestSeed.mood.tint
+                    )
+
+                    if gardenVisionMode == .surface {
+                        InnerGardenWorldView(seeds: visibleSeeds)
+                    } else {
+                        GardenXRayWorldView(
+                            seeds: visibleSeeds,
+                            totalCount: safeTotalPlots
+                        )
+                    }
 
                     GardenWorldZoneMapView(
                         seeds: visibleSeeds,
@@ -206,6 +219,63 @@ struct EmotionGardenView: View {
             index: selectedPlotIndex,
             totalCount: visibleSeeds.count
         ) ?? .justPlanted
+    }
+}
+
+private enum GardenVisionMode: String, CaseIterable, Identifiable {
+    case surface
+    case xray
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .surface:
+            "Surface"
+        case .xray:
+            "X-Ray"
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .surface:
+            "camera.macro"
+        case .xray:
+            "scope"
+        }
+    }
+}
+
+private struct GardenVisionModePicker: View {
+    @Binding var selectedMode: GardenVisionMode
+    let tint: Color
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(GardenVisionMode.allCases) { mode in
+                Button {
+                    withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
+                        selectedMode = mode
+                    }
+                } label: {
+                    Label(mode.title, systemImage: mode.symbolName)
+                        .font(.caption.bold())
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(selectedMode == mode ? tint.opacity(0.16) : Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(selectedMode == mode ? tint.opacity(0.42) : Color.secondary.opacity(0.12), lineWidth: 1)
+                        }
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(selectedMode == mode ? tint : .secondary)
+                .accessibilityAddTraits(selectedMode == mode ? .isSelected : [])
+            }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Garden vision mode")
     }
 }
 
@@ -852,6 +922,239 @@ private struct InnerGardenWorldView: View {
                     height: bloomRadius * 2
                 )),
                 with: .color(seed.mood.tint.opacity(0.86))
+            )
+        }
+    }
+}
+
+private struct GardenXRayWorldView: View {
+    let seeds: [GardenSeed]
+    let totalCount: Int
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var sceneHeight: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 250 : 210
+    }
+
+    private var newestMood: Mood {
+        seeds.last?.mood ?? .calm
+    }
+
+    private var rootCount: Int {
+        seeds.filter { $0.lane == .now }.count
+    }
+
+    private var budCount: Int {
+        seeds.filter { $0.lane == .later }.count
+    }
+
+    private var airCount: Int {
+        seeds.filter { $0.lane == .release }.count
+    }
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            TimelineView(.animation) { timeline in
+                Canvas { context, size in
+                    drawXRay(
+                        in: &context,
+                        size: size,
+                        time: reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                    )
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 5) {
+                Label("Garden X-Ray", systemImage: "scope")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
+
+                Text(xraySummary)
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.84))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .shadow(color: .black.opacity(0.45), radius: 4, x: 0, y: 2)
+            }
+            .padding(14)
+        }
+        .frame(height: sceneHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(newestMood.tint.opacity(0.34), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Garden X-Ray")
+        .accessibilityValue(xraySummary)
+    }
+
+    private var xraySummary: String {
+        let centerLine = seeds.count >= totalCount ? "The center bloom is connected." : "The center bloom is still forming."
+        return "\(rootCount) roots, \(budCount) waiting buds, and \(airCount) wind trails are visible underground. \(centerLine)"
+    }
+
+    private func drawXRay(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let groundY = height * 0.44
+        let center = CGPoint(x: width * 0.5, y: height * 0.64)
+
+        drawXRayBackground(in: &context, width: width, height: height, groundY: groundY)
+
+        if seeds.count >= totalCount {
+            drawCenterBloomLinks(in: &context, center: center, tint: newestMood.tint)
+        }
+
+        for (index, seed) in seeds.enumerated() {
+            let x = width * (0.12 + CGFloat(index) / CGFloat(max(seeds.count - 1, 1)) * 0.76)
+            let origin = CGPoint(x: x, y: groundY + CGFloat(index % 2) * 8)
+            drawSeedNode(seed, at: origin, center: center, in: &context, width: width, height: height, time: time, index: index)
+        }
+    }
+
+    private func drawXRayBackground(
+        in context: inout GraphicsContext,
+        width: CGFloat,
+        height: CGFloat,
+        groundY: CGFloat
+    ) {
+        context.fill(
+            Path(CGRect(x: 0, y: 0, width: width, height: height)),
+            with: .linearGradient(
+                Gradient(colors: [
+                    Color(red: 0.04, green: 0.08, blue: 0.10),
+                    Color(red: 0.12, green: 0.09, blue: 0.06),
+                    newestMood.tint.opacity(0.20)
+                ]),
+                startPoint: CGPoint(x: width * 0.2, y: 0),
+                endPoint: CGPoint(x: width, y: height)
+            )
+        )
+
+        var soilLine = Path()
+        soilLine.move(to: CGPoint(x: 0, y: groundY))
+        soilLine.addCurve(
+            to: CGPoint(x: width, y: groundY - 8),
+            control1: CGPoint(x: width * 0.28, y: groundY - 20),
+            control2: CGPoint(x: width * 0.70, y: groundY + 18)
+        )
+        context.stroke(
+            soilLine,
+            with: .color(Color.white.opacity(0.22)),
+            style: StrokeStyle(lineWidth: 1.4, lineCap: .round)
+        )
+    }
+
+    private func drawSeedNode(
+        _ seed: GardenSeed,
+        at origin: CGPoint,
+        center: CGPoint,
+        in context: inout GraphicsContext,
+        width: CGFloat,
+        height: CGFloat,
+        time: TimeInterval,
+        index: Int
+    ) {
+        context.fill(
+            Path(ellipseIn: CGRect(x: origin.x - 7, y: origin.y - 7, width: 14, height: 14)),
+            with: .color(seed.mood.tint.opacity(0.72))
+        )
+
+        switch seed.lane {
+        case .now:
+            for rootIndex in 0..<3 {
+                var root = Path()
+                let spread = CGFloat(rootIndex - 1) * width * 0.075
+                root.move(to: origin)
+                root.addQuadCurve(
+                    to: CGPoint(x: origin.x + spread, y: height * 0.92),
+                    control: CGPoint(x: origin.x + spread * 0.24, y: height * 0.68)
+                )
+                context.stroke(
+                    root,
+                    with: .color(seed.mood.tint.opacity(0.36)),
+                    style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                )
+            }
+
+            if seeds.count >= totalCount {
+                drawConnection(from: origin, to: center, tint: seed.mood.tint, in: &context)
+            }
+        case .later:
+            let bob = CGFloat(sin(time + Double(index))) * 2
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: origin.x + 12,
+                    y: origin.y + 24 + bob,
+                    width: 22,
+                    height: 32
+                )),
+                with: .color(seed.mood.tint.opacity(0.34))
+            )
+        case .release:
+            for windIndex in 0..<2 {
+                var wind = Path()
+                let y = height * (0.22 + CGFloat(windIndex) * 0.08) + CGFloat(index % 2) * 8
+                wind.move(to: CGPoint(x: max(12, origin.x - 48), y: y))
+                wind.addCurve(
+                    to: CGPoint(x: min(width - 12, origin.x + 62), y: y + CGFloat(sin(time)) * 4),
+                    control1: CGPoint(x: origin.x - 24, y: y - 12),
+                    control2: CGPoint(x: origin.x + 28, y: y + 12)
+                )
+                context.stroke(
+                    wind,
+                    with: .color(seed.mood.tint.opacity(0.34)),
+                    style: StrokeStyle(lineWidth: 1.5, lineCap: .round)
+                )
+            }
+        }
+    }
+
+    private func drawConnection(
+        from origin: CGPoint,
+        to center: CGPoint,
+        tint: Color,
+        in context: inout GraphicsContext
+    ) {
+        var connection = Path()
+        connection.move(to: origin)
+        connection.addQuadCurve(
+            to: center,
+            control: CGPoint(x: (origin.x + center.x) * 0.5, y: center.y + 30)
+        )
+        context.stroke(
+            connection,
+            with: .color(tint.opacity(0.22)),
+            style: StrokeStyle(lineWidth: 1.3, lineCap: .round, dash: [4, 5])
+        )
+    }
+
+    private func drawCenterBloomLinks(
+        in context: inout GraphicsContext,
+        center: CGPoint,
+        tint: Color
+    ) {
+        context.fill(
+            Path(ellipseIn: CGRect(x: center.x - 32, y: center.y - 32, width: 64, height: 64)),
+            with: .color(tint.opacity(0.14))
+        )
+
+        for index in 0..<7 {
+            let angle = Double(index) / 7 * Double.pi * 2
+            let petalCenter = CGPoint(
+                x: center.x + CGFloat(cos(angle)) * 20,
+                y: center.y + CGFloat(sin(angle)) * 20
+            )
+            context.fill(
+                Path(ellipseIn: CGRect(x: petalCenter.x - 8, y: petalCenter.y - 12, width: 16, height: 24)),
+                with: .color(tint.opacity(0.28))
             )
         }
     }

@@ -259,6 +259,24 @@ struct StormToBloomHeroView: View {
                 showsLabels: !isCompleteToday
             )
 
+            VStack {
+                HStack {
+                    Spacer()
+
+                    Label("Inner weather observatory", systemImage: "sparkles")
+                        .font(.caption.bold())
+                        .foregroundStyle(.white.opacity(0.88))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 7)
+                        .background(Color.white.opacity(0.14), in: Capsule())
+                        .shadow(color: .black.opacity(0.30), radius: 4, x: 0, y: 2)
+                }
+
+                Spacer()
+            }
+            .padding(16)
+            .allowsHitTesting(false)
+
             LinearGradient(
                 colors: [
                     Color.black.opacity(0.78),
@@ -281,6 +299,11 @@ struct StormToBloomHeroView: View {
                 Text(prompt)
                     .font(.headline)
                     .foregroundStyle(.white.opacity(0.82))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(isCompleteToday ? "The garden remembers the shape, not the private words." : "Enter once, pull the weather apart, and plant one small shape.")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.72))
                     .fixedSize(horizontal: false, vertical: true)
 
                 HStack(spacing: 10) {

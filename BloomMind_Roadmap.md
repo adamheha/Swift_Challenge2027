@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 3.1 Stage 8 - Direct Transformation Complete
+Current stage: BloomMind 3.2 Stage 9 - Emotional Physics Complete
 
-Current branch: `codex/bloommind-3-1-direct-transformation`
+Current branch: `codex/bloommind-3-2-emotional-physics`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 3.2 Stage 9 - Device Review, Personal Story, and Final Submission Rehearsal
+Next stage: BloomMind 3.3 Stage 10 - Device Review, Personal Story, and Final Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -271,6 +271,41 @@ Definition of done:
 - The planting ritual works by dragging the seed into the soil and by fallback tap.
 - The garden world exposes Now / Later / Let go consequences through map zones.
 - Preview Award Demo shows the complete 60-90 second path through Weekly Bloom artifact.
+
+## BloomMind 3.2 Stage 9 - Emotional Physics
+
+Status: Complete
+
+Goal: Make the transformation feel physical, trustworthy, and deeper: private words become safe storm fragments, Now / Later / Let go behave differently, and the garden can be inspected below the surface.
+
+Completed in this branch:
+
+- Added `ReflectionPrivacyRitual` and local logic that turns storm keywords into a privacy-preserving ritual.
+- Added emotional physics copy to `GrowthLane`: Now is heavy enough to root, Later is held in suspension, and Let go becomes air.
+- Updated Growth Action so fragment chips visually communicate weight, hover, and lightness.
+- Added a Focus Sprout for Now choices, with a one-minute local start ritual and "starting still counts" language.
+- Added Garden X-Ray mode with surface/X-Ray switching.
+- X-Ray mode draws underground roots, waiting buds, wind trails, and center-bloom links for completed weeks.
+- Strengthened the first-five-seconds hero with an inner weather observatory cue.
+- Updated Preview Award Demo copy to highlight emotional physics and Garden X-Ray.
+- Upgraded Weekly Bloom's archive into a private museum shelf with the current artifact and future slots.
+- Added tests for privacy ritual and lane physics copy.
+- Refreshed `SubmissionBuild/BloomMind.swiftpm.zip` with the Stage 9 sources; current ZIP size is 54,258 bytes.
+
+Remaining:
+
+- Rerun `swift build` and standalone package verification when external execution approval is available again, because both are currently blocked by Swift module-cache permissions in sandbox and the external approval path hit a usage-limit rejection.
+- Smoke check in full Xcode or Swift Playgrounds.
+- Smoke check on iPad or an iPad-sized simulator.
+- Replace the generic origin line with the applicant's true personal story.
+
+Definition of done:
+
+- `swift test` passes.
+- ZIP contents and source safety checks remain clean.
+- Growth Action shows privacy ritual, emotional physics fragments, and Focus Sprout.
+- Home shows Garden X-Ray and the stronger first-five-seconds cue.
+- Weekly Bloom ends with an artifact that enters a private museum shelf.
 
 ## Stage 0 - Award Research
 

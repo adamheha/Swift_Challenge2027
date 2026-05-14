@@ -73,6 +73,22 @@ import Testing
     #expect(profile.accessibilityValue.contains("Pressure storm"))
 }
 
+@Test func reflectionPrivacyRitualKeepsFullReflectionPrivate() {
+    let reflection = "I have a project deadline and too much to finish."
+    let profile = LocalActionEngine.liveStormProfile(
+        selectedMood: .stressed,
+        reflectionText: reflection,
+        characterLimit: CheckInState.reflectionCharacterLimit
+    )
+    let ritual = LocalActionEngine.reflectionPrivacyRitual(for: profile)
+
+    #expect(ritual.title == "Words become weather")
+    #expect(ritual.fragments.contains("project"))
+    #expect(ritual.detail.contains("BloomMind remembers the shape, not the private words."))
+    #expect(!ritual.detail.contains(reflection))
+    #expect(!ritual.accessibilityValue.contains(reflection))
+}
+
 @Test func localActionEngineExplanationKeepsReflectionPrivate() {
     let reflection = "My friend Maya ignored my message and I felt left out."
     let suggestion = LocalActionEngine.suggestion(
@@ -159,6 +175,14 @@ import Testing
     #expect(seed.tinyActionMemory == "The tiny action was to let one pressure leave this minute.")
     #expect(seed.worldChangeSummary == "More open air appeared around this plant.")
     #expect(seed.privateMemorySentence == "A pressure seed became lightened by letting go without saving the private words.")
+}
+
+@Test func growthLanePhysicsCopyExplainsVisibleConsequences() {
+    #expect(GrowthLane.now.physicsTitle == "Heavy enough to root")
+    #expect(GrowthLane.now.physicsDetail == "Now fragments land with weight and press roots into the soil.")
+    #expect(GrowthLane.later.physicsTitle == "Held in suspension")
+    #expect(GrowthLane.release.physicsDetail == "Let go fragments lose weight and dissolve into wind.")
+    #expect(GrowthLane.now.focusSproutLine == "Start one tiny minute. The root grows because beginning counts.")
 }
 
 @Test func seedEvolutionStagesReflectWeekProgressAndLane() {

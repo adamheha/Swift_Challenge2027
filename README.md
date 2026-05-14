@@ -18,6 +18,7 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 - `BloomMind_Stage6WeeklyBloom.md`: Stage 6 weekly bloom payoff, living garden, and 7/7 reveal notes.
 - `BloomMind_Stage7InnerGardenWorld.md`: BloomMind 3.0 live storm, inner garden world, and richer weekly ending notes.
 - `BloomMind_Stage8DirectTransformation.md`: BloomMind 3.1 direct storm sorting, drag-to-plant, garden map, time-lapse, and artifact notes.
+- `BloomMind_Stage9EmotionalPhysics.md`: BloomMind 3.2 emotional physics, privacy ritual, garden X-Ray, focus sprout, and museum shelf notes.
 - `Packaging/BloomMindSubmissionPackage.swift`: submission-only Swift package manifest.
 - `Scripts/create_submission_package.sh`: repeatable `.swiftpm` ZIP packaging script.
 - `Scripts/verify_submission_package.sh`: repeatable submission ZIP verification script.
@@ -29,9 +30,9 @@ The 2.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 3.1 Stage 8: Direct Transformation - complete.
+BloomMind 3.2 Stage 9: Emotional Physics - complete.
 
-Active branch: `codex/bloommind-3-1-direct-transformation`
+Active branch: `codex/bloommind-3-2-emotional-physics`
 
 Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. BloomMind 2.0 starts from that foundation and pushes the app toward a more memorable Swift Student Challenge experience.
 
@@ -41,8 +42,11 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - Home screen with a moving pressure-storm hero, weekly bloom progress, an interactive emotion garden, and today-completion feedback.
 - Check-in screen with mood selection, selected-state checkmark, a live storm preview, optional reflection input, and a three-step progress indicator.
 - Live Storm Typing that changes storm intensity, theme color, and visible keywords as the user writes a reflection.
+- Reflection Privacy Ritual that turns the written moment into safe storm fragments and states that BloomMind remembers the shape, not the private words.
 - Growth action screen with local mood-and-theme suggested actions, Direct Storm Sorting, live reflection words, Now / Later / Let go lanes, seed commitment, and a private theme explanation.
 - Direct Storm Sorting that turns typed storm keywords into draggable fragments alongside generated action fragments.
+- Emotional Physics sorting where Now fragments feel rooted, Later fragments hover as buds, and Let go fragments lighten into air.
+- Focus Sprout for Now choices, giving the student one tiny non-punitive minute where beginning counts.
 - A drag-to-plant seed ritual that lets the student pull the seed into soil, with tap and accessibility fallbacks.
 - Mood-specific SwiftUI plant visuals that grow from completed local check-ins.
 - Local-only reflection theme detection for school, friendship, rest, pressure, and uncertainty.
@@ -56,10 +60,12 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - Garden seeds now remember mood, local theme, and the user's Now / Later / Let go choice.
 - The living garden changes copy, plant detail, atmosphere, and accessibility values based on those seed consequences.
 - Inner Garden World scene with mood weather, roots, buds, open air, and world plants.
+- Garden X-Ray mode that reveals underground roots, waiting buds, wind trails, and center-bloom links.
 - Garden Map zones for Underground Roots, Waiting Path, Open Sky, and Center Bloom.
 - Seed evolution states for just planted, sprouting, blooming, resting, and archived bloom.
 - A 7/7 Weekly Bloom payoff unlocks with a constellation reveal, week story, local emotional insight, closing ritual, next-week seed, and privacy note.
-- Weekly Bloom time-lapse phases plus a true animated storm-to-seeds-to-world-to-bloom scene, emotional literacy unlocks, a return-tomorrow hook, and a week artifact/archive preview.
+- Weekly Bloom time-lapse phases plus a true animated storm-to-seeds-to-world-to-bloom scene, emotional literacy unlocks, a return-tomorrow hook, and a week artifact/private museum shelf.
+- A stronger first-five-seconds hero that frames Today as an inner weather observatory.
 - Adaptive Home layout that uses a two-column storm-and-garden composition on iPad/Mac review widths.
 - Wider Mac review window sizing and iPad review previews for the main flow.
 - Native SwiftUI `Canvas` pressure-storm visuals with orbit trails, high-contrast overlays, Reduce Motion support, and VoiceOver summaries.
@@ -102,6 +108,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - BloomMind 2.0 Stage 6: Weekly Bloom Payoff and Living Garden - complete.
 - BloomMind 3.0 Stage 7: Inner Garden World - complete.
 - BloomMind 3.1 Stage 8: Direct Transformation - complete.
+- BloomMind 3.2 Stage 9: Emotional Physics - complete.
 
 ## BloomMind 2.0 Goal
 
@@ -233,6 +240,23 @@ Progress so far:
 - Added tests for seed evolution and artifact selection.
 - Refreshed and verified the `.swiftpm` package; current ZIP size is 49,747 bytes.
 
+## BloomMind 3.2 Stage 9 Target
+
+Stage 9 makes the interactions feel physical and trustworthy. The goal is for the student to feel the difference between carrying, parking, and letting go.
+
+Progress so far:
+
+- Added `ReflectionPrivacyRitual` so the Growth Action screen shows that words become weather fragments, while private reflection text is not repeated.
+- Added emotional physics copy and behavior for Now, Later, and Let go.
+- Updated storm fragment chips so Now feels heavier, Later floats, and Let go feels lighter.
+- Added Focus Sprout for Now choices: a one-minute local start ritual where beginning counts and nothing is punished.
+- Added Garden X-Ray mode with roots, waiting buds, wind trails, and 7/7 center-bloom links.
+- Strengthened the Home hero with an inner weather observatory cue.
+- Upgraded Weekly Bloom archive into a private museum shelf with future artifact slots.
+- Added tests for privacy ritual and lane physics copy.
+- Refreshed the `.swiftpm` ZIP; current ZIP size is 54,258 bytes.
+- `swift test` passes with 43 tests. `swift build` and standalone package build are blocked in this sandbox by Swift module-cache permissions after the external approval path hit a usage-limit rejection.
+
 ## Final Demo And Submission Review
 
 Use `BloomMind_SubmissionPackage.md` as the final review guide. The recommended one-minute demo path is:
@@ -244,11 +268,12 @@ Use `BloomMind_SubmissionPackage.md` as the final review guide. The recommended 
 5. Enter: `I have a project deadline and too much to finish.`
 6. Continue to the Growth Action screen.
 7. Confirm the local pressure-themed action appears with Now, Later, and Let go.
-8. Drag live storm fragments into Now, Later, and Let go, then confirm the seed commitment changes.
-9. Drag the seed into the soil, or tap it as the fallback, and confirm the chosen lane changes the ritual.
-10. Return to Today and inspect the Inner Garden World, Garden Map zones, seed evolution state, and seed memory card.
-11. Tap Preview Award Demo.
-12. Confirm the seven-seed Weekly Bloom payoff appears with the animated time-lapse, emotional literacy unlock, week artifact, closing ritual, next-week seed, and archive preview.
+8. Drag live storm fragments into Now, Later, and Let go, then confirm their emotional physics changes.
+9. Select Now and start the Focus Sprout, or continue directly.
+10. Drag the seed into the soil, or tap it as the fallback, and confirm the chosen lane changes the ritual.
+11. Return to Today and inspect the Inner Garden World, Garden X-Ray, Garden Map zones, seed evolution state, and seed memory card.
+12. Tap Preview Award Demo.
+13. Confirm the seven-seed Weekly Bloom payoff appears with the animated time-lapse, emotional literacy unlock, week artifact, closing ritual, next-week seed, and private museum shelf.
 
 Latest official rules check: on May 8, 2026, Apple's official pages still showed the 2026 challenge and 2026 terms. No 2027-specific official rules page was published during this check. The final package is aligned with the latest official 2026 requirements: `.swiftpm` ZIP, offline behavior, 25 MB ZIP limit, Swift Playgrounds 4.6 or Xcode 26 or later, English content, individual work, and disclosed AI assistance.
 
@@ -266,13 +291,13 @@ The generated package lives at:
 SubmissionBuild/BloomMind.swiftpm.zip
 ```
 
-Current Stage 8 package refresh:
+Current Stage 9 package refresh:
 
-- ZIP size: 49,747 bytes.
+- ZIP size: 54,258 bytes.
 - ZIP contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The ZIP excludes `.DS_Store` and `__MACOSX`.
-- The generated package includes the Direct Transformation source updates.
-- The generated package verifies with `bash Scripts/verify_submission_package.sh`.
+- The generated package includes the Emotional Physics source updates.
+- ZIP contents and source safety checks are clean. The final standalone package build step is currently blocked by Swift module-cache permissions in this sandbox after external approval hit a usage-limit rejection.
 
 Verify the generated package with:
 

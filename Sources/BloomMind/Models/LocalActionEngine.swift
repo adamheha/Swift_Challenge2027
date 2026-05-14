@@ -175,6 +175,19 @@ enum LocalActionEngine {
         )
     }
 
+    static func reflectionPrivacyRitual(for profile: LiveStormProfile) -> ReflectionPrivacyRitual {
+        let fragments = profile.keywords.isEmpty ? profile.theme.liveStormWords : profile.keywords
+        let safeFragments = Array(fragments.prefix(5))
+        let themeName = profile.theme.displayName.lowercased()
+
+        return ReflectionPrivacyRitual(
+            title: "Words become weather",
+            detail: "The reflection becomes \(themeName) fragments for this ritual. BloomMind remembers the shape, not the private words.",
+            fragments: safeFragments,
+            accessibilityValue: "Reflection privacy ritual. \(safeFragments.joined(separator: ", ")) become storm fragments. BloomMind remembers the shape, not the private words."
+        )
+    }
+
     static func weeklyArtifact(for seeds: [GardenSeed]) -> WeeklyBloomArtifact {
         let dominantMood = dominantValue(in: seeds.map(\.mood))
         let dominantLane = dominantValue(in: seeds.map(\.lane))

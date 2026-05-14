@@ -175,7 +175,7 @@ private struct DemoPreviewNoticeView: View {
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("\(CheckInState.demoWeekPreviewDetail) This guided award demo shows storm, sorting, living garden, time-lapse, and Weekly Bloom in one path.")
+                Text("\(CheckInState.demoWeekPreviewDetail) This guided award demo shows storm, emotional physics, garden X-Ray, time-lapse, and Weekly Bloom in one path.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -187,7 +187,7 @@ private struct DemoPreviewNoticeView: View {
         .bloomCardBackground(tint: .blue)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(CheckInState.demoWeekPreviewTitle)
-        .accessibilityValue("\(CheckInState.demoWeekPreviewDetail) This guided award demo shows the complete BloomMind story.")
+        .accessibilityValue("\(CheckInState.demoWeekPreviewDetail) This guided award demo shows storm, emotional physics, garden X-Ray, time-lapse, and Weekly Bloom.")
     }
 }
 

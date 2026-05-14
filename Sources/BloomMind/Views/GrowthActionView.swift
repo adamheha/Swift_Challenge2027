@@ -23,6 +23,10 @@ struct GrowthActionView: View {
         checkInState.liveStormProfile
     }
 
+    private var privacyRitual: ReflectionPrivacyRitual {
+        checkInState.reflectionPrivacyRitual
+    }
+
     private var pageSpacing: CGFloat {
         dynamicTypeSize.isAccessibilitySize ? 22 : 26
     }
@@ -38,6 +42,11 @@ struct GrowthActionView: View {
                 liveProfile: liveStormProfile
             )
 
+            ReflectionPrivacyRitualView(
+                ritual: privacyRitual,
+                mood: selectedMood
+            )
+
             StormSortingView(
                 suggestion: suggestion,
                 tint: selectedMood.tint,
@@ -50,6 +59,13 @@ struct GrowthActionView: View {
                 suggestion: suggestion,
                 selectedLane: selectedLane
             )
+
+            if selectedLane == .now {
+                FocusSproutView(
+                    tint: selectedMood.tint,
+                    actionText: suggestion.nowStep
+                )
+            }
 
             LocalActionExplanationView(
                 suggestion: suggestion,
@@ -100,6 +116,135 @@ struct GrowthActionView: View {
                 onComplete()
             }
         }
+    }
+}
+
+private struct ReflectionPrivacyRitualView: View {
+    let ritual: ReflectionPrivacyRitual
+    let mood: Mood
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var revealFragments = false
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            PrivacyRitualParticleView(
+                fragments: ritual.fragments,
+                tint: mood.tint,
+                isActive: revealFragments || reduceMotion
+            )
+            .frame(width: 78, height: 78)
+            .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 7) {
+                Label(ritual.title, systemImage: "lock.open")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(mood.tint)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(ritual.detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if !ritual.fragments.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 6) {
+                            ForEach(Array(ritual.fragments.enumerated()), id: \.offset) { _, fragment in
+                                Text(fragment)
+                                    .font(.caption2.bold())
+                                    .foregroundStyle(mood.tint)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 5)
+                                    .background(mood.tint.opacity(0.10), in: Capsule())
+                            }
+                        }
+                    }
+                }
+            }
+            .layoutPriority(1)
+        }
+        .padding(12)
+        .background(mood.tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(mood.tint.opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(ritual.title)
+        .accessibilityValue(ritual.accessibilityValue)
+        .onAppear {
+            guard !reduceMotion else {
+                revealFragments = true
+                return
+            }
+
+            withAnimation(.easeOut(duration: 0.8).delay(0.08)) {
+                revealFragments = true
+            }
+        }
+    }
+}
+
+private struct PrivacyRitualParticleView: View {
+    let fragments: [String]
+    let tint: Color
+    let isActive: Bool
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            Canvas { context, size in
+                drawParticles(
+                    in: &context,
+                    size: size,
+                    time: reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                )
+            }
+        }
+    }
+
+    private func drawParticles(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let center = CGPoint(x: width * 0.5, y: height * 0.5)
+        let count = max(fragments.count, 3)
+
+        context.fill(
+            Path(ellipseIn: CGRect(x: width * 0.18, y: height * 0.18, width: width * 0.64, height: height * 0.64)),
+            with: .color(tint.opacity(isActive ? 0.14 : 0.06))
+        )
+
+        for index in 0..<count {
+            let angle = Double(index) / Double(count) * Double.pi * 2 + time * 0.55
+            let radius = min(width, height) * (isActive ? 0.32 : 0.12)
+            let point = CGPoint(
+                x: center.x + CGFloat(cos(angle)) * radius,
+                y: center.y + CGFloat(sin(angle)) * radius
+            )
+            let dotSize = CGFloat(7 + index % 3)
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: point.x - dotSize,
+                    y: point.y - dotSize,
+                    width: dotSize * 2,
+                    height: dotSize * 2
+                )),
+                with: .color(tint.opacity(0.30 + Double(index % 3) * 0.12))
+            )
+        }
+
+        context.draw(
+            Text("shape")
+                .font(.caption2.bold())
+                .foregroundStyle(tint),
+            at: center
+        )
     }
 }
 
@@ -159,7 +304,7 @@ private struct SeedPlantingRitualButton: View {
                         .foregroundStyle(.primary)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Text(isPlantingSeed ? selectedLane.gardenConsequenceDetail : "Drag the seed into the soil, or tap to plant. \(selectedLane.gardenConsequenceDetail)")
+                    Text(isPlantingSeed ? selectedLane.gardenConsequenceDetail : "Drag the seed into the soil, or tap to plant. \(selectedLane.gardenConsequenceDetail) \(selectedLane.physicsDetail)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -680,6 +825,151 @@ private struct SeedCommitmentView: View {
     }
 }
 
+private struct FocusSproutView: View {
+    let tint: Color
+    let actionText: String
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var startedAt: Date?
+
+    private let duration: TimeInterval = 60
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 1)) { timeline in
+            let progress = focusProgress(now: timeline.date)
+
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .top, spacing: 10) {
+                    FocusSproutCanvasView(
+                        tint: tint,
+                        progress: progress,
+                        reduceMotion: reduceMotion
+                    )
+                    .frame(width: 58, height: 58)
+                    .accessibilityHidden(true)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Label("Focus sprout", systemImage: "timer")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(tint)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Text(startedAt == nil ? "Start one tiny minute before planting. Starting still counts." : remainingText(progress: progress))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Text(actionText)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.primary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .layoutPriority(1)
+                }
+
+                ProgressView(value: progress)
+                    .tint(tint)
+                    .accessibilityHidden(true)
+
+                Button {
+                    startedAt = Date()
+                } label: {
+                    Label(startedAt == nil ? "Start tiny sprout" : "Restart sprout", systemImage: "play.circle")
+                        .font(.caption.bold())
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+            }
+            .padding(12)
+            .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tint.opacity(0.18), lineWidth: 1)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Focus sprout")
+            .accessibilityValue(startedAt == nil ? "Start one tiny minute. Starting still counts." : remainingText(progress: progress))
+        }
+    }
+
+    private func focusProgress(now: Date) -> Double {
+        guard let startedAt else {
+            return 0
+        }
+
+        return min(max(now.timeIntervalSince(startedAt) / duration, 0), 1)
+    }
+
+    private func remainingText(progress: Double) -> String {
+        if progress >= 1 {
+            return "The first minute became roots. Starting still counts."
+        }
+
+        let seconds = max(0, Int(((1 - progress) * duration).rounded()))
+        return "\(seconds) seconds left. Let one tiny step become roots."
+    }
+}
+
+private struct FocusSproutCanvasView: View {
+    let tint: Color
+    let progress: Double
+    let reduceMotion: Bool
+
+    var body: some View {
+        Canvas { context, size in
+            let width = max(size.width, 1)
+            let height = max(size.height, 1)
+            let groundY = height * 0.80
+            let centerX = width * 0.5
+            let growth = CGFloat(progress)
+
+            context.fill(
+                Path(ellipseIn: CGRect(x: width * 0.15, y: groundY - 5, width: width * 0.70, height: 10)),
+                with: .color(tint.opacity(0.16))
+            )
+
+            for index in 0..<3 {
+                var root = Path()
+                let spread = CGFloat(index - 1) * 18 * growth
+                root.move(to: CGPoint(x: centerX, y: groundY))
+                root.addQuadCurve(
+                    to: CGPoint(x: centerX + spread, y: height * 0.98),
+                    control: CGPoint(x: centerX + spread * 0.24, y: height * 0.88)
+                )
+                context.stroke(
+                    root,
+                    with: .color(tint.opacity(0.24 + progress * 0.38)),
+                    style: StrokeStyle(lineWidth: 1.6, lineCap: .round)
+                )
+            }
+
+            var stem = Path()
+            stem.move(to: CGPoint(x: centerX, y: groundY))
+            stem.addQuadCurve(
+                to: CGPoint(x: centerX + 4, y: groundY - 34 * growth),
+                control: CGPoint(x: centerX - 8, y: groundY - 16 * growth)
+            )
+            context.stroke(
+                stem,
+                with: .color(tint.opacity(0.36 + progress * 0.42)),
+                style: StrokeStyle(lineWidth: 2.4, lineCap: .round)
+            )
+
+            let leafSize = 8 + growth * 8
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: centerX - leafSize * 0.2,
+                    y: groundY - 38 * growth,
+                    width: leafSize,
+                    height: leafSize * 1.5
+                )),
+                with: .color(tint.opacity(0.30 + progress * 0.46))
+            )
+        }
+    }
+}
+
 private struct PlantingSeedView: View {
     let tint: Color
 
@@ -745,6 +1035,11 @@ private struct StormLaneColumnView: View {
             .buttonStyle(.plain)
             .accessibilityAddTraits(isSelected ? .isSelected : [])
 
+            Text(lane.physicsTitle)
+                .font(.caption2.bold())
+                .foregroundStyle(tint.opacity(0.86))
+                .fixedSize(horizontal: false, vertical: true)
+
             if fragments.isEmpty {
                 Text(lane.emptyText)
                     .font(.caption)
@@ -754,6 +1049,7 @@ private struct StormLaneColumnView: View {
                 ForEach(fragments) { fragment in
                     StormFragmentChipView(
                         fragment: fragment,
+                        lane: lane,
                         tint: tint,
                         namespace: namespace
                     ) {
@@ -783,14 +1079,18 @@ private struct StormLaneColumnView: View {
 
 private struct StormFragmentChipView: View {
     let fragment: StormFragment
+    let lane: GrowthLane
     let tint: Color
     let namespace: Namespace.ID
     let action: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var pulse = false
+
     var body: some View {
         Button(action: action) {
             HStack(alignment: .firstTextBaseline, spacing: 7) {
-                Image(systemName: fragment.symbolName)
+                Image(systemName: lane.physicsSymbolName)
                     .font(.caption.bold())
                     .foregroundStyle(tint)
                     .accessibilityHidden(true)
@@ -799,21 +1099,119 @@ private struct StormFragmentChipView: View {
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.primary)
                     .fixedSize(horizontal: false, vertical: true)
+
+                Spacer(minLength: 0)
+
+                Image(systemName: fragment.symbolName)
+                    .font(.caption2.bold())
+                    .foregroundStyle(tint.opacity(0.72))
+                    .accessibilityHidden(true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
-            .background(tint.opacity(0.11), in: RoundedRectangle(cornerRadius: 7))
+            .background(chipBackground, in: RoundedRectangle(cornerRadius: 7))
             .overlay {
                 RoundedRectangle(cornerRadius: 7)
-                    .stroke(tint.opacity(0.22), lineWidth: 1)
+                    .stroke(tint.opacity(borderOpacity), lineWidth: lane == .now ? 1.4 : 1)
             }
             .matchedGeometryEffect(id: fragment.id, in: namespace)
+            .scaleEffect(reduceMotion ? 1 : chipScale)
+            .offset(y: reduceMotion ? 0 : chipYOffset)
+            .shadow(color: tint.opacity(shadowOpacity), radius: shadowRadius, x: 0, y: shadowY)
         }
         .buttonStyle(.plain)
         .draggable(fragment.id)
         .accessibilityLabel(fragment.text)
+        .accessibilityValue(lane.physicsDetail)
         .accessibilityHint("Moves this fragment to the next lane.")
+        .onAppear {
+            guard !reduceMotion else {
+                pulse = true
+                return
+            }
+
+            withAnimation(.easeInOut(duration: lane.animationDuration).repeatForever(autoreverses: true)) {
+                pulse = true
+            }
+        }
+    }
+
+    private var chipBackground: Color {
+        switch lane {
+        case .now:
+            tint.opacity(0.16)
+        case .later:
+            tint.opacity(pulse ? 0.16 : 0.09)
+        case .release:
+            tint.opacity(0.07)
+        }
+    }
+
+    private var chipScale: CGFloat {
+        switch lane {
+        case .now:
+            1
+        case .later:
+            pulse ? 1.018 : 0.992
+        case .release:
+            pulse ? 0.992 : 1.010
+        }
+    }
+
+    private var chipYOffset: CGFloat {
+        switch lane {
+        case .now:
+            2
+        case .later:
+            pulse ? -3 : 1
+        case .release:
+            pulse ? -5 : -1
+        }
+    }
+
+    private var borderOpacity: Double {
+        switch lane {
+        case .now:
+            0.34
+        case .later:
+            pulse ? 0.34 : 0.18
+        case .release:
+            0.18
+        }
+    }
+
+    private var shadowOpacity: Double {
+        switch lane {
+        case .now:
+            0.22
+        case .later:
+            0.12
+        case .release:
+            0.08
+        }
+    }
+
+    private var shadowRadius: CGFloat {
+        switch lane {
+        case .now:
+            6
+        case .later:
+            pulse ? 9 : 4
+        case .release:
+            pulse ? 12 : 6
+        }
+    }
+
+    private var shadowY: CGFloat {
+        switch lane {
+        case .now:
+            5
+        case .later:
+            2
+        case .release:
+            0
+        }
     }
 }
 
@@ -875,6 +1273,17 @@ private struct StormFragment: Identifiable, Hashable {
 }
 
 private extension GrowthLane {
+    var animationDuration: Double {
+        switch self {
+        case .now:
+            1.2
+        case .later:
+            1.4
+        case .release:
+            1.0
+        }
+    }
+
     func tint(primary: Color) -> Color {
         switch self {
         case .now:

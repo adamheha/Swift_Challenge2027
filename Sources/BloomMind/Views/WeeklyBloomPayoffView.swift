@@ -649,47 +649,37 @@ private struct PressedBloomArchivePreviewView: View {
     let artifact: WeeklyBloomArtifact
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(tint.opacity(0.12))
-                    .frame(width: 68, height: 82)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                ArtifactSpecimenView(
+                    seeds: seeds,
+                    tint: tint,
+                    artifact: artifact
+                )
+                .accessibilityHidden(true)
 
-                ForEach(Array(seeds.prefix(7).enumerated()), id: \.offset) { index, seed in
-                    Capsule()
-                        .fill(seed.mood.tint.opacity(0.72))
-                        .frame(width: 10, height: 28)
-                        .rotationEffect(.degrees(Double(index) * 360 / Double(max(seeds.count, 1))))
-                        .offset(y: -15)
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(artifact.title)
+                        .font(.subheadline.bold())
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(artifact.detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(artifact.line)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-
-                Circle()
-                    .fill(Color.white.opacity(0.68))
-                    .frame(width: 14, height: 14)
-
-                Image(systemName: artifact.symbolName)
-                    .font(.caption.bold())
-                    .foregroundStyle(tint)
-                    .offset(y: 26)
+                .layoutPriority(1)
             }
-            .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 5) {
-                Text(artifact.title)
-                    .font(.subheadline.bold())
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text(artifact.detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text(artifact.line)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .layoutPriority(1)
+            ArtifactMuseumShelfView(
+                artifact: artifact,
+                tint: tint
+            )
         }
         .padding(12)
         .background(tint.opacity(0.09), in: RoundedRectangle(cornerRadius: 8))
@@ -700,6 +690,101 @@ private struct PressedBloomArchivePreviewView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel(artifact.title)
         .accessibilityValue("\(artifact.detail) \(artifact.line)")
+    }
+}
+
+private struct ArtifactSpecimenView: View {
+    let seeds: [GardenSeed]
+    let tint: Color
+    let artifact: WeeklyBloomArtifact
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(tint.opacity(0.12))
+                .frame(width: 68, height: 82)
+
+            ForEach(Array(seeds.prefix(7).enumerated()), id: \.offset) { index, seed in
+                Capsule()
+                    .fill(seed.mood.tint.opacity(0.72))
+                    .frame(width: 10, height: 28)
+                    .rotationEffect(.degrees(Double(index) * 360 / Double(max(seeds.count, 1))))
+                    .offset(y: -15)
+            }
+
+            Circle()
+                .fill(Color.white.opacity(0.68))
+                .frame(width: 14, height: 14)
+
+            Image(systemName: artifact.symbolName)
+                .font(.caption.bold())
+                .foregroundStyle(tint)
+                .offset(y: 26)
+        }
+    }
+}
+
+private struct ArtifactMuseumShelfView: View {
+    let artifact: WeeklyBloomArtifact
+    let tint: Color
+
+    private let futureSlots = ["Next bloom", "Season", "Archive"]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Private museum shelf", systemImage: "rectangle.grid.2x2")
+                .font(.caption.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: 8) {
+                ArtifactShelfSlotView(
+                    title: artifact.title,
+                    symbolName: artifact.symbolName,
+                    tint: tint,
+                    isFilled: true
+                )
+
+                ForEach(futureSlots, id: \.self) { slot in
+                    ArtifactShelfSlotView(
+                        title: slot,
+                        symbolName: "circle.dotted",
+                        tint: tint,
+                        isFilled: false
+                    )
+                }
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Private museum shelf")
+        .accessibilityValue("\(artifact.title) is saved as this week's artifact. Future blooms have empty archive slots.")
+    }
+}
+
+private struct ArtifactShelfSlotView: View {
+    let title: String
+    let symbolName: String
+    let tint: Color
+    let isFilled: Bool
+
+    var body: some View {
+        VStack(spacing: 5) {
+            Image(systemName: symbolName)
+                .font(.caption.bold())
+                .foregroundStyle(isFilled ? tint : .secondary)
+                .frame(width: 30, height: 30)
+                .background((isFilled ? tint : Color.secondary).opacity(isFilled ? 0.12 : 0.08), in: RoundedRectangle(cornerRadius: 7))
+
+            Text(title)
+                .font(.caption2.bold())
+                .foregroundStyle(isFilled ? .primary : .secondary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.75)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, minHeight: 62)
+        .padding(6)
+        .background((isFilled ? tint : Color.secondary).opacity(isFilled ? 0.08 : 0.05), in: RoundedRectangle(cornerRadius: 8))
     }
 }
 
