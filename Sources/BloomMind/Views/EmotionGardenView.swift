@@ -82,6 +82,12 @@ struct EmotionGardenView: View {
                         totalCount: safeTotalPlots
                     )
 
+                    RareBloomAtlasView(
+                        blooms: SensoryObservatory.rareBloomAtlas(for: visibleSeeds),
+                        season: SensoryObservatory.season(for: visibleSeeds),
+                        tint: newestSeed.mood.tint
+                    )
+
                     GardenVisionModePicker(
                         selectedMode: $gardenVisionMode,
                         tint: newestSeed.mood.tint
@@ -513,6 +519,7 @@ private struct WeekShapeLandscapeView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @State private var selectedDayIndex = 0
 
     private var tint: Color {
         seeds.last?.mood.tint ?? .green
@@ -520,6 +527,14 @@ private struct WeekShapeLandscapeView: View {
 
     private var landscapeHeight: CGFloat {
         dynamicTypeSize.isAccessibilitySize ? 220 : 170
+    }
+
+    private var selectedSeed: GardenSeed? {
+        guard seeds.indices.contains(selectedDayIndex) else {
+            return seeds.last
+        }
+
+        return seeds[selectedDayIndex]
     }
 
     var body: some View {
@@ -547,6 +562,7 @@ private struct WeekShapeLandscapeView: View {
             WeekShapeCanvasView(
                 seeds: seeds,
                 totalCount: totalCount,
+                selectedIndex: selectedDayIndex,
                 tint: tint,
                 reduceMotion: reduceMotion
             )
@@ -555,6 +571,30 @@ private struct WeekShapeLandscapeView: View {
             .overlay {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(tint.opacity(0.20), lineWidth: 1)
+            }
+
+            if let selectedSeed {
+                WeekShapeFocusView(
+                    dayIndex: selectedDayIndex + 1,
+                    seed: selectedSeed,
+                    tint: selectedSeed.mood.tint
+                )
+            }
+
+            if seeds.count > 1 {
+                Slider(
+                    value: Binding(
+                        get: { Double(selectedDayIndex) },
+                        set: { newValue in
+                            selectedDayIndex = min(max(Int(newValue.rounded()), 0), max(seeds.count - 1, 0))
+                        }
+                    ),
+                    in: 0...Double(max(seeds.count - 1, 1)),
+                    step: 1
+                )
+                .tint(tint)
+                .accessibilityLabel("Week shape day scrub")
+                .accessibilityValue("Day \(selectedDayIndex + 1)")
             }
 
             Text(summary.terrainLine)
@@ -584,6 +624,12 @@ private struct WeekShapeLandscapeView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(summary.title)
         .accessibilityValue(summary.accessibilityValue)
+        .onAppear {
+            selectedDayIndex = max(seeds.count - 1, 0)
+        }
+        .onChange(of: seeds.count) { _, newCount in
+            selectedDayIndex = min(selectedDayIndex, max(newCount - 1, 0))
+        }
     }
 
     private func seedTint(at index: Int) -> Color {
@@ -598,6 +644,7 @@ private struct WeekShapeLandscapeView: View {
 private struct WeekShapeCanvasView: View {
     let seeds: [GardenSeed]
     let totalCount: Int
+    let selectedIndex: Int
     let tint: Color
     let reduceMotion: Bool
 
@@ -678,6 +725,19 @@ private struct WeekShapeCanvasView: View {
             let seed = seeds.indices.contains(index) ? seeds[index] : nil
             let pointTint = seed?.mood.tint ?? Color.white.opacity(0.36)
             let pointSize = seed == nil ? CGFloat(5) : CGFloat(9 + index % 2)
+
+            if index == selectedIndex {
+                context.stroke(
+                    Path(ellipseIn: CGRect(
+                        x: point.x - 12,
+                        y: point.y - 12,
+                        width: 24,
+                        height: 24
+                    )),
+                    with: .color(Color.white.opacity(0.76)),
+                    style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                )
+            }
 
             context.fill(
                 Path(ellipseIn: CGRect(
@@ -797,6 +857,40 @@ private struct WeekShapeCanvasView: View {
     }
 }
 
+private struct WeekShapeFocusView: View {
+    let dayIndex: Int
+    let seed: GardenSeed
+    let tint: Color
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Text("\(dayIndex)")
+                .font(.caption.bold())
+                .monospacedDigit()
+                .foregroundStyle(.white)
+                .frame(width: 26, height: 26)
+                .background(tint, in: Circle())
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(seed.mood.rawValue) terrain")
+                    .font(.subheadline.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("\(seed.theme.displayName) pressure became \(seed.lane.gardenConsequenceTitle.lowercased()). \(seed.worldChangeSummary)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .padding(10)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Day \(dayIndex), \(seed.mood.rawValue)")
+        .accessibilityValue("\(seed.theme.displayName) became \(seed.lane.title).")
+    }
+}
+
 private struct WeekShapeLandmarkChip: View {
     let index: Int
     let landmark: String
@@ -824,6 +918,100 @@ private struct WeekShapeLandmarkChip: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(tint.opacity(0.16), lineWidth: 1)
         }
+    }
+}
+
+private struct RareBloomAtlasView: View {
+    let blooms: [RareBloom]
+    let season: EmotionalSeason
+    let tint: Color
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 190 : 146), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: season.symbolName)
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .frame(width: 24)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Emotional atlas")
+                        .font(.subheadline.bold())
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text("\(season.title): \(season.detail)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+            }
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(blooms.prefix(6)) { bloom in
+                    RareBloomCardView(
+                        bloom: bloom,
+                        tint: bloom.mood.tint
+                    )
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Emotional atlas")
+        .accessibilityValue("\(season.title). \(season.detail)")
+    }
+}
+
+private struct RareBloomCardView: View {
+    let bloom: RareBloom
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Image(systemName: bloom.symbolName)
+                .font(.headline.bold())
+                .foregroundStyle(tint)
+                .accessibilityHidden(true)
+
+            Text(bloom.title)
+                .font(.caption.bold())
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(bloom.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(bloom.atlasLine)
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(.primary)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 136, alignment: .topLeading)
+        .padding(10)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(bloom.title)
+        .accessibilityValue("\(bloom.detail) \(bloom.atlasLine)")
     }
 }
 
@@ -988,6 +1176,12 @@ private struct GardenEcologyLineView: View {
             "softened storm traces"
         case .unsure:
             "half-open question buds"
+        case .overwhelmed:
+            "dense storm blooms"
+        case .focused:
+            "clear compass paths"
+        case .lonely:
+            "small signal flowers"
         }
 
         let lanePhrase = switch dominantLane {
@@ -1988,6 +2182,14 @@ private struct EmotionPlantView: View {
         case .unsure:
             LeafPairView(color: .purple, leftRotation: -24, rightRotation: 24, yOffset: -14)
                 .opacity(0.78)
+        case .overwhelmed:
+            WindGrassLeavesView()
+                .opacity(0.86)
+        case .focused:
+            LeafPairView(color: .teal, leftRotation: -18, rightRotation: 18, yOffset: -13)
+        case .lonely:
+            LeafPairView(color: .indigo, leftRotation: -36, rightRotation: 30, yOffset: -11)
+                .opacity(0.70)
         }
     }
 
@@ -2009,6 +2211,15 @@ private struct EmotionPlantView: View {
         case .unsure:
             QuestionBudView()
                 .offset(y: -32)
+        case .overwhelmed:
+            StormBloomView()
+                .offset(y: -30)
+        case .focused:
+            CompassBloomView()
+                .offset(y: -33)
+        case .lonely:
+            SignalFlowerView()
+                .offset(y: -31)
         }
     }
 
@@ -2024,6 +2235,12 @@ private struct EmotionPlantView: View {
             Color.orange.opacity(0.72)
         case .unsure:
             Color.purple.opacity(0.62)
+        case .overwhelmed:
+            Color.red.opacity(0.66)
+        case .focused:
+            Color.teal.opacity(0.70)
+        case .lonely:
+            Color.indigo.opacity(0.58)
         }
     }
 
@@ -2039,6 +2256,12 @@ private struct EmotionPlantView: View {
             0.22
         case .unsure:
             0.08
+        case .overwhelmed:
+            0.30
+        case .focused:
+            -0.02
+        case .lonely:
+            -0.22
         }
     }
 }
@@ -2188,6 +2411,73 @@ private struct QuestionBudView: View {
     }
 }
 
+private struct StormBloomView: View {
+    var body: some View {
+        ZStack {
+            ForEach(0..<5, id: \.self) { index in
+                PetalShape()
+                    .fill(Color.red.opacity(0.62).gradient)
+                    .frame(width: 10, height: 30)
+                    .offset(y: -15)
+                    .rotationEffect(.degrees(Double(index) * 72 + 12), anchor: .bottom)
+            }
+
+            Image(systemName: "bolt.fill")
+                .font(.caption.bold())
+                .foregroundStyle(Color.yellow.opacity(0.88))
+                .offset(y: -2)
+        }
+        .frame(width: 46, height: 48)
+    }
+}
+
+private struct CompassBloomView: View {
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.teal.opacity(0.72), lineWidth: 3)
+                .frame(width: 34, height: 34)
+
+            ForEach(0..<4, id: \.self) { index in
+                Capsule()
+                    .fill(Color.mint.opacity(0.76).gradient)
+                    .frame(width: 7, height: 22)
+                    .offset(y: -14)
+                    .rotationEffect(.degrees(Double(index) * 90), anchor: .center)
+            }
+
+            Image(systemName: "scope")
+                .font(.caption2.bold())
+                .foregroundStyle(Color.teal)
+        }
+        .frame(width: 46, height: 46)
+    }
+}
+
+private struct SignalFlowerView: View {
+    var body: some View {
+        ZStack {
+            BellShape()
+                .fill(Color.indigo.opacity(0.52).gradient)
+                .frame(width: 30, height: 36)
+                .rotationEffect(.degrees(8))
+
+            ForEach(0..<3, id: \.self) { index in
+                Circle()
+                    .stroke(Color.white.opacity(0.48), lineWidth: 1)
+                    .frame(width: CGFloat(15 + index * 8), height: CGFloat(15 + index * 8))
+                    .offset(x: 6, y: -7)
+            }
+
+            Circle()
+                .fill(Color.white.opacity(0.78))
+                .frame(width: 7, height: 7)
+                .offset(x: 6, y: -7)
+        }
+        .frame(width: 46, height: 46)
+    }
+}
+
 private struct StemShape: Shape {
     let lean: CGFloat
 
@@ -2310,6 +2600,12 @@ private extension Mood {
             0.30
         case .unsure:
             0.50
+        case .overwhelmed:
+            0.25
+        case .focused:
+            0.44
+        case .lonely:
+            0.62
         }
     }
 }

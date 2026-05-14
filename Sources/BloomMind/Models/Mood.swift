@@ -6,6 +6,9 @@ enum Mood: String, CaseIterable, Identifiable {
     case tired = "Tired"
     case stressed = "Stressed"
     case unsure = "Unsure"
+    case overwhelmed = "Overwhelmed"
+    case focused = "Focused"
+    case lonely = "Lonely"
 
     var id: String { rawValue }
 
@@ -21,6 +24,12 @@ enum Mood: String, CaseIterable, Identifiable {
             "wind"
         case .unsure:
             "questionmark.circle"
+        case .overwhelmed:
+            "cloud.bolt"
+        case .focused:
+            "scope"
+        case .lonely:
+            "bubble.left"
         }
     }
 
@@ -36,11 +45,22 @@ enum Mood: String, CaseIterable, Identifiable {
             .orange
         case .unsure:
             .purple
+        case .overwhelmed:
+            Color(red: 0.74, green: 0.23, blue: 0.32)
+        case .focused:
+            Color(red: 0.08, green: 0.56, blue: 0.58)
+        case .lonely:
+            Color(red: 0.36, green: 0.43, blue: 0.72)
         }
     }
 
     var selectedForegroundColor: Color {
-        self == .happy ? .black : .white
+        switch self {
+        case .happy, .focused:
+            .black
+        default:
+            .white
+        }
     }
 
     var accessibilityHint: String {
@@ -59,6 +79,12 @@ enum Mood: String, CaseIterable, Identifiable {
             "Wind grass"
         case .unsure:
             "Question bud"
+        case .overwhelmed:
+            "Storm bloom"
+        case .focused:
+            "Compass bloom"
+        case .lonely:
+            "Signal flower"
         }
     }
 
@@ -74,6 +100,12 @@ enum Mood: String, CaseIterable, Identifiable {
             "This plant marks a check-in where pressure became one smaller next step."
         case .unsure:
             "This plant marks a check-in where uncertainty became one clearer question."
+        case .overwhelmed:
+            "This plant marks a check-in where too much pressure was separated into one survivable piece."
+        case .focused:
+            "This plant marks a check-in where attention found one direction."
+        case .lonely:
+            "This plant marks a check-in where loneliness became one small signal for care."
         }
     }
 
@@ -89,6 +121,12 @@ enum Mood: String, CaseIterable, Identifiable {
             "Look for one task that can wait before starting the next tiny step."
         case .unsure:
             "Name the question before trying to answer everything."
+        case .overwhelmed:
+            "Lower the volume by choosing only the next visible piece."
+        case .focused:
+            "Protect this focus from one avoidable interruption."
+        case .lonely:
+            "Let one honest sentence reach a safe person or page."
         }
     }
 }

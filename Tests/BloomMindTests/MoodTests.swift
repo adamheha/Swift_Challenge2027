@@ -105,12 +105,16 @@ import Testing
 @Test func moodPlantAccessibilityNamesAreDistinct() {
     let plantNames = Mood.allCases.map(\.plantAccessibilityName)
 
+    #expect(Mood.allCases.count == 8)
     #expect(Set(plantNames).count == Mood.allCases.count)
     #expect(Mood.calm.plantAccessibilityName == "Calm sprout")
     #expect(Mood.happy.plantAccessibilityName == "Sun bloom")
     #expect(Mood.tired.plantAccessibilityName == "Moon bell")
     #expect(Mood.stressed.plantAccessibilityName == "Wind grass")
     #expect(Mood.unsure.plantAccessibilityName == "Question bud")
+    #expect(Mood.overwhelmed.plantAccessibilityName == "Storm bloom")
+    #expect(Mood.focused.plantAccessibilityName == "Compass bloom")
+    #expect(Mood.lonely.plantAccessibilityName == "Signal flower")
 }
 
 @Test func moodGardenReflectionNotesAreSpecificAndPrivate() {
@@ -239,6 +243,27 @@ import Testing
     #expect(ArtifactCraftingChoice.release.craftedLine(for: artifact).contains("next seed"))
     #expect(ArtifactCraftingChoice.connect.craftedLine(for: artifact) == "Connected: This was a pressure week that learned to make air. The seven seeds become one sky.")
     #expect(ArtifactCraftingChoice.connect.symbolName == "link.circle")
+}
+
+@Test func sensoryObservatoryBuildsSoundscapeInstrumentsAndAtlas() {
+    let seeds = CheckInState.demoGardenSeeds
+    let soundscape = SensoryObservatory.soundscape(for: seeds)
+    let instruments = SensoryObservatory.weatherInstruments(
+        for: seeds,
+        completedCount: CheckInState.weeklyCheckInGoal,
+        totalCount: CheckInState.weeklyCheckInGoal
+    )
+    let atlas = SensoryObservatory.rareBloomAtlas(for: seeds)
+    let season = SensoryObservatory.season(for: seeds)
+
+    #expect(soundscape.events.contains(.bloom))
+    #expect(soundscape.accessibilityValue.contains("local sound cues"))
+    #expect(instruments.count == 5)
+    #expect(instruments.map(\.id).contains("barometer"))
+    #expect(atlas.contains { $0.title == "Storm-break bloom" })
+    #expect(atlas.contains { $0.title == "Compass bloom" })
+    #expect(atlas.contains { $0.title == "Signal flower" })
+    #expect(season.title == "Clear season")
 }
 
 @Test func seedEvolutionStagesReflectWeekProgressAndLane() {
@@ -522,7 +547,7 @@ import Testing
     let capped = CheckInState(completedCheckIns: 12)
     #expect(
         capped.gardenAccessibilityValue
-            == "7 of 7 plants grown: Calm sprout with Now, Sun bloom with Later, Moon bell with Let go, Wind grass with Now, Question bud with Later, Calm sprout with Let go, Sun bloom with Now"
+            == "7 of 7 plants grown: Calm sprout with Now, Sun bloom with Later, Moon bell with Let go, Wind grass with Now, Question bud with Later, Storm bloom with Let go, Compass bloom with Now"
     )
 }
 

@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 4.0 Stage 10 - Weather Observatory Complete
+Current stage: BloomMind 5.0 Stage 11 - Sensory Observatory Complete
 
-Current branch: `codex/bloommind-4-weather-observatory`
+Current branch: `codex/bloommind-5-sensory-observatory`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 4.1 Stage 11 - Personal Origin, Device Review, and Final Submission Rehearsal
+Next stage: BloomMind 5.1 Stage 12 - Personal Origin, Device Review, and Final Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -335,6 +335,41 @@ Definition of done:
 - `swift test` passes.
 - Preview Award Demo shows the complete 90-second evaluator path through Weather Observatory, Storm Surgery, Week Shape, Artifact Crafting, and Weekly Bloom.
 - No private reflection text is resurfaced in weekly summaries, landscapes, or artifacts.
+
+## BloomMind 5.0 Stage 11 - Sensory Observatory
+
+Status: Complete
+
+Goal: Make BloomMind more sensory, explorable, and collectible by adding optional sound cues, emotional instruments, rare blooms, emotional seasons, and a more interactive weekly landscape.
+
+Completed in this branch:
+
+- Expanded mood selection from 5 choices to 8 choices: Calm, Happy, Tired, Stressed, Unsure, Overwhelmed, Focused, and Lonely.
+- Added a local soundscape system with Storm, Root, Glass, Wind, Soil, and Bloom cues.
+- Added a Home soundscape console with a Local sound toggle and visual waveform fallback.
+- Added Home Weather Instruments: Inner Barometer, Root Compass, Weather Clock, Fog Meter, and Air Gauge.
+- Added Rare Bloom generation from mood + theme + Now / Later / Let go combinations.
+- Added Emotional Atlas cards in the garden so each visible seed can unlock a named bloom and a short privacy-preserving literacy line.
+- Added Emotional Season detection for Storm, Rest, Clear, Question, Signal, Sun, Open-air, and Mixed seasons.
+- Upgraded Week Shape with a day scrubber, selected-day highlight, and focused day terrain card.
+- Updated Preview Award Demo to include the new moods.
+- Documented the benign Xcode RenderBox/ViewBridge warnings reported during local Xcode runs.
+- Added unit tests for the eight mood set, soundscape, instruments, atlas, and season logic.
+
+Remaining:
+
+- Smoke check in full Xcode or Swift Playgrounds.
+- Test local sound cues on the intended device and keep the mute behavior polite.
+- Smoke check on iPad or an iPad-sized simulator.
+- Replace the generic origin line with the applicant's true personal story.
+
+Definition of done:
+
+- `swift test` passes.
+- Check-In shows 8 mood choices.
+- Home shows Weather Instruments and optional local sound cues.
+- Garden shows scrubbed Week Shape and Emotional Atlas.
+- Xcode warning notes are documented for local review.
 
 ## Stage 0 - Award Research
 

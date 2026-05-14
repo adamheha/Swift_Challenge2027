@@ -761,6 +761,12 @@ private extension Mood {
             "Electrical clouds are visible now, which makes the storm less invisible."
         case .unsure:
             "Fog is still present, but the lens can find questions inside it."
+        case .overwhelmed:
+            "The sky is crowded with signals, and the lens is lowering the volume one layer at a time."
+        case .focused:
+            "The sky narrows into a clear beam, protecting attention from extra weather."
+        case .lonely:
+            "The sky feels distant, but small signals are still visible at the edge."
         }
     }
 
@@ -776,6 +782,12 @@ private extension Mood {
             "The terrain climbed into a pressure ridge."
         case .unsure:
             "The terrain crossed a fog bridge."
+        case .overwhelmed:
+            "The terrain crowded into a steep storm wall."
+        case .focused:
+            "The terrain narrowed into a clear path."
+        case .lonely:
+            "The terrain stretched into a quiet signal field."
         }
     }
 
@@ -791,6 +803,12 @@ private extension Mood {
             "Make it tiny:"
         case .unsure:
             "Make it clearer:"
+        case .overwhelmed:
+            "Turn the volume down:"
+        case .focused:
+            "Protect the signal:"
+        case .lonely:
+            "Make one signal:"
         }
     }
 
@@ -806,6 +824,12 @@ private extension Mood {
             "Stress appeared often, but naming it kept it from becoming one invisible cloud."
         case .unsure:
             "Uncertainty appeared often, and the garden turned it into something answerable."
+        case .overwhelmed:
+            "Overwhelm appeared as too many signals at once, and the garden kept separating one piece from the whole sky."
+        case .focused:
+            "Focused moments appeared as useful attention, so the week is not only remembered by pressure."
+        case .lonely:
+            "Lonely feelings appeared as signals for care, not proof that the user had to stay isolated."
         }
     }
 
@@ -821,6 +845,12 @@ private extension Mood {
             "Separate the loudest task from the whole sky."
         case .unsure:
             "Name one question before trying to solve the whole week."
+        case .overwhelmed:
+            "Choose one piece before listening to the whole storm."
+        case .focused:
+            "Protect one clear block of attention before adding more."
+        case .lonely:
+            "Let one small signal reach a safe person or page."
         }
     }
 
@@ -836,6 +866,12 @@ private extension Mood {
             "Urgent is not the same as important"
         case .unsure:
             "A question is already a step"
+        case .overwhelmed:
+            "Too much can be separated"
+        case .focused:
+            "Attention deserves protection"
+        case .lonely:
+            "A signal is not weakness"
         }
     }
 
@@ -851,6 +887,12 @@ private extension Mood {
             "Stress is easier to hold when one loud thing becomes separate from the whole storm."
         case .unsure:
             "Uncertainty can move when it becomes one question instead of one fog."
+        case .overwhelmed:
+            "Overwhelm softens when one piece is separated from the whole storm before everything asks for attention."
+        case .focused:
+            "Focus is not just productivity; it is a signal that one direction has become clear enough to protect."
+        case .lonely:
+            "Loneliness can become less closed when it turns into one safe signal for connection or care."
         }
     }
 }

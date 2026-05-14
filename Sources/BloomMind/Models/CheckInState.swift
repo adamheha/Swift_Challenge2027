@@ -479,20 +479,20 @@ struct CheckInState {
     static let demoGardenMoods: [Mood] = [
         .stressed,
         .tired,
+        .overwhelmed,
+        .focused,
+        .lonely,
         .unsure,
-        .calm,
-        .happy,
-        .stressed,
         .calm
     ]
     static let demoGardenSeeds: [GardenSeed] = [
         GardenSeed(mood: .stressed, lane: .now, theme: .pressure),
         GardenSeed(mood: .tired, lane: .later, theme: .rest),
+        GardenSeed(mood: .overwhelmed, lane: .release, theme: .pressure),
+        GardenSeed(mood: .focused, lane: .now, theme: .school),
+        GardenSeed(mood: .lonely, lane: .later, theme: .friendship),
         GardenSeed(mood: .unsure, lane: .release, theme: .uncertainty),
-        GardenSeed(mood: .calm, lane: .now, theme: .school),
-        GardenSeed(mood: .happy, lane: .later, theme: .friendship),
-        GardenSeed(mood: .stressed, lane: .release, theme: .pressure),
-        GardenSeed(mood: .calm, lane: .release, theme: .general)
+        GardenSeed(mood: .calm, lane: .release, theme: .pressure)
     ]
 
     var selectedMood: Mood?
@@ -943,6 +943,12 @@ struct CheckInState {
             "Pressure showed up often, but it did not stay formless."
         case .unsure:
             "Uncertainty appeared often, and the garden turned it into questions instead of fog."
+        case .overwhelmed:
+            "Overwhelm appeared often, and the garden separated it into smaller weather systems."
+        case .focused:
+            "Focus appeared often, and the garden protected that attention as something worth keeping."
+        case .lonely:
+            "Loneliness appeared often, and the garden turned it into a signal instead of a closed door."
         }
 
         let laneLine = switch dominantLane {
@@ -972,6 +978,12 @@ struct CheckInState {
             "Rest can be part of growth, not proof that I fell behind."
         case (.unsure, .now):
             "One clear question can be enough for today."
+        case (.overwhelmed, _):
+            "Too much can become one piece at a time."
+        case (.focused, _):
+            "Attention is a kind of weather worth protecting."
+        case (.lonely, _):
+            "A small signal for care still counts."
         case (_, .later):
             "Not everything has to be solved in the same minute."
         case (_, .release):

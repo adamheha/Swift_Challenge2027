@@ -1628,6 +1628,12 @@ private extension Mood {
             "Pressure is making everything sound urgent."
         case .unsure:
             "Uncertainty needs one clear question."
+        case .overwhelmed:
+            "Too many signals need one smaller boundary."
+        case .focused:
+            "Focus is asking to be protected."
+        case .lonely:
+            "Loneliness is asking for one safe signal."
         }
     }
 }

@@ -1,4 +1,4 @@
-# BloomMind 2.0 Through 4.0 Goals
+# BloomMind 2.0 Through 5.0 Goals
 
 BloomMind 2.0 exists to turn the original gentle mood tracker into a memorable Swift Student Challenge experience.
 
@@ -9,6 +9,8 @@ BloomMind 3.1 makes that world more direct: the user should pull storm words apa
 BloomMind 3.2 adds emotional physics: Now should feel heavy enough to root, Later should feel suspended, Let go should feel light, and the garden should have an X-Ray layer that reveals what those choices changed.
 
 BloomMind 4.0 turns the app into a Weather Observatory: the first screen shows the user's inner weather, sorting becomes Storm Surgery, the week becomes a landscape, and seven seeds end with an artifact the user helps craft.
+
+BloomMind 5.0 makes that observatory sensory and collectible: the app has eight mood choices, local sound cues, weather instruments, rare blooms, an emotional atlas, emotional seasons, and a scrub-able week landscape.
 
 ## North Star
 
@@ -24,6 +26,7 @@ The reviewer should understand the whole idea quickly:
 6. Seven seeds reveal the shape of the week, so the user is not left asking "what now?"
 7. The completed week becomes a living landscape with memory, animated time-lapse, artifact crafting, private museum shelf, and a next seed to notice.
 8. The first screen should immediately feel like a world with rules, not a wellness dashboard.
+9. The world should feel worth revisiting because it has instruments, sounds, rare blooms, and a growing atlas.
 
 ## What 2.0 Must Prove
 
@@ -46,7 +49,8 @@ The reviewer should understand the whole idea quickly:
 - Stage 8 - Direct Transformation: add live storm-word sorting, drag-to-plant, garden map zones, seed evolution, animated Weekly Bloom, and Week Artifacts.
 - Stage 9 - Emotional Physics: add privacy ritual, emotional physics fragments, Focus Sprout, Garden X-Ray, stronger first-five-seconds hero, and private museum shelf.
 - Stage 10 - Weather Observatory: add observatory homepage, Storm Surgery, Week Shape, artifact crafting, and Award Demo Theatre.
-- Stage 11 - Final Story and Submission Rehearsal: finish the applicant's true personal story, AI disclosure, rules refresh, and final three-minute rehearsal.
+- Stage 11 - Sensory Observatory: add eight moods, local soundscape, weather instruments, rare blooms, emotional atlas, emotional seasons, and Week Shape scrub.
+- Stage 12 - Final Story and Submission Rehearsal: finish the applicant's true personal story, AI disclosure, rules refresh, and final three-minute rehearsal.
 
 ## What Stage 5 Is Doing
 
@@ -116,3 +120,15 @@ Stage 10 is about spectacle, density, and a stronger emotional universe:
 - The garden gains Week Shape: an emotional terrain line with mood points, lane marks, and day landmarks.
 - Weekly Bloom gains Artifact Crafting, where the user chooses to Press, Release, or Connect the completed week.
 - Preview Award Demo gains a Theatre path so the evaluator sees the intended 90-second sequence clearly.
+
+## What Stage 11 Is Doing
+
+Stage 11 is about sensory richness and long-term curiosity:
+
+- Mood selection expands from 5 to 8 choices, adding Overwhelmed, Focused, and Lonely.
+- Home gains Weather Instruments so the observatory has measurable emotional objects, not only a hero scene.
+- Home gains a local soundscape console with optional sound cues and a visual waveform fallback.
+- Week Shape becomes scrub-able so the user can inspect one day in the emotional terrain.
+- Seeds unlock Rare Bloom cards based on mood + theme + sorting lane.
+- The garden gains an Emotional Atlas and season label so repeated use feels like a private collection, not a plain history list.
+- Xcode RenderBox/ViewBridge warnings are documented as likely benign unless the app actually crashes or blanks.

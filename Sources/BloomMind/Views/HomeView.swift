@@ -6,6 +6,7 @@ struct HomeView: View {
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var isPreviewingDemoWeek = false
+    @State private var isSoundscapeEnabled = false
 
     private var pageSpacing: CGFloat {
         dynamicTypeSize.isAccessibilitySize ? 22 : 24
@@ -37,6 +38,7 @@ struct HomeView: View {
         HStack(alignment: .top, spacing: 24) {
             VStack(spacing: pageSpacing) {
                 heroSection
+                sensorySection
                 dailyActionSection
             }
             .frame(minWidth: 360, maxWidth: 450)
@@ -51,6 +53,7 @@ struct HomeView: View {
     private var compactLayout: some View {
         VStack(spacing: pageSpacing) {
             heroSection
+            sensorySection
             gardenSection
             dailyActionSection
         }
@@ -67,6 +70,25 @@ struct HomeView: View {
             snapshot: gardenDisplayState.weatherObservatorySnapshot,
             seeds: gardenDisplayState.gardenSeedsThisWeek
         )
+    }
+
+    private var sensorySection: some View {
+        VStack(spacing: 12) {
+            WeatherInstrumentPanelView(
+                readings: SensoryObservatory.weatherInstruments(
+                    for: gardenDisplayState.gardenSeedsThisWeek,
+                    completedCount: gardenDisplayState.completedCheckInsThisWeek,
+                    totalCount: CheckInState.weeklyCheckInGoal
+                ),
+                tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green
+            )
+
+            SoundscapeConsoleView(
+                profile: SensoryObservatory.soundscape(for: gardenDisplayState.gardenSeedsThisWeek),
+                tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green,
+                isEnabled: $isSoundscapeEnabled
+            )
+        }
     }
 
     private var gardenSection: some View {
@@ -161,6 +183,226 @@ struct HomeView: View {
                 ? CheckInState.showMyWeekActionAccessibilityHint
                 : CheckInState.previewDemoWeekActionAccessibilityHint
         )
+    }
+}
+
+private struct WeatherInstrumentPanelView: View {
+    let readings: [WeatherInstrumentReading]
+    let tint: Color
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 180 : 132), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Weather instruments", systemImage: "gauge")
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(readings) { reading in
+                    WeatherInstrumentReadingView(
+                        reading: reading,
+                        tint: tint
+                    )
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Weather instruments")
+    }
+}
+
+private struct WeatherInstrumentReadingView: View {
+    let reading: WeatherInstrumentReading
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Image(systemName: reading.symbolName)
+                .font(.headline.bold())
+                .foregroundStyle(tint)
+                .accessibilityHidden(true)
+
+            Text(reading.title)
+                .font(.caption.bold())
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(reading.value)
+                .font(.title3.bold())
+                .foregroundStyle(tint)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+
+            Text(reading.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 118, alignment: .topLeading)
+        .padding(10)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.14), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(reading.title)
+        .accessibilityValue("\(reading.value). \(reading.detail)")
+    }
+}
+
+private struct SoundscapeConsoleView: View {
+    let profile: SoundscapeProfile
+    let tint: Color
+    @Binding var isEnabled: Bool
+
+    @State private var lastPlayedEvent: SensorySoundEvent?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "waveform")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .frame(width: 24)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(profile.title)
+                        .font(.subheadline.bold())
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(profile.detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+            }
+
+            SoundscapeWaveformView(
+                events: profile.events,
+                tint: tint,
+                isEnabled: isEnabled,
+                lastPlayedEvent: lastPlayedEvent
+            )
+            .frame(height: 56)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tint.opacity(0.18), lineWidth: 1)
+            }
+
+            Toggle(isOn: $isEnabled) {
+                Label("Local sound", systemImage: isEnabled ? "speaker.wave.2" : "speaker.slash")
+                    .font(.caption.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .toggleStyle(.switch)
+
+            HStack(spacing: 8) {
+                ForEach(profile.events) { event in
+                    Button {
+                        lastPlayedEvent = event
+                        if isEnabled {
+                            SensorySoundEngine.play(event)
+                        }
+                    } label: {
+                        Label(event.title, systemImage: event.symbolName)
+                            .font(.caption.bold())
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                    .tint(tint)
+                    .accessibilityHint(isEnabled ? event.detail : "Turn on Local sound to play this cue. The waveform still shows the rhythm visually.")
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(profile.title)
+        .accessibilityValue(profile.accessibilityValue)
+    }
+}
+
+private struct SoundscapeWaveformView: View {
+    let events: [SensorySoundEvent]
+    let tint: Color
+    let isEnabled: Bool
+    let lastPlayedEvent: SensorySoundEvent?
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            Canvas { context, size in
+                drawWaveform(
+                    in: &context,
+                    size: size,
+                    time: reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                )
+            }
+        }
+        .background {
+            LinearGradient(
+                colors: [
+                    tint.opacity(0.14),
+                    Color.blue.opacity(0.07),
+                    Color.orange.opacity(0.06)
+                ],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        }
+    }
+
+    private func drawWaveform(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let midY = height * 0.5
+        let eventCount = max(events.count, 1)
+        let columns = 28
+
+        for index in 0..<columns {
+            let x = width * (CGFloat(index) + 0.5) / CGFloat(columns)
+            let event = events[index % eventCount]
+            let phase = Double(index) * 0.48 + time * (isEnabled ? 2.0 : 0.6)
+            let eventBoost = event == lastPlayedEvent ? CGFloat(1.0) : CGFloat(0.65)
+            let amplitude = (8 + CGFloat((sin(phase) + 1) * 12)) * eventBoost
+            let lineHeight = isEnabled ? amplitude : amplitude * 0.42
+
+            var bar = Path()
+            bar.move(to: CGPoint(x: x, y: midY - lineHeight))
+            bar.addLine(to: CGPoint(x: x, y: midY + lineHeight))
+            context.stroke(
+                bar,
+                with: .color(tint.opacity(event == lastPlayedEvent ? 0.86 : 0.42)),
+                style: StrokeStyle(lineWidth: 3, lineCap: .round)
+            )
+        }
     }
 }
 

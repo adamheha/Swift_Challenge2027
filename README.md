@@ -4,7 +4,7 @@
 
 BloomMind is a SwiftUI app concept for the Swift Student Challenge 2027.
 
-The 4.0 direction is bolder: BloomMind turns overwhelming school pressure into a visible inner weather system, helps the student sort that storm into Now, Later, and Let go, then transforms the week into a living garden, emotional landscape, and private artifact.
+The 5.0 direction is bolder: BloomMind turns overwhelming school pressure into a visible inner weather system, helps the student sort that storm into Now, Later, and Let go, then transforms the week into a sensory garden with local sound cues, weather instruments, rare blooms, emotional seasons, and private artifacts.
 
 ## Current Files
 
@@ -20,6 +20,7 @@ The 4.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 - `BloomMind_Stage8DirectTransformation.md`: BloomMind 3.1 direct storm sorting, drag-to-plant, garden map, time-lapse, and artifact notes.
 - `BloomMind_Stage9EmotionalPhysics.md`: BloomMind 3.2 emotional physics, privacy ritual, garden X-Ray, focus sprout, and museum shelf notes.
 - `BloomMind_Stage10WeatherObservatory.md`: BloomMind 4.0 Weather Observatory, Storm Surgery, Week Shape, artifact crafting, and demo theatre notes.
+- `BloomMind_Stage11SensoryObservatory.md`: BloomMind 5.0 Sensory Observatory, eight moods, local soundscape, instruments, rare blooms, atlas, and Xcode warning note.
 - `Packaging/BloomMindSubmissionPackage.swift`: submission-only Swift package manifest.
 - `Scripts/create_submission_package.sh`: repeatable `.swiftpm` ZIP packaging script.
 - `Scripts/verify_submission_package.sh`: repeatable submission ZIP verification script.
@@ -31,9 +32,9 @@ The 4.0 direction is bolder: BloomMind turns overwhelming school pressure into a
 
 ## Current Stage
 
-BloomMind 4.0 Stage 10: Weather Observatory - complete.
+BloomMind 5.0 Stage 11: Sensory Observatory - complete.
 
-Active branch: `codex/bloommind-4-weather-observatory`
+Active branch: `codex/bloommind-5-sensory-observatory`
 
 Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. BloomMind 2.0 starts from that foundation and pushes the app toward a more memorable Swift Student Challenge experience.
 
@@ -42,7 +43,10 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - SwiftUI app shell with a typed navigation flow.
 - Home screen with a moving Weather Observatory hero, weekly bloom progress, an interactive emotion garden, and today-completion feedback.
 - Weather Observatory model that reads the week as pressure layers, inner sky, lens line, dominant mood, and dominant lane.
-- Check-in screen with mood selection, selected-state checkmark, a live storm preview, optional reflection input, and a three-step progress indicator.
+- Check-in screen with eight mood choices, selected-state checkmark, a live storm preview, optional reflection input, and a three-step progress indicator.
+- Local Sensory Observatory model for sound cues, weather instruments, rare blooms, emotional atlas cards, and emotional seasons.
+- Home Weather Instruments: Inner Barometer, Root Compass, Weather Clock, Fog Meter, and Air Gauge.
+- Local soundscape console with optional system sound cues and a visual waveform fallback.
 - Live Storm Typing that changes storm intensity, theme color, and visible keywords as the user writes a reflection.
 - Reflection Privacy Ritual that turns the written moment into safe storm fragments and states that BloomMind remembers the shape, not the private words.
 - Growth action screen with local mood-and-theme suggested actions, Direct Storm Sorting, live reflection words, Now / Later / Let go lanes, seed commitment, and a private theme explanation.
@@ -65,7 +69,8 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - Inner Garden World scene with mood weather, roots, buds, open air, and world plants.
 - Garden X-Ray mode that reveals underground roots, waiting buds, wind trails, and center-bloom links.
 - Garden Map zones for Underground Roots, Waiting Path, Open Sky, and Center Bloom.
-- Week Shape landscape that turns the seven days into an emotional terrain line with mood points, lane marks, and day landmarks.
+- Week Shape landscape that turns the seven days into an emotional terrain line with mood points, lane marks, day landmarks, and day scrubbing.
+- Emotional Atlas that unlocks rare blooms from mood + theme + Now / Later / Let go combinations.
 - Seed evolution states for just planted, sprouting, blooming, resting, and archived bloom.
 - A 7/7 Weekly Bloom payoff unlocks with a constellation reveal, week story, local emotional insight, closing ritual, next-week seed, and privacy note.
 - Weekly Bloom time-lapse phases plus a true animated storm-to-seeds-to-world-to-bloom scene, emotional literacy unlocks, a return-tomorrow hook, artifact crafting, and a week artifact/private museum shelf.
@@ -115,6 +120,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - BloomMind 3.1 Stage 8: Direct Transformation - complete.
 - BloomMind 3.2 Stage 9: Emotional Physics - complete.
 - BloomMind 4.0 Stage 10: Weather Observatory - complete.
+- BloomMind 5.0 Stage 11: Sensory Observatory - complete.
 
 ## BloomMind 2.0 Goal
 
@@ -283,21 +289,44 @@ Definition of done:
 - Preview Award Demo shows the Weather Observatory, Storm Surgery, Week Shape, Artifact Crafting, and Weekly Bloom payoff.
 - The app still preserves private reflection text and uses local-only interpretation.
 
+## BloomMind 5.0 Stage 11 Target
+
+Stage 11 makes BloomMind more sensory, explorable, and collectible.
+
+Progress so far:
+
+- Expanded mood selection from 5 to 8 choices: Calm, Happy, Tired, Stressed, Unsure, Overwhelmed, Focused, and Lonely.
+- Added a local soundscape console with Storm, Root, Glass, Wind, Soil, and Bloom sound cues plus a visual waveform fallback.
+- Added Weather Instruments on Home: Inner Barometer, Root Compass, Weather Clock, Fog Meter, and Air Gauge.
+- Added Rare Bloom generation and Emotional Atlas cards so each seed can unlock a named bloom without exposing reflection text.
+- Added Emotional Seasons such as Storm season, Clear season, Signal season, and Open-air season.
+- Upgraded Week Shape with day scrubbing, a selected-day highlight, and a focused terrain card.
+- Updated Preview Award Demo to showcase the new moods.
+- Added `BloomMind_Stage11SensoryObservatory.md` with an Xcode warning note for the benign RenderBox/ViewBridge messages.
+
+Definition of done:
+
+- `swift test` passes.
+- Home shows instruments and optional local sound cues.
+- Check-In offers 8 mood choices.
+- Garden shows interactive Week Shape and Emotional Atlas.
+- Xcode warning notes are documented for local review.
+
 ## Final Demo And Submission Review
 
 Use `BloomMind_SubmissionPackage.md` as the final review guide. The recommended one-minute demo path is:
 
 1. Open BloomMind on the Today screen.
-2. Notice the Weather Observatory hero and inner weather lens.
+2. Notice the Weather Observatory hero, inner weather lens, weather instruments, and local soundscape console.
 3. Tap Enter the Storm.
-4. Select Stressed.
+4. Select Stressed, Overwhelmed, Focused, or another one of the eight moods.
 5. Enter: `I have a project deadline and too much to finish.`
 6. Continue to the Growth Action screen.
 7. Confirm the local pressure-themed action appears with Now, Later, and Let go.
 8. Drag live storm fragments into Now, Later, and Let go, then confirm the Storm Surgery table and emotional physics change.
 9. Select Now and start the Focus Sprout, or continue directly.
 10. Drag the seed into the soil, or tap it as the fallback, and confirm the chosen lane changes the ritual.
-11. Return to Today and inspect the Inner Garden World, Week Shape, Garden X-Ray, Garden Map zones, seed evolution state, and seed memory card.
+11. Return to Today and inspect the Inner Garden World, scrub Week Shape, Emotional Atlas, Garden X-Ray, Garden Map zones, seed evolution state, and seed memory card.
 12. Tap Preview Award Demo.
 13. Confirm the Award Demo Theatre and seven-seed Weekly Bloom payoff appear with the animated time-lapse, artifact crafting, emotional literacy unlock, closing ritual, next-week seed, and private museum shelf.
 
@@ -317,13 +346,18 @@ The generated package lives at:
 SubmissionBuild/BloomMind.swiftpm.zip
 ```
 
-Current Stage 10 package refresh:
+Current Stage 11 package refresh:
 
-- ZIP size: 62,089 bytes.
+- ZIP size: 69,341 bytes.
 - ZIP contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The ZIP excludes `.DS_Store` and `__MACOSX`.
-- The generated package includes the Weather Observatory source updates.
+- The generated package includes the Sensory Observatory source updates.
 - ZIP contents, source safety checks, and standalone package build passed in `bash Scripts/verify_submission_package.sh`.
+
+Xcode warning note:
+
+- `Unable to open mach-O ... RenderBox.framework ... default.metallib Error:2` and `ViewBridge to RemoteViewService Terminated ... Code=18` are usually benign Xcode/SwiftUI preview or remote view service messages when the app continues running.
+- Treat them as an Xcode infrastructure warning unless the app window or preview actually crashes, goes blank, or stops accepting input.
 
 Verify the generated package with:
 
