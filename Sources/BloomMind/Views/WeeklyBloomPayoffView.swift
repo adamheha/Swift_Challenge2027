@@ -8,6 +8,7 @@ struct WeeklyBloomPayoffView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var reveal = false
     @State private var craftingChoice: ArtifactCraftingChoice = .connect
+    @State private var selectedCarryChoiceID: String?
 
     private var accentColor: Color {
         payoff.dominantMood?.tint ?? .green
@@ -39,6 +40,11 @@ struct WeeklyBloomPayoffView: View {
                 reveal: reveal || reduceMotion
             )
 
+            WeekFilmView(
+                seeds: seeds,
+                tint: accentColor
+            )
+
             VStack(alignment: .leading, spacing: 10) {
                 Text("Your week had a shape")
                     .font(.headline)
@@ -66,21 +72,13 @@ struct WeeklyBloomPayoffView: View {
                     text: payoff.literacyUnlock.detail,
                     tint: accentColor
                 )
-
-                PayoffLineView(
-                    title: "Closing ritual",
-                    systemImage: "quote.bubble",
-                    text: payoff.closingLine,
-                    tint: accentColor
-                )
-
-                PayoffLineView(
-                    title: "Next week seed",
-                    systemImage: "arrow.forward.circle",
-                    text: payoff.nextWeekIntention,
-                    tint: accentColor
-                )
             }
+
+            CarryIntoNextWeekRitualView(
+                payoff: payoff,
+                tint: accentColor,
+                selectedChoiceID: $selectedCarryChoiceID
+            )
 
             ArtifactCraftingRitualView(
                 seeds: seeds,
@@ -92,8 +90,10 @@ struct WeeklyBloomPayoffView: View {
             PressedBloomArchivePreviewView(
                 seeds: seeds,
                 tint: accentColor,
+                payoff: payoff,
                 artifact: payoff.artifact,
-                craftedLine: craftingChoice.craftedLine(for: payoff.artifact)
+                craftedLine: craftingChoice.craftedLine(for: payoff.artifact),
+                carryLine: selectedCarryChoice.line
             )
 
             HStack(alignment: .top, spacing: 10) {
@@ -135,6 +135,11 @@ struct WeeklyBloomPayoffView: View {
         }
     }
 
+    private var selectedCarryChoice: CarrySeedChoice {
+        let choices = BloomMindJourney.carrySeedChoices(for: payoff)
+        return choices.first { $0.id == selectedCarryChoiceID } ?? choices[0]
+    }
+
     private var header: some View {
         HStack(alignment: .top, spacing: 12) {
             ZStack {
@@ -161,6 +166,327 @@ struct WeeklyBloomPayoffView: View {
             .layoutPriority(1)
 
             Spacer(minLength: 0)
+        }
+    }
+}
+
+private struct WeekFilmView: View {
+    let seeds: [GardenSeed]
+    let tint: Color
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var isPlaying = false
+    @State private var hasPlayed = false
+    @State private var startedAt = Date()
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                Label("Play Week Film", systemImage: "film")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                Button {
+                    if isPlaying {
+                        isPlaying = false
+                    } else {
+                        startedAt = Date()
+                        hasPlayed = true
+                        isPlaying = true
+                    }
+                } label: {
+                    Label(isPlaying ? "Pause" : "Play", systemImage: isPlaying ? "pause.fill" : "play.fill")
+                        .font(.caption.bold())
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .tint(tint)
+            }
+
+            TimelineView(.animation) { timeline in
+                let progress = filmProgress(at: timeline.date)
+                WeekFilmCanvasView(
+                    seeds: seeds,
+                    tint: tint,
+                    progress: reduceMotion ? 1 : progress
+                )
+            }
+            .frame(height: 172)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tint.opacity(0.24), lineWidth: 1)
+            }
+
+            Text("A ten-second replay: storm fragments gather, each day drops a seed, roots and winds draw the week, then the center bloom opens.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(12)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Play Week Film")
+        .accessibilityValue("A ten-second replay of storm fragments becoming seven seeds and one center bloom.")
+        .onReceive(Timer.publish(every: 0.4, on: .main, in: .common).autoconnect()) { date in
+            if isPlaying && date.timeIntervalSince(startedAt) >= 10 {
+                isPlaying = false
+            }
+        }
+    }
+
+    private func filmProgress(at date: Date) -> Double {
+        guard hasPlayed else {
+            return 0
+        }
+
+        guard isPlaying else {
+            return 1
+        }
+
+        return min(date.timeIntervalSince(startedAt) / 10.0, 1.0)
+    }
+}
+
+private struct WeekFilmCanvasView: View {
+    let seeds: [GardenSeed]
+    let tint: Color
+    let progress: Double
+
+    var body: some View {
+        Canvas { context, size in
+            drawFilm(in: &context, size: size)
+        }
+        .background {
+            LinearGradient(
+                colors: [
+                    tint.opacity(0.14),
+                    Color.blue.opacity(0.08),
+                    Color.green.opacity(0.10)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+    }
+
+    private func drawFilm(
+        in context: inout GraphicsContext,
+        size: CGSize
+    ) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let safeProgress = min(max(progress, 0), 1)
+        let visibleSeeds = min(seeds.count, max(0, Int((safeProgress * Double(max(seeds.count, 1))).rounded(.up))))
+        let baseline = height * 0.72
+
+        var terrain = Path()
+        terrain.move(to: CGPoint(x: 0, y: baseline))
+        for index in 0...12 {
+            let x = width * CGFloat(index) / 12
+            let wave = sin(CGFloat(index) * 0.9 + CGFloat(safeProgress) * 3)
+            let y = baseline - wave * 13 - CGFloat(visibleSeeds) * 2.5
+            terrain.addLine(to: CGPoint(x: x, y: y))
+        }
+        terrain.addLine(to: CGPoint(x: width, y: height))
+        terrain.addLine(to: CGPoint(x: 0, y: height))
+        terrain.closeSubpath()
+        context.fill(terrain, with: .color(Color.green.opacity(0.16 + safeProgress * 0.12)))
+
+        for index in 0..<max(visibleSeeds, 0) {
+            guard index < seeds.count else {
+                continue
+            }
+
+            let seed = seeds[index]
+            let x = width * (0.12 + CGFloat(index) * 0.76 / CGFloat(max(seeds.count - 1, 1)))
+            let dropProgress = min(max(safeProgress * Double(seeds.count) - Double(index), 0), 1)
+            let y = height * 0.18 + (baseline - height * 0.18) * CGFloat(dropProgress)
+            let seedRect = CGRect(x: x - 8, y: y - 11, width: 16, height: 22)
+
+            context.fill(
+                Path(ellipseIn: seedRect),
+                with: .color(seed.mood.tint.opacity(0.78))
+            )
+
+            if dropProgress > 0.72 {
+                var stem = Path()
+                stem.move(to: CGPoint(x: x, y: baseline))
+                stem.addLine(to: CGPoint(x: x, y: baseline - 24 - CGFloat(index % 3) * 6))
+                context.stroke(
+                    stem,
+                    with: .color(seed.lane.weekFilmTint(primary: tint).opacity(0.62)),
+                    style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                )
+            }
+        }
+
+        let bloomProgress = max((safeProgress - 0.78) / 0.22, 0)
+        if bloomProgress > 0 {
+            let center = CGPoint(x: width * 0.5, y: height * 0.40)
+            for index in 0..<7 {
+                let angle = Double(index) / 7.0 * .pi * 2
+                let radius = CGFloat(14 + bloomProgress * 28)
+                let point = CGPoint(
+                    x: center.x + cos(angle) * radius,
+                    y: center.y + sin(angle) * radius
+                )
+                context.fill(
+                    Path(ellipseIn: CGRect(x: point.x - 9, y: point.y - 9, width: 18, height: 18)),
+                    with: .color((seeds.indices.contains(index) ? seeds[index].mood.tint : tint).opacity(0.68))
+                )
+            }
+            context.fill(
+                Path(ellipseIn: CGRect(x: center.x - 13, y: center.y - 13, width: 26, height: 26)),
+                with: .color(tint.opacity(0.80))
+            )
+        }
+
+        context.draw(
+            Text("Week Film")
+                .font(.caption.bold())
+                .foregroundStyle(tint),
+            at: CGPoint(x: width * 0.12, y: height * 0.12),
+            anchor: .leading
+        )
+    }
+}
+
+private struct CarryIntoNextWeekRitualView: View {
+    let payoff: WeeklyBloomPayoff
+    let tint: Color
+    @Binding var selectedChoiceID: String?
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var choices: [CarrySeedChoice] {
+        BloomMindJourney.carrySeedChoices(for: payoff)
+    }
+
+    private var selectedChoice: CarrySeedChoice {
+        choices.first { $0.id == selectedChoiceID } ?? choices[0]
+    }
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 180 : 128), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "seedling")
+                    .font(.title3.bold())
+                    .foregroundStyle(tint)
+                    .frame(width: 34)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Carry one sentence forward")
+                        .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text("The ending is not a period. Choose what becomes the next seed waiting on the home lens.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+            }
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(choices) { choice in
+                    Button {
+                        withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
+                            selectedChoiceID = choice.id
+                        }
+                    } label: {
+                        VStack(alignment: .leading, spacing: 7) {
+                            Image(systemName: choice.symbolName)
+                                .font(.headline.bold())
+                                .foregroundStyle(tint)
+                                .accessibilityHidden(true)
+
+                            Text(choice.title)
+                                .font(.caption.bold())
+                                .foregroundStyle(.primary)
+
+                            Text(choice.line)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(3)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 108, alignment: .topLeading)
+                        .padding(10)
+                        .background(tint.opacity(selectedChoice.id == choice.id ? 0.16 : 0.07), in: RoundedRectangle(cornerRadius: 8))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(tint.opacity(selectedChoice.id == choice.id ? 0.46 : 0.14), lineWidth: selectedChoice.id == choice.id ? 2 : 1)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(selectedChoice.id == choice.id ? .isSelected : [])
+                }
+            }
+
+            HStack(alignment: .top, spacing: 10) {
+                ZStack {
+                    Circle()
+                        .fill(tint.opacity(0.16))
+                        .frame(width: 44, height: 44)
+
+                    Image(systemName: "circle.hexagongrid.fill")
+                        .font(.headline.bold())
+                        .foregroundStyle(tint)
+                }
+                .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Next seed")
+                        .font(.subheadline.bold())
+                        .foregroundStyle(tint)
+
+                    Text(selectedChoice.line)
+                        .font(.caption.weight(.medium))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .padding(10)
+            .background(tint.opacity(0.09), in: RoundedRectangle(cornerRadius: 8))
+        }
+        .padding(12)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Carry one sentence forward")
+        .accessibilityValue(selectedChoice.line)
+        .onAppear {
+            if selectedChoiceID == nil {
+                selectedChoiceID = choices[0].id
+            }
+        }
+    }
+}
+
+private extension GrowthLane {
+    func weekFilmTint(primary: Color) -> Color {
+        switch self {
+        case .now:
+            primary
+        case .later:
+            .blue
+        case .release:
+            .orange
         }
     }
 }
@@ -784,8 +1110,19 @@ private struct PayoffLineView: View {
 private struct PressedBloomArchivePreviewView: View {
     let seeds: [GardenSeed]
     let tint: Color
+    let payoff: WeeklyBloomPayoff
     let artifact: WeeklyBloomArtifact
     let craftedLine: String
+    let carryLine: String
+
+    private var museum: ArchiveMuseumDisplay {
+        BloomMindJourney.archiveMuseum(
+            for: seeds,
+            payoff: payoff,
+            craftedLine: craftedLine,
+            selectedCarryLine: carryLine
+        )
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -816,7 +1153,7 @@ private struct PressedBloomArchivePreviewView: View {
             }
 
             ArtifactMuseumShelfView(
-                artifact: artifact,
+                museum: museum,
                 tint: tint
             )
         }
@@ -828,7 +1165,7 @@ private struct PressedBloomArchivePreviewView: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(artifact.title)
-        .accessibilityValue("\(artifact.detail) \(craftedLine)")
+        .accessibilityValue("\(artifact.detail) \(museum.accessibilityValue)")
     }
 }
 
@@ -864,39 +1201,83 @@ private struct ArtifactSpecimenView: View {
 }
 
 private struct ArtifactMuseumShelfView: View {
-    let artifact: WeeklyBloomArtifact
+    let museum: ArchiveMuseumDisplay
     let tint: Color
 
-    private let futureSlots = ["Next bloom", "Season", "Archive"]
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("Private museum shelf", systemImage: "rectangle.grid.2x2")
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Private museum", systemImage: "building.columns")
                 .font(.caption.bold())
                 .foregroundStyle(tint)
                 .fixedSize(horizontal: false, vertical: true)
 
             HStack(spacing: 8) {
                 ArtifactShelfSlotView(
-                    title: artifact.title,
-                    symbolName: artifact.symbolName,
+                    title: museum.artifact.title,
+                    symbolName: museum.artifact.symbolName,
                     tint: tint,
                     isFilled: true
                 )
 
-                ForEach(futureSlots, id: \.self) { slot in
-                    ArtifactShelfSlotView(
-                        title: slot,
-                        symbolName: "circle.dotted",
-                        tint: tint,
-                        isFilled: false
-                    )
-                }
+                ArtifactShelfSlotView(
+                    title: museum.season.title,
+                    symbolName: museum.season.symbolName,
+                    tint: tint,
+                    isFilled: true
+                )
+
+                ArtifactShelfSlotView(
+                    title: "Carry seed",
+                    symbolName: "circle.hexagongrid.fill",
+                    tint: tint,
+                    isFilled: true
+                )
             }
+
+            Text(museum.season.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !museum.rareBlooms.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Rare blooms in this exhibit")
+                        .font(.caption2.bold())
+                        .foregroundStyle(tint)
+
+                    ForEach(museum.rareBlooms) { bloom in
+                        HStack(alignment: .top, spacing: 7) {
+                            Image(systemName: bloom.symbolName)
+                                .font(.caption.bold())
+                                .foregroundStyle(tint)
+                                .frame(width: 18)
+                                .accessibilityHidden(true)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(bloom.title)
+                                    .font(.caption2.bold())
+
+                                Text(bloom.atlasLine)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            .layoutPriority(1)
+                        }
+                    }
+                }
+                .padding(8)
+                .background(tint.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+            }
+
+            Label(museum.carryLine, systemImage: "arrow.up.forward.circle")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Private museum shelf")
-        .accessibilityValue("\(artifact.title) is saved as this week's artifact. Future blooms have empty archive slots.")
+        .accessibilityLabel("Private museum")
+        .accessibilityValue(museum.accessibilityValue)
     }
 }
 

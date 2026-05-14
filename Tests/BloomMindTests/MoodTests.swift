@@ -605,6 +605,85 @@ import Testing
     #expect(state.reflectionText == "Everything is loud right now.")
 }
 
+@Test func bloomMindJourneyHasOriginAndDirectorDemoArc() {
+    let originBeats = BloomMindJourney.originBeats()
+    let demoSteps = BloomMindJourney.guidedAwardDemoSteps()
+
+    #expect(originBeats.count == 4)
+    #expect(originBeats.first?.title == "Tasks")
+    #expect(BloomMindJourney.originLine.contains("weather"))
+    #expect(BloomMindJourney.personalMeaningLine.contains("school pressure"))
+    #expect(demoSteps.count == 8)
+    #expect(demoSteps.map(\.id).contains("wordless"))
+    #expect(demoSteps.map(\.id).contains("film"))
+    #expect(demoSteps.last?.id == "museum")
+    #expect(BloomMindJourney.demoReflection.contains("deadline"))
+}
+
+@Test func wordlessStormSignalCanDriveCheckInWithoutReflectionText() {
+    var state = CheckInState()
+    state.wordlessSignal = WordlessStormSignal(intensity: 0.82, lane: .release)
+
+    #expect(!state.canContinueToAction)
+    #expect(state.liveStormProfile.accessibilityValue.contains("General"))
+    #expect(state.wordlessSignal?.suggestedMood == .overwhelmed)
+
+    state.selectedMood = state.wordlessSignal?.suggestedMood
+
+    #expect(state.canContinueToAction)
+    #expect(state.continueActionAccessibilityHint.contains("wordless"))
+
+    state.completeCheckIn(lane: .release, theme: .pressure)
+
+    #expect(state.wordlessSignal == nil)
+    #expect(state.reflectionText.isEmpty)
+    #expect(state.gardenSeedsThisWeek.last == GardenSeed(mood: .overwhelmed, lane: .release, theme: .pressure))
+}
+
+@Test func stormLayerPeelingShrinksCoreAndRevealsSeed() {
+    let keywords = ["exam", "group chat", "sleep", "college"]
+    let layers = BloomMindJourney.peelingLayers(for: .school, keywords: keywords)
+
+    #expect(layers == [.task, .social, .body, .future])
+
+    let partial = BloomMindJourney.peelingPlan(
+        for: .school,
+        keywords: keywords,
+        peeledLayers: [.task, .social]
+    )
+    let complete = BloomMindJourney.peelingPlan(
+        for: .school,
+        keywords: keywords,
+        peeledLayers: Set(layers)
+    )
+
+    #expect(partial.coreScale < 1.0)
+    #expect(!partial.seedIsVisible)
+    #expect(complete.coreScale < partial.coreScale)
+    #expect(complete.seedIsVisible)
+    #expect(complete.summary.contains("seed"))
+}
+
+@Test func carrySeedAndArchiveMuseumKeepWeeklyEndingPrivate() {
+    let preview = CheckInState().demoWeekPreviewState()
+    let payoff = preview.weeklyBloomPayoff
+    let choices = BloomMindJourney.carrySeedChoices(for: payoff)
+    let craftedLine = ArtifactCraftingChoice.connect.craftedLine(for: payoff.artifact)
+    let museum = BloomMindJourney.archiveMuseum(
+        for: preview.gardenSeedsThisWeek,
+        payoff: payoff,
+        craftedLine: craftedLine,
+        selectedCarryLine: choices[0].line
+    )
+
+    #expect(choices.count == 3)
+    #expect(choices.map(\.line).contains(payoff.nextWeekIntention))
+    #expect(museum.rareBlooms.count > 0)
+    #expect(!museum.accessibilityValue.localizedCaseInsensitiveContains("reflection text"))
+    #expect(museum.craftedLine.contains("Connected:"))
+    #expect(museum.carryLine == payoff.closingLine)
+}
+
 @MainActor
 @Test func stepProgressAccessibilityClampsOutOfRangeSteps() {
     let beforeFirstStep = StepProgressView(currentStep: 0)

@@ -475,7 +475,8 @@ struct CheckInState {
     static let showMyWeekActionAccessibilityHint = "Returns the garden to your actual check-ins."
     static let demoWeekPreviewTitle = "Guided award demo"
     static let demoWeekPreviewDetail = "Your real check-ins are not changed."
-    static let originLine = "BloomMind was made for the moment when school pressure stops feeling like tasks and starts feeling like weather."
+    static let originLine = BloomMindJourney.personalMeaningLine
+    static let openingOriginLine = BloomMindJourney.originLine
     static let demoGardenMoods: [Mood] = [
         .stressed,
         .tired,
@@ -501,6 +502,7 @@ struct CheckInState {
     var lastCompletedAt: Date?
     var gardenMoods: [Mood] = []
     var gardenSeeds: [GardenSeed] = []
+    var wordlessSignal: WordlessStormSignal?
 
     var completedCheckInsThisWeek: Int {
         min(max(completedCheckIns, 0), Self.weeklyCheckInGoal)
@@ -556,9 +558,13 @@ struct CheckInState {
     }
 
     var liveStormProfile: LiveStormProfile {
-        LocalActionEngine.liveStormProfile(
+        let stormText = trimmedReflectionText.isEmpty
+            ? wordlessSignal?.generatedStormText ?? reflectionText
+            : reflectionText
+
+        return LocalActionEngine.liveStormProfile(
             selectedMood: selectedMood,
-            reflectionText: reflectionText,
+            reflectionText: stormText,
             characterLimit: Self.reflectionCharacterLimit
         )
     }
@@ -736,6 +742,10 @@ struct CheckInState {
 
     var reflectionAccessibilityHint: String {
         if isReflectionWithinLimit {
+            if wordlessSignal != nil {
+                return "A wordless storm signal is attached. You can still type if words arrive."
+            }
+
             return Self.reflectionPromptText
         }
 
@@ -795,9 +805,13 @@ struct CheckInState {
     }
 
     var continueActionAccessibilityHint: String {
-        canContinueToAction
-            ? "Shows a small growth action."
-            : "Select a mood to continue."
+        if canContinueToAction {
+            return wordlessSignal == nil
+                ? "Shows a small growth action."
+                : "Shows a small growth action from this wordless storm signal."
+        }
+
+        return "Select a mood to continue."
     }
 
     var canContinueToAction: Bool {
@@ -831,6 +845,7 @@ struct CheckInState {
         ))
         selectedMood = nil
         reflectionText = ""
+        wordlessSignal = nil
     }
 
     func demoWeekPreviewState() -> CheckInState {
@@ -840,6 +855,7 @@ struct CheckInState {
         preview.gardenSeeds = Self.demoGardenSeeds
         preview.selectedMood = nil
         preview.reflectionText = ""
+        preview.wordlessSignal = nil
         return preview
     }
 

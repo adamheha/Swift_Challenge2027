@@ -419,7 +419,7 @@ private struct DemoPreviewNoticeView: View {
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("\(CheckInState.demoWeekPreviewDetail) This guided award demo shows storm, emotional physics, garden X-Ray, time-lapse, and Weekly Bloom in one path.")
+                Text("\(CheckInState.demoWeekPreviewDetail) The director mode walks through origin, live storm, wordless check-in, storm surgery, planting, Week Film, and the private museum.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -431,42 +431,112 @@ private struct DemoPreviewNoticeView: View {
         .bloomCardBackground(tint: .blue)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(CheckInState.demoWeekPreviewTitle)
-        .accessibilityValue("\(CheckInState.demoWeekPreviewDetail) This guided award demo shows storm, emotional physics, garden X-Ray, time-lapse, and Weekly Bloom.")
+        .accessibilityValue("\(CheckInState.demoWeekPreviewDetail) The director mode walks through origin, live storm, wordless check-in, storm surgery, planting, Week Film, and the private museum.")
     }
 }
 
 private struct AwardDemoTheatreView: View {
     let tint: Color
 
-    private let beats = [
-        AwardDemoBeat(title: "Observatory", detail: "The week changes the sky before the first tap.", systemImage: "scope"),
-        AwardDemoBeat(title: "Live storm", detail: "Typing makes private pressure visible as safe weather.", systemImage: "tornado"),
-        AwardDemoBeat(title: "Surgery table", detail: "Fragments are pulled into Now, Later, or Let go.", systemImage: "hand.draw"),
-        AwardDemoBeat(title: "Planting ritual", detail: "The seed is dragged into soil and grows from the chosen lane.", systemImage: "camera.macro"),
-        AwardDemoBeat(title: "Garden X-Ray", detail: "Roots, buds, and wind show the consequence layer.", systemImage: "scope"),
-        AwardDemoBeat(title: "Week shape", detail: "Seven days become an emotional landscape.", systemImage: "map"),
-        AwardDemoBeat(title: "Artifact", detail: "The completed week is crafted and saved as a private specimen.", systemImage: "archivebox")
-    ]
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var activeStepIndex = 0
+    @State private var isDirectorPlaying = false
+
+    private let steps = BloomMindJourney.guidedAwardDemoSteps()
 
     private var columns: [GridItem] {
-        [GridItem(.adaptive(minimum: 128), spacing: 8)]
+        [GridItem(.adaptive(minimum: 120), spacing: 8)]
+    }
+
+    private var activeStep: GuidedDemoStep {
+        steps[min(max(activeStepIndex, 0), steps.count - 1)]
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Label("Award demo theatre", systemImage: "play.rectangle")
-                .font(.subheadline.bold())
-                .foregroundStyle(tint)
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 10) {
+                Label("Award demo director", systemImage: "play.rectangle")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                Button {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.86)) {
+                        isDirectorPlaying.toggle()
+                    }
+                } label: {
+                    Label(isDirectorPlaying ? "Pause" : "Play", systemImage: isDirectorPlaying ? "pause.fill" : "play.fill")
+                        .font(.caption.bold())
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .tint(tint)
+            }
+
+            GuidedDemoSpotlightView(
+                step: activeStep,
+                index: activeStepIndex + 1,
+                total: steps.count,
+                tint: tint
+            )
+
+            HStack(alignment: .top, spacing: 8) {
+                Text("Demo reflection")
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+
+                Text(BloomMindJourney.demoReflection)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(10)
+            .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
 
             LazyVGrid(columns: columns, spacing: 8) {
-                ForEach(Array(beats.enumerated()), id: \.offset) { index, beat in
-                    AwardDemoBeatView(
+                ForEach(Array(steps.enumerated()), id: \.element.id) { index, step in
+                    GuidedDemoStepButton(
                         index: index + 1,
-                        beat: beat,
-                        tint: tint
-                    )
+                        step: step,
+                        tint: tint,
+                        isActive: index == activeStepIndex
+                    ) {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.86)) {
+                            activeStepIndex = index
+                            isDirectorPlaying = false
+                        }
+                    }
                 }
+            }
+
+            HStack(spacing: 8) {
+                Button {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.86)) {
+                        activeStepIndex = max(activeStepIndex - 1, 0)
+                        isDirectorPlaying = false
+                    }
+                } label: {
+                    Label("Back", systemImage: "chevron.left")
+                        .font(.caption.bold())
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .disabled(activeStepIndex == 0)
+
+                Button {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.86)) {
+                        advanceSpotlight()
+                        isDirectorPlaying = false
+                    }
+                } label: {
+                    Label("Next beat", systemImage: "chevron.right")
+                        .font(.caption.bold())
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                .disabled(activeStepIndex == steps.count - 1)
             }
         }
         .padding(12)
@@ -476,57 +546,124 @@ private struct AwardDemoTheatreView: View {
                 .stroke(tint.opacity(0.18), lineWidth: 1)
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Award demo theatre")
+        .accessibilityLabel("Award demo director")
+        .onReceive(Timer.publish(every: 2.3, on: .main, in: .common).autoconnect()) { _ in
+            guard isDirectorPlaying, !reduceMotion else {
+                return
+            }
+
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.86)) {
+                advanceSpotlight()
+                if activeStepIndex == steps.count - 1 {
+                    isDirectorPlaying = false
+                }
+            }
+        }
+    }
+
+    private func advanceSpotlight() {
+        activeStepIndex = min(activeStepIndex + 1, steps.count - 1)
     }
 }
 
-private struct AwardDemoBeat: Equatable {
-    let title: String
-    let detail: String
-    let systemImage: String
-}
-
-private struct AwardDemoBeatView: View {
+private struct GuidedDemoSpotlightView: View {
+    let step: GuidedDemoStep
     let index: Int
-    let beat: AwardDemoBeat
+    let total: Int
     let tint: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
-                Text("\(index)")
-                    .font(.caption2.bold())
-                    .monospacedDigit()
-                    .foregroundStyle(.white)
-                    .frame(width: 20, height: 20)
-                    .background(tint, in: Circle())
+        HStack(alignment: .top, spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(tint.opacity(0.16))
+                    .frame(width: 56, height: 56)
 
-                Image(systemName: beat.systemImage)
-                    .font(.caption.bold())
+                Image(systemName: step.systemImage)
+                    .font(.title3.bold())
                     .foregroundStyle(tint)
-                    .accessibilityHidden(true)
             }
+            .accessibilityHidden(true)
 
-            Text(beat.title)
-                .font(.caption.bold())
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Beat \(index) of \(total)")
+                    .font(.caption.monospacedDigit().bold())
+                    .foregroundStyle(tint)
 
-            Text(beat.detail)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .lineLimit(3)
-                .fixedSize(horizontal: false, vertical: true)
+                Text(step.title)
+                    .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(step.detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Label(step.instruction, systemImage: "light.beacon.max")
+                    .font(.caption.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
         }
-        .frame(maxWidth: .infinity, minHeight: 98, alignment: .topLeading)
-        .padding(9)
-        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .padding(12)
+        .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
         .overlay {
             RoundedRectangle(cornerRadius: 8)
-                .stroke(tint.opacity(0.14), lineWidth: 1)
+                .stroke(tint.opacity(0.26), lineWidth: 1)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(index). \(beat.title)")
-        .accessibilityValue(beat.detail)
+        .accessibilityLabel("Demo beat \(index) of \(total): \(step.title)")
+        .accessibilityValue("\(step.detail) \(step.instruction)")
+    }
+}
+
+private struct GuidedDemoStepButton: View {
+    let index: Int
+    let step: GuidedDemoStep
+    let tint: Color
+    let isActive: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 6) {
+                    Text("\(index)")
+                        .font(.caption2.bold())
+                        .monospacedDigit()
+                        .foregroundStyle(isActive ? .white : tint)
+                        .frame(width: 20, height: 20)
+                        .background(isActive ? tint : tint.opacity(0.10), in: Circle())
+
+                    Image(systemName: step.systemImage)
+                        .font(.caption.bold())
+                        .foregroundStyle(tint)
+                        .accessibilityHidden(true)
+                }
+
+                Text(step.title)
+                    .font(.caption.bold())
+                    .foregroundStyle(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(step.detail)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, minHeight: 104, alignment: .topLeading)
+            .padding(9)
+            .background((isActive ? tint : Color.secondary).opacity(isActive ? 0.12 : 0.06), in: RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke((isActive ? tint : Color.secondary).opacity(isActive ? 0.28 : 0.12), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(index). \(step.title)")
+        .accessibilityValue(step.detail)
+        .accessibilityHint("Shows this guided demo beat.")
     }
 }
 

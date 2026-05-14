@@ -30,11 +30,11 @@ Official references:
 
 Target review time: 60 seconds.
 
-1. Open BloomMind.
-2. On the Today screen, notice the Weather Observatory hero, moving lens, weather instruments, pressure layers, and local soundscape console.
+1. Open BloomMind and watch or skip the Opening Origin Scene.
+2. On the Today screen, notice the Weather Observatory hero, moving lens, weather instruments, pressure layers, local soundscape console, and next seed.
 3. Tap Enter the Storm.
 4. Select Stressed, Overwhelmed, Focused, or another one of the eight moods.
-5. Enter this short reflection to exercise live storm typing and local theme detection:
+5. Enter this short reflection to exercise live storm typing and local theme detection, or use Wordless Mode to press, drag, and release the storm signal:
 
    `I have a project deadline and too much to finish.`
 
@@ -45,7 +45,7 @@ Target review time: 60 seconds.
 
    `Make it tiny: choose one thing that can wait, then start only the next tiny step.`
 
-10. Confirm the Storm Surgery table and seed commitment update when a lane is selected, and note that Now feels rooted, Later hovers, and Let go lightens.
+10. Peel Task, Social, Body, and Future layers in Storm Surgery until the seed appears, then confirm the table and seed commitment update when a lane is selected.
 11. Select Now and start Focus Sprout, or continue directly.
 12. Drag the seed into the soil, or tap it as the fallback, and confirm the planting ritual changes based on Now, Later, or Let go.
 13. Return to Today and confirm the Inner Garden World shows mood weather, roots, buds, open air, and a mood-specific plant.
@@ -54,8 +54,8 @@ Target review time: 60 seconds.
 16. Explore the Garden Map zones for Underground Roots, Waiting Path, Open Sky, and Center Bloom.
 17. Inspect Emotional Atlas and tap the newest seed; confirm both avoid reflection text.
 18. Tap Preview Award Demo to inspect a sample complete-week review garden without changing real check-ins.
-19. Confirm Award Demo Theatre names the 90-second path through Observatory, Live Storm, Surgery Table, Planting Ritual, Garden X-Ray, Week Shape, and Artifact.
-20. Confirm the Weekly Bloom payoff appears with a seven-seed reveal, animated time-lapse, week story, artifact crafting, emotional literacy unlock, Week Artifact, closing ritual, next-week seed, privacy note, and private museum shelf.
+19. Confirm Award Demo Director spotlights the 90-second path through Origin, Observatory, Live Storm, Wordless Check-In, Surgery, Planting, Week Film, and Museum.
+20. Confirm the Weekly Bloom payoff appears with a seven-seed reveal, animated time-lapse, Play Week Film, week story, artifact crafting, emotional literacy unlock, carry-forward ritual, next-week seed, privacy note, and private museum exhibit.
 
 ## Submission Response Drafts
 
@@ -180,10 +180,10 @@ bash Scripts/collect_review_environment.sh
 Current generated package verification:
 
 - ZIP path: `SubmissionBuild/BloomMind.swiftpm.zip`
-- ZIP size: 69,341 bytes after the Stage 11 package refresh.
+- ZIP size: 80,300 bytes after the Stage 12 Journey package refresh.
 - Contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The generated ZIP excludes `.DS_Store` and `__MACOSX`.
-- The generated `.swiftpm` package includes the Stage 11 Sensory Observatory source files.
+- The generated `.swiftpm` package includes the Stage 12 Journey source files.
 - ZIP contents, source safety checks, and standalone package build passed in `bash Scripts/verify_submission_package.sh`.
 
 Xcode warning note:

@@ -9,32 +9,43 @@ private enum CheckInRoute: Hashable {
 struct BloomMindApp: App {
     @State private var checkInState = CheckInState()
     @State private var checkInPath: [CheckInRoute] = []
+    @State private var hasSeenOriginScene = false
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: $checkInPath) {
-                HomeView(
-                    checkInState: $checkInState,
-                    onStartCheckIn: {
-                        checkInPath = [.checkIn]
+            Group {
+                if hasSeenOriginScene {
+                    NavigationStack(path: $checkInPath) {
+                        HomeView(
+                            checkInState: $checkInState,
+                            onStartCheckIn: {
+                                checkInPath = [.checkIn]
+                            }
+                        )
+                        .navigationDestination(for: CheckInRoute.self) { route in
+                            switch route {
+                            case .checkIn:
+                                CheckInView(
+                                    checkInState: $checkInState,
+                                    onContinue: {
+                                        checkInPath.append(.growthAction)
+                                    }
+                                )
+                            case .growthAction:
+                                GrowthActionView(
+                                    checkInState: $checkInState,
+                                    onComplete: {
+                                        checkInPath.removeAll()
+                                    }
+                                )
+                            }
+                        }
                     }
-                )
-                .navigationDestination(for: CheckInRoute.self) { route in
-                    switch route {
-                    case .checkIn:
-                        CheckInView(
-                            checkInState: $checkInState,
-                            onContinue: {
-                                checkInPath.append(.growthAction)
-                            }
-                        )
-                    case .growthAction:
-                        GrowthActionView(
-                            checkInState: $checkInState,
-                            onComplete: {
-                                checkInPath.removeAll()
-                            }
-                        )
+                } else {
+                    OriginJourneyView {
+                        withAnimation(.spring(response: 0.55, dampingFraction: 0.86)) {
+                            hasSeenOriginScene = true
+                        }
                     }
                 }
             }

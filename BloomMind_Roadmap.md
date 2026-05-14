@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 5.0 Stage 11 - Sensory Observatory Complete
+Current stage: BloomMind 5.1 Stage 12 - The BloomMind Journey Complete
 
-Current branch: `codex/bloommind-5-sensory-observatory`
+Current branch: `codex/bloommind-5-1-journey`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 5.1 Stage 12 - Personal Origin, Device Review, and Final Submission Rehearsal
+Next stage: BloomMind 5.2 Stage 13 - Applicant Story Finalization, Device Review, and Final Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -370,6 +370,40 @@ Definition of done:
 - Home shows Weather Instruments and optional local sound cues.
 - Garden shows scrubbed Week Shape and Emotional Atlas.
 - Xcode warning notes are documented for local review.
+
+## BloomMind 5.1 Stage 12 - The BloomMind Journey
+
+Status: Complete
+
+Goal: Make BloomMind feel like a complete emotional short film plus an explorable tool: it now has an entrance, a directed evaluator path, no-typing expression, deeper storm surgery, a week film, and a stronger ending ritual.
+
+Completed in this branch:
+
+- Added an Opening Origin Scene before Today so school papers, deadlines, clocks, and messages visibly become weather and a first seed.
+- Added Journey models for origin beats, guided demo steps, wordless signals, layer peeling, carry seed choices, and archive museum display.
+- Added Wordless Mode to Check-In so users can press, drag, or release a storm signal when they do not want to type.
+- Upgraded Preview Award Demo into an Award Demo Director with a play/pause spotlight path, demo reflection, and eight beats from origin to private museum.
+- Added Layer Peeling 2.0 to Storm Surgery: Task, Social, Body, and Future layers can be peeled, shrinking the storm core until the seed appears.
+- Added Play Week Film to Weekly Bloom so seven seeds replay as a short storm-to-landscape-to-center-bloom animation.
+- Added a carry-forward ritual where the user chooses one sentence to become the next seed.
+- Upgraded the private museum ending with artifact, season, rare blooms, and carry seed.
+- Added unit tests for origin/demo arc, wordless check-in flow, storm layer peeling, carry seed ritual, and archive museum display.
+- Refreshed `SubmissionBuild/BloomMind.swiftpm.zip` with Stage 12 sources; current ZIP size is 80,300 bytes.
+
+Remaining:
+
+- Smoke check in full Xcode or Swift Playgrounds.
+- Smoke check on iPad or an iPad-sized simulator.
+- Replace the placeholder origin/personal meaning line with the applicant's true specific story.
+- Refresh official Apple rules close to the real 2027 submission window.
+
+Definition of done:
+
+- `swift test` passes.
+- Opening Origin Scene is skippable and the normal app flow remains intact.
+- Check-In supports both typing and wordless expression.
+- Preview Award Demo gives a stable 90-second evaluator path.
+- Weekly Bloom ends with film, ritual, artifact, and museum instead of only summary copy.
 
 ## Stage 0 - Award Research
 

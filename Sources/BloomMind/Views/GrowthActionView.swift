@@ -657,7 +657,9 @@ private struct StormSortingView: View {
             )
 
             StormSurgeryTableView(
+                suggestion: suggestion,
                 fragments: fragments,
+                liveKeywords: liveKeywords,
                 selectedLane: selectedLane,
                 tint: tint,
                 laneForFragment: currentLane
@@ -771,16 +773,27 @@ private struct DirectStormSortingHeaderView: View {
 }
 
 private struct StormSurgeryTableView: View {
+    let suggestion: GrowthActionSuggestion
     let fragments: [StormFragment]
+    let liveKeywords: [String]
     let selectedLane: GrowthLane
     let tint: Color
     let laneForFragment: (StormFragment) -> GrowthLane
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @State private var peeledLayers: Set<PressureLayer> = []
 
     private var tableHeight: CGFloat {
         dynamicTypeSize.isAccessibilitySize ? 260 : 220
+    }
+
+    private var peelingPlan: StormLayerPeelingPlan {
+        BloomMindJourney.peelingPlan(
+            for: suggestion.theme,
+            keywords: liveKeywords + fragments.map(\.shortText),
+            peeledLayers: peeledLayers
+        )
     }
 
     var body: some View {
@@ -805,6 +818,12 @@ private struct StormSurgeryTableView: View {
                 .layoutPriority(1)
             }
 
+            LayerPeelingConsoleView(
+                plan: peelingPlan,
+                tint: tint,
+                onToggleLayer: toggleLayer
+            )
+
             GeometryReader { proxy in
                 ZStack {
                     StormSurgeryCanvasView(
@@ -812,6 +831,7 @@ private struct StormSurgeryTableView: View {
                         selectedLane: selectedLane,
                         tint: tint,
                         laneForFragment: laneForFragment,
+                        peelingPlan: peelingPlan,
                         reduceMotion: reduceMotion
                     )
 
@@ -863,6 +883,16 @@ private struct StormSurgeryTableView: View {
         .accessibilityValue(accessibilitySummary)
     }
 
+    private func toggleLayer(_ layer: PressureLayer) {
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.82)) {
+            if peeledLayers.contains(layer) {
+                peeledLayers.remove(layer)
+            } else {
+                peeledLayers.insert(layer)
+            }
+        }
+    }
+
     private func surgeryBadgePosition(
         index: Int,
         count: Int,
@@ -887,7 +917,89 @@ private struct StormSurgeryTableView: View {
                 return "\(lane.title): \(count)"
             }
             .joined(separator: ", ")
-        return "Fragments orbit the storm core. \(laneSummary)."
+        return "Fragments orbit the storm core. \(laneSummary). \(peelingPlan.summary)"
+    }
+}
+
+private struct LayerPeelingConsoleView: View {
+    let plan: StormLayerPeelingPlan
+    let tint: Color
+    let onToggleLayer: (PressureLayer) -> Void
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: 130), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .top, spacing: 8) {
+                Label("Peel the storm layers", systemImage: "rectangle.3.group")
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                Text("\(plan.peeledLayers.count)/\(plan.layers.count)")
+                    .font(.caption.monospacedDigit().bold())
+                    .foregroundStyle(.secondary)
+            }
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(plan.layers) { layer in
+                    let isPeeled = plan.peeledLayers.contains(layer)
+                    Button {
+                        onToggleLayer(layer)
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: isPeeled ? "checkmark.circle.fill" : layer.symbolName)
+                                .font(.caption.bold())
+                                .foregroundStyle(isPeeled ? .white : tint)
+                                .frame(width: 20, height: 20)
+                                .background(isPeeled ? tint : tint.opacity(0.10), in: Circle())
+                                .accessibilityHidden(true)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(layer.title)
+                                    .font(.caption2.bold())
+                                    .foregroundStyle(.primary)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.75)
+
+                                Text(isPeeled ? "peeled" : "hidden")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            Spacer(minLength: 0)
+                        }
+                        .padding(8)
+                        .background((isPeeled ? tint : Color.secondary).opacity(isPeeled ? 0.12 : 0.05), in: RoundedRectangle(cornerRadius: 8))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke((isPeeled ? tint : Color.secondary).opacity(isPeeled ? 0.26 : 0.10), lineWidth: 1)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(layer.title)
+                    .accessibilityValue(isPeeled ? "Peeled" : layer.detail)
+                    .accessibilityHint("Toggles this storm layer.")
+                }
+            }
+
+            Label(plan.summary, systemImage: plan.seedIsVisible ? "camera.macro" : "circle.dotted")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(plan.seedIsVisible ? tint : .secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(10)
+        .background(tint.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.14), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Peel the storm layers")
     }
 }
 
@@ -896,6 +1008,7 @@ private struct StormSurgeryCanvasView: View {
     let selectedLane: GrowthLane
     let tint: Color
     let laneForFragment: (StormFragment) -> GrowthLane
+    let peelingPlan: StormLayerPeelingPlan
     let reduceMotion: Bool
 
     var body: some View {
@@ -930,7 +1043,7 @@ private struct StormSurgeryCanvasView: View {
         let height = max(size.height, 1)
         let center = CGPoint(x: width * 0.5, y: height * 0.44)
         let pulse = CGFloat((sin(time * 1.1) + 1) / 2)
-        let coreRadius = min(width, height) * 0.18
+        let coreRadius = min(width, height) * 0.18 * CGFloat(peelingPlan.coreScale)
         let coreRect = CGRect(
             x: center.x - coreRadius,
             y: center.y - coreRadius,
@@ -970,6 +1083,24 @@ private struct StormSurgeryCanvasView: View {
             with: .color(Color.white.opacity(0.32)),
             lineWidth: 1.4
         )
+
+        if peelingPlan.seedIsVisible {
+            let seedRect = CGRect(
+                x: center.x - coreRadius * 0.34,
+                y: center.y - coreRadius * 0.44,
+                width: coreRadius * 0.68,
+                height: coreRadius * 0.88
+            )
+            context.fill(
+                Path(ellipseIn: seedRect),
+                with: .color(Color.green.opacity(0.78))
+            )
+            context.stroke(
+                Path(ellipseIn: seedRect.insetBy(dx: -3, dy: -3)),
+                with: .color(Color.white.opacity(0.52)),
+                lineWidth: 1.2
+            )
+        }
 
         let laneCenters: [(GrowthLane, CGPoint)] = [
             (.now, CGPoint(x: width * 0.22, y: height * 0.84)),
