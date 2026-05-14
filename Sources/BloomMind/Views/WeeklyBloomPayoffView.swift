@@ -3,6 +3,7 @@ import SwiftUI
 struct WeeklyBloomPayoffView: View {
     let payoff: WeeklyBloomPayoff
     let seeds: [GardenSeed]
+    var onCarrySeedSelected: (String) -> Void = { _ in }
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -33,6 +34,11 @@ struct WeeklyBloomPayoffView: View {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(accentColor.opacity(0.34), lineWidth: 1)
             }
+
+            PressureConstellationNameView(
+                constellation: BloomMindJourney.pressureConstellationName(for: seeds),
+                tint: accentColor
+            )
 
             WeeklyBloomTimeLapseView(
                 seeds: seeds,
@@ -74,10 +80,16 @@ struct WeeklyBloomPayoffView: View {
                 )
             }
 
+            EmotionalVocabularyUnlocksView(
+                unlocks: BloomMindJourney.vocabularyUnlocks(for: seeds),
+                tint: accentColor
+            )
+
             CarryIntoNextWeekRitualView(
                 payoff: payoff,
                 tint: accentColor,
-                selectedChoiceID: $selectedCarryChoiceID
+                selectedChoiceID: $selectedCarryChoiceID,
+                onCarrySeedSelected: onCarrySeedSelected
             )
 
             ArtifactCraftingRitualView(
@@ -95,6 +107,8 @@ struct WeeklyBloomPayoffView: View {
                 craftedLine: craftingChoice.craftedLine(for: payoff.artifact),
                 carryLine: selectedCarryChoice.line
             )
+
+            FinalSubmissionStoryModeView(tint: accentColor)
 
             HStack(alignment: .top, spacing: 10) {
                 Image(systemName: "lock.shield")
@@ -167,6 +181,42 @@ struct WeeklyBloomPayoffView: View {
 
             Spacer(minLength: 0)
         }
+    }
+}
+
+private struct PressureConstellationNameView: View {
+    let constellation: PressureConstellationName
+    let tint: Color
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: constellation.symbolName)
+                .font(.title3.bold())
+                .foregroundStyle(tint)
+                .frame(width: 32)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(constellation.title)
+                    .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(constellation.detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .padding(12)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(constellation.title)
+        .accessibilityValue(constellation.detail)
     }
 }
 
@@ -363,6 +413,7 @@ private struct CarryIntoNextWeekRitualView: View {
     let payoff: WeeklyBloomPayoff
     let tint: Color
     @Binding var selectedChoiceID: String?
+    let onCarrySeedSelected: (String) -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -406,6 +457,7 @@ private struct CarryIntoNextWeekRitualView: View {
                         withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
                             selectedChoiceID = choice.id
                         }
+                        onCarrySeedSelected(choice.line)
                     } label: {
                         VStack(alignment: .leading, spacing: 7) {
                             Image(systemName: choice.symbolName)
@@ -473,8 +525,59 @@ private struct CarryIntoNextWeekRitualView: View {
         .onAppear {
             if selectedChoiceID == nil {
                 selectedChoiceID = choices[0].id
+                onCarrySeedSelected(choices[0].line)
             }
         }
+    }
+}
+
+private struct EmotionalVocabularyUnlocksView: View {
+    let unlocks: [EmotionalVocabularyUnlock]
+    let tint: Color
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: 138), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Emotional vocabulary unlocked", systemImage: "text.book.closed")
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(unlocks) { unlock in
+                    VStack(alignment: .leading, spacing: 7) {
+                        Image(systemName: unlock.symbolName)
+                            .font(.headline.bold())
+                            .foregroundStyle(tint)
+                            .accessibilityHidden(true)
+
+                        Text(unlock.title)
+                            .font(.caption.bold())
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Text(unlock.line)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 112, alignment: .topLeading)
+                    .padding(10)
+                    .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(tint.opacity(0.14), lineWidth: 1)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Emotional vocabulary unlocked")
+        .accessibilityValue(unlocks.map(\.line).joined(separator: " "))
     }
 }
 
@@ -1169,33 +1272,132 @@ private struct PressedBloomArchivePreviewView: View {
     }
 }
 
+private struct FinalSubmissionStoryModeView: View {
+    let tint: Color
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Why this exists", systemImage: "person.crop.circle.badge.questionmark")
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            TimelineView(.animation) { timeline in
+                FinalStoryCanvasView(
+                    tint: tint,
+                    time: reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                )
+            }
+            .frame(height: 132)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tint.opacity(0.18), lineWidth: 1)
+            }
+
+            Text(BloomMindJourney.personalMeaningLine)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text("Replace this line with the applicant's exact exam, deadline, competition, club, or project moment before final submission.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(12)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Why this exists")
+        .accessibilityValue(BloomMindJourney.personalMeaningLine)
+    }
+}
+
+private struct FinalStoryCanvasView: View {
+    let tint: Color
+    let time: TimeInterval
+
+    var body: some View {
+        Canvas { context, size in
+            let width = max(size.width, 1)
+            let height = max(size.height, 1)
+            let center = CGPoint(x: width * 0.5, y: height * 0.46)
+            let words = ["exam", "clock", "deadline", "club", "project"]
+
+            for index in words.indices {
+                let angle = Double(index) / Double(words.count) * .pi * 2 + time * 0.22
+                let radius = min(width, height) * 0.26
+                let point = CGPoint(
+                    x: center.x + cos(angle) * radius,
+                    y: center.y + sin(angle) * radius * 0.62
+                )
+                let rect = CGRect(x: point.x - 30, y: point.y - 11, width: 60, height: 22)
+                context.fill(Path(roundedRect: rect, cornerRadius: 7), with: .color(Color.white.opacity(0.50)))
+                context.draw(
+                    Text(words[index]).font(.caption2.bold()).foregroundStyle(Color.primary.opacity(0.72)),
+                    in: rect.insetBy(dx: 6, dy: 5)
+                )
+            }
+
+            context.fill(
+                Path(ellipseIn: CGRect(x: center.x - 24, y: center.y - 24, width: 48, height: 48)),
+                with: .radialGradient(
+                    Gradient(colors: [tint.opacity(0.68), Color.blue.opacity(0.22), Color.clear]),
+                    center: center,
+                    startRadius: 2,
+                    endRadius: 42
+                )
+            )
+
+            context.draw(
+                Text("weather -> seed").font(.caption.bold()).foregroundStyle(tint),
+                at: CGPoint(x: width * 0.5, y: height * 0.86),
+                anchor: .center
+            )
+        }
+        .background {
+            LinearGradient(
+                colors: [tint.opacity(0.10), Color.cyan.opacity(0.08), Color.green.opacity(0.10)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+    }
+}
+
 private struct ArtifactSpecimenView: View {
     let seeds: [GardenSeed]
     let tint: Color
     let artifact: WeeklyBloomArtifact
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(tint.opacity(0.12))
-                .frame(width: 68, height: 82)
+        TimelineView(.animation) { timeline in
+            let breath = (sin(timeline.date.timeIntervalSinceReferenceDate * 1.2) + 1) / 2
 
-            ForEach(Array(seeds.prefix(7).enumerated()), id: \.offset) { index, seed in
-                Capsule()
-                    .fill(seed.mood.tint.opacity(0.72))
-                    .frame(width: 10, height: 28)
-                    .rotationEffect(.degrees(Double(index) * 360 / Double(max(seeds.count, 1))))
-                    .offset(y: -15)
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(tint.opacity(0.12 + breath * 0.035))
+                    .frame(width: 68, height: 82)
+
+                ForEach(Array(seeds.prefix(7).enumerated()), id: \.offset) { index, seed in
+                    Capsule()
+                        .fill(seed.mood.tint.opacity(0.72))
+                        .frame(width: 10, height: 28 + CGFloat(breath) * 3)
+                        .rotationEffect(.degrees(Double(index) * 360 / Double(max(seeds.count, 1))))
+                        .offset(y: -15)
+                }
+
+                Circle()
+                    .fill(Color.white.opacity(0.68))
+                    .frame(width: 14 + CGFloat(breath) * 2, height: 14 + CGFloat(breath) * 2)
+
+                Image(systemName: artifact.symbolName)
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+                    .offset(y: 26)
             }
-
-            Circle()
-                .fill(Color.white.opacity(0.68))
-                .frame(width: 14, height: 14)
-
-            Image(systemName: artifact.symbolName)
-                .font(.caption.bold())
-                .foregroundStyle(tint)
-                .offset(y: 26)
         }
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     @Binding var checkInState: CheckInState
+    @Binding var shouldStartDemoDirector: Bool
     let onStartCheckIn: () -> Void
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -16,6 +17,14 @@ struct HomeView: View {
         isPreviewingDemoWeek ? checkInState.demoWeekPreviewState() : checkInState
     }
 
+    private var gardenTimeTone: TimeOfDayGardenTone {
+        BloomMindJourney.timeOfDayGardenTone(
+            hasCompletedToday: checkInState.hasCompletedCheckInToday(),
+            completedCount: gardenDisplayState.completedCheckInsThisWeek,
+            totalCount: CheckInState.weeklyCheckInGoal
+        )
+    }
+
     var body: some View {
         ViewThatFits(in: .horizontal) {
             wideLayout
@@ -23,6 +32,12 @@ struct HomeView: View {
         }
         .bloomPage(maxWidth: 980, padding: 32)
         .navigationTitle("Today")
+        .onAppear {
+            if shouldStartDemoDirector {
+                isPreviewingDemoWeek = true
+                shouldStartDemoDirector = false
+            }
+        }
         .onChange(of: checkInState.completedCheckIns) { _, _ in
             isPreviewingDemoWeek = false
         }
@@ -93,6 +108,11 @@ struct HomeView: View {
 
     private var gardenSection: some View {
         VStack(spacing: pageSpacing) {
+            GardenTimeToneView(
+                tone: gardenTimeTone,
+                tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green
+            )
+
             EmotionGardenView(
                 title: CheckInState.gardenPreviewTitle,
                 seeds: gardenDisplayState.gardenSeedsThisWeek,
@@ -104,7 +124,12 @@ struct HomeView: View {
             if gardenDisplayState.isWeeklyBloomUnlocked {
                 WeeklyBloomPayoffView(
                     payoff: gardenDisplayState.weeklyBloomPayoff,
-                    seeds: gardenDisplayState.gardenSeedsThisWeek
+                    seeds: gardenDisplayState.gardenSeedsThisWeek,
+                    onCarrySeedSelected: { line in
+                        if !isPreviewingDemoWeek {
+                            checkInState.carrySeedLine = line
+                        }
+                    }
                 )
             }
 
@@ -121,6 +146,13 @@ struct HomeView: View {
             )
 
             OriginLineView()
+
+            if gardenDisplayState.isWeeklyBloomUnlocked {
+                CarrySeedLensView(
+                    line: gardenDisplayState.returnTomorrowPrompt,
+                    tint: gardenDisplayState.weeklyBloomPayoff.dominantMood?.tint ?? .green
+                )
+            }
 
             if !gardenDisplayState.gardenSeedsThisWeek.isEmpty {
                 TomorrowSeedCardView(
@@ -599,6 +631,11 @@ private struct GuidedDemoSpotlightView: View {
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
 
+                Text(step.caption)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(tint)
+                    .fixedSize(horizontal: false, vertical: true)
+
                 Label(step.instruction, systemImage: "light.beacon.max")
                     .font(.caption.bold())
                     .fixedSize(horizontal: false, vertical: true)
@@ -690,6 +727,38 @@ private struct OriginLineView: View {
     }
 }
 
+private struct GardenTimeToneView: View {
+    let tone: TimeOfDayGardenTone
+    let tint: Color
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: tone.symbolName)
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .frame(width: 22)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(tone.title)
+                    .font(.subheadline.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(tone.detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .padding(12)
+        .bloomCardBackground(tint: tint)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(tone.title)
+        .accessibilityValue(tone.detail)
+    }
+}
+
 private struct TomorrowSeedCardView: View {
     let prompt: String
     let tint: Color
@@ -719,6 +788,57 @@ private struct TomorrowSeedCardView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Tomorrow's tiny seed")
         .accessibilityValue(prompt)
+    }
+}
+
+private struct CarrySeedLensView: View {
+    let line: String
+    let tint: Color
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            let pulse = reduceMotion ? 0.5 : (sin(timeline.date.timeIntervalSinceReferenceDate * 1.4) + 1) / 2
+
+            HStack(alignment: .center, spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(tint.opacity(0.12 + pulse * 0.08))
+                        .frame(width: 58, height: 58)
+
+                    Circle()
+                        .stroke(tint.opacity(0.42), lineWidth: 1.4)
+                        .frame(width: 44 + CGFloat(pulse) * 8, height: 44 + CGFloat(pulse) * 8)
+
+                    Image(systemName: "circle.hexagongrid.fill")
+                        .font(.title3.bold())
+                        .foregroundStyle(tint)
+                }
+                .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Carry seed on the lens")
+                        .font(.subheadline.bold())
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(line)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+            }
+            .padding(12)
+            .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tint.opacity(0.20), lineWidth: 1)
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Carry seed on the lens")
+        .accessibilityValue(line)
     }
 }
 
@@ -813,6 +933,7 @@ struct HomeView_Previews: PreviewProvider {
             NavigationStack {
                 HomeView(
                     checkInState: .constant(CheckInState()),
+                    shouldStartDemoDirector: .constant(false),
                     onStartCheckIn: {}
                 )
             }
@@ -826,6 +947,7 @@ struct HomeView_Previews: PreviewProvider {
                             lastCompletedAt: Date()
                         )
                     ),
+                    shouldStartDemoDirector: .constant(false),
                     onStartCheckIn: {}
                 )
             }
@@ -836,6 +958,7 @@ struct HomeView_Previews: PreviewProvider {
                     checkInState: .constant(
                         CheckInState(completedCheckIns: CheckInState.weeklyCheckInGoal)
                     ),
+                    shouldStartDemoDirector: .constant(false),
                     onStartCheckIn: {}
                 )
             }
@@ -844,6 +967,7 @@ struct HomeView_Previews: PreviewProvider {
             NavigationStack {
                 HomeView(
                     checkInState: .constant(HomeViewPreviewState.fullReview),
+                    shouldStartDemoDirector: .constant(false),
                     onStartCheckIn: {}
                 )
             }

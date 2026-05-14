@@ -10,6 +10,7 @@ struct BloomMindApp: App {
     @State private var checkInState = CheckInState()
     @State private var checkInPath: [CheckInRoute] = []
     @State private var hasSeenOriginScene = false
+    @State private var shouldStartDemoDirector = false
 
     var body: some Scene {
         WindowGroup {
@@ -18,6 +19,7 @@ struct BloomMindApp: App {
                     NavigationStack(path: $checkInPath) {
                         HomeView(
                             checkInState: $checkInState,
+                            shouldStartDemoDirector: $shouldStartDemoDirector,
                             onStartCheckIn: {
                                 checkInPath = [.checkIn]
                             }
@@ -42,11 +44,20 @@ struct BloomMindApp: App {
                         }
                     }
                 } else {
-                    OriginJourneyView {
-                        withAnimation(.spring(response: 0.55, dampingFraction: 0.86)) {
-                            hasSeenOriginScene = true
+                    OriginJourneyView(
+                        onBeginJourney: {
+                            withAnimation(.spring(response: 0.55, dampingFraction: 0.86)) {
+                                shouldStartDemoDirector = false
+                                hasSeenOriginScene = true
+                            }
+                        },
+                        onStartDemo: {
+                            withAnimation(.spring(response: 0.55, dampingFraction: 0.86)) {
+                                shouldStartDemoDirector = true
+                                hasSeenOriginScene = true
+                            }
                         }
-                    }
+                    )
                 }
             }
             .frame(

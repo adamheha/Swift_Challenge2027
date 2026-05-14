@@ -503,6 +503,8 @@ struct CheckInState {
     var gardenMoods: [Mood] = []
     var gardenSeeds: [GardenSeed] = []
     var wordlessSignal: WordlessStormSignal?
+    var calibrationSignal = EmotionalCalibrationSignal.defaultSignal
+    var carrySeedLine: String?
 
     var completedCheckInsThisWeek: Int {
         min(max(completedCheckIns, 0), Self.weeklyCheckInGoal)
@@ -558,9 +560,13 @@ struct CheckInState {
     }
 
     var liveStormProfile: LiveStormProfile {
-        let stormText = trimmedReflectionText.isEmpty
-            ? wordlessSignal?.generatedStormText ?? reflectionText
-            : reflectionText
+        let generatedSignals = [
+            calibrationSignal.generatedStormText,
+            wordlessSignal?.generatedStormText
+        ]
+        .compactMap { $0 }
+        .joined(separator: " ")
+        let stormText = trimmedReflectionText.isEmpty ? generatedSignals : reflectionText
 
         return LocalActionEngine.liveStormProfile(
             selectedMood: selectedMood,
@@ -706,6 +712,10 @@ struct CheckInState {
     }
 
     var returnTomorrowPrompt: String {
+        if let carrySeedLine, !carrySeedLine.isEmpty {
+            return carrySeedLine
+        }
+
         if isWeeklyBloomUnlocked {
             return weeklyBloomPayoff.nextWeekIntention
         }
@@ -846,6 +856,7 @@ struct CheckInState {
         selectedMood = nil
         reflectionText = ""
         wordlessSignal = nil
+        calibrationSignal = .defaultSignal
     }
 
     func demoWeekPreviewState() -> CheckInState {
@@ -856,6 +867,8 @@ struct CheckInState {
         preview.selectedMood = nil
         preview.reflectionText = ""
         preview.wordlessSignal = nil
+        preview.calibrationSignal = .defaultSignal
+        preview.carrySeedLine = preview.weeklyBloomPayoff.nextWeekIntention
         return preview
     }
 

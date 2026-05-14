@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct OriginJourneyView: View {
-    let onEnter: () -> Void
+    let onBeginJourney: () -> Void
+    let onStartDemo: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -52,24 +53,14 @@ struct OriginJourneyView: View {
                 }
             }
 
-            HStack(spacing: 10) {
-                Button("Skip") {
-                    onEnter()
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 10) {
+                    originButtons
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .accessibilityHint("Skips the opening origin scene.")
 
-                Button {
-                    onEnter()
-                } label: {
-                    Label("Enter BloomMind", systemImage: "sparkles")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
+                VStack(spacing: 10) {
+                    originButtons
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .accessibilityHint("Opens the Today screen.")
             }
         }
         .bloomPage(maxWidth: 760, padding: 32)
@@ -83,6 +74,38 @@ struct OriginJourneyView: View {
                 reveal = true
             }
         }
+    }
+
+    @ViewBuilder
+    private var originButtons: some View {
+        Button("Skip") {
+            onBeginJourney()
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.large)
+        .accessibilityHint("Skips the opening origin scene.")
+
+        Button {
+            onBeginJourney()
+        } label: {
+            Label("Begin Journey", systemImage: "sparkles")
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .controlSize(.large)
+        .accessibilityHint("Opens the Today screen.")
+
+        Button {
+            onStartDemo()
+        } label: {
+            Label("90-second Demo", systemImage: "play.rectangle")
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.large)
+        .accessibilityHint("Opens the guided award demo path.")
     }
 }
 
@@ -243,6 +266,9 @@ private struct OriginBeatCardView: View {
 
 struct OriginJourneyView_Previews: PreviewProvider {
     static var previews: some View {
-        OriginJourneyView(onEnter: {})
+        OriginJourneyView(
+            onBeginJourney: {},
+            onStartDemo: {}
+        )
     }
 }

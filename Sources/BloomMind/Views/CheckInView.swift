@@ -20,9 +20,14 @@ struct CheckInView: View {
             StepProgressView(currentStep: 1)
                 .bloomPanel(padding: 12)
 
+            EmotionalCalibrationRingView(
+                signal: $checkInState.calibrationSignal,
+                selectedMood: $checkInState.selectedMood
+            )
+
             CheckInStormPreviewView(
                 selectedMood: checkInState.selectedMood,
-                reflectionText: checkInState.reflectionText
+                profile: checkInState.liveStormProfile
             )
 
             VStack(alignment: .leading, spacing: 8) {
@@ -125,6 +130,178 @@ private struct ReflectionFieldView: View {
         .contentShape(Rectangle())
         .onTapGesture {
             isFocused = true
+        }
+    }
+}
+
+private struct EmotionalCalibrationRingView: View {
+    @Binding var signal: EmotionalCalibrationSignal
+    @Binding var selectedMood: Mood?
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var ringHeight: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 230 : 184
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "circle.dashed.inset.filled")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(signal.suggestedMood.tint)
+                    .frame(width: 24)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Calibrate the weather")
+                        .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text("Before naming the mood, place today's pressure between quiet/loud and light/heavy. The storm changes shape before you type.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+            }
+
+            CalibrationRingPadView(signal: $signal)
+                .frame(height: ringHeight)
+
+            HStack(alignment: .top, spacing: 10) {
+                Label(signal.title, systemImage: signal.suggestedMood.symbolName)
+                    .font(.caption.bold())
+                    .foregroundStyle(signal.suggestedMood.tint)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer(minLength: 8)
+
+                Button {
+                    selectedMood = signal.suggestedMood
+                } label: {
+                    Text("Use \(signal.suggestedMood.rawValue)")
+                        .font(.caption.bold())
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .tint(signal.suggestedMood.tint)
+                .accessibilityHint("Selects the mood suggested by this calibration.")
+            }
+        }
+        .padding(12)
+        .background(signal.suggestedMood.tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(signal.suggestedMood.tint.opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Calibrate the weather")
+        .accessibilityValue(signal.accessibilityValue)
+    }
+}
+
+private struct CalibrationRingPadView: View {
+    @Binding var signal: EmotionalCalibrationSignal
+
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(signal.suggestedMood.tint.opacity(0.08))
+
+                CalibrationRingCanvasView(signal: signal)
+
+                VStack {
+                    Text("quiet")
+                        .font(.caption2.bold())
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text("loud")
+                        .font(.caption2.bold())
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(10)
+                .accessibilityHidden(true)
+
+                HStack {
+                    Text("light")
+                        .font(.caption2.bold())
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text("heavy")
+                        .font(.caption2.bold())
+                        .foregroundStyle(.secondary)
+                }
+                .padding(10)
+                .accessibilityHidden(true)
+            }
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in
+                        let width = max(proxy.size.width, 1)
+                        let height = max(proxy.size.height, 1)
+                        signal.loudness = min(max(value.location.y / height, 0), 1)
+                        signal.heaviness = min(max(value.location.x / width, 0), 1)
+                    }
+            )
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Calibration ring")
+        .accessibilityValue(signal.accessibilityValue)
+        .accessibilityHint("Drag left to right for light to heavy, and top to bottom for quiet to loud.")
+    }
+}
+
+private struct CalibrationRingCanvasView: View {
+    let signal: EmotionalCalibrationSignal
+
+    var body: some View {
+        Canvas { context, size in
+            let width = max(size.width, 1)
+            let height = max(size.height, 1)
+            let center = CGPoint(x: width / 2, y: height / 2)
+            let radius = min(width, height) * 0.32
+            let loudness = CGFloat(signal.normalizedLoudness)
+            let heaviness = CGFloat(signal.normalizedHeaviness)
+            let point = CGPoint(x: heaviness * width, y: loudness * height)
+
+            for index in 0..<4 {
+                let ringRadius = radius + CGFloat(index) * 16
+                context.stroke(
+                    Path(ellipseIn: CGRect(
+                        x: center.x - ringRadius,
+                        y: center.y - ringRadius,
+                        width: ringRadius * 2,
+                        height: ringRadius * 2
+                    )),
+                    with: .color(signal.suggestedMood.tint.opacity(0.22 - Double(index) * 0.035)),
+                    style: StrokeStyle(lineWidth: 1, lineCap: .round)
+                )
+            }
+
+            var cross = Path()
+            cross.move(to: CGPoint(x: point.x, y: 0))
+            cross.addLine(to: CGPoint(x: point.x, y: height))
+            cross.move(to: CGPoint(x: 0, y: point.y))
+            cross.addLine(to: CGPoint(x: width, y: point.y))
+            context.stroke(
+                cross,
+                with: .color(signal.suggestedMood.tint.opacity(0.22)),
+                style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [4, 5])
+            )
+
+            context.fill(
+                Path(ellipseIn: CGRect(x: point.x - 13, y: point.y - 13, width: 26, height: 26)),
+                with: .color(signal.suggestedMood.tint.opacity(0.82))
+            )
+            context.stroke(
+                Path(ellipseIn: CGRect(x: point.x - 18, y: point.y - 18, width: 36, height: 36)),
+                with: .color(Color.white.opacity(0.72)),
+                lineWidth: 2
+            )
         }
     }
 }

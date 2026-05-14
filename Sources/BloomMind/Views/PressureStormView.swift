@@ -532,15 +532,7 @@ private struct WeatherLayerRackView: View {
 
 struct CheckInStormPreviewView: View {
     let selectedMood: Mood?
-    let reflectionText: String
-
-    private var profile: LiveStormProfile {
-        LocalActionEngine.liveStormProfile(
-            selectedMood: selectedMood,
-            reflectionText: reflectionText,
-            characterLimit: CheckInState.reflectionCharacterLimit
-        )
-    }
+    let profile: LiveStormProfile
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {

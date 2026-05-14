@@ -987,6 +987,22 @@ private struct LayerPeelingConsoleView: View {
                 }
             }
 
+            if !plan.peeledLayers.isEmpty {
+                HStack(spacing: 6) {
+                    ForEach(plan.layers.filter { plan.peeledLayers.contains($0) }) { layer in
+                        Label(layer.title, systemImage: "sparkle")
+                            .font(.caption2.bold())
+                            .foregroundStyle(tint)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.72)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .background(tint.opacity(0.08), in: Capsule())
+                    }
+                }
+                .accessibilityHidden(true)
+            }
+
             Label(plan.summary, systemImage: plan.seedIsVisible ? "camera.macro" : "circle.dotted")
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(plan.seedIsVisible ? tint : .secondary)

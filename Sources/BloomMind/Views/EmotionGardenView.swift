@@ -66,6 +66,8 @@ struct EmotionGardenView: View {
                         totalCount: safeTotalPlots
                     )
 
+                    WhatChangedBecauseOfMeView(seed: newestSeed)
+
                     GardenMemoryStripView(
                         seeds: visibleSeeds,
                         totalCount: safeTotalPlots
@@ -114,6 +116,8 @@ struct EmotionGardenView: View {
                 if let selectedSeed {
                     GardenPlantDetailView(
                         seed: selectedSeed,
+                        dayIndex: selectedPlotIndex ?? 0,
+                        totalCount: safeTotalPlots,
                         isNewest: selectedPlotIndex == newestMoodIndex,
                         evolutionStage: selectedSeedEvolutionStage
                     )
@@ -459,6 +463,45 @@ private struct GardenWorldZoneButtonView: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(tint.opacity(isSelected ? 0.58 : 0.16), lineWidth: isSelected ? 2 : 1)
         }
+    }
+}
+
+private struct WhatChangedBecauseOfMeView: View {
+    let seed: GardenSeed
+
+    private var change: WhatChangedBecauseOfMe {
+        BloomMindJourney.whatChangedBecauseOfMe(for: seed)
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: change.symbolName)
+                .font(.subheadline.bold())
+                .foregroundStyle(seed.mood.tint)
+                .frame(width: 22)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(change.title)
+                    .font(.subheadline.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(change.detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+        }
+        .padding(10)
+        .background(seed.mood.tint.opacity(0.09), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(seed.mood.tint.opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(change.title)
+        .accessibilityValue(change.detail)
     }
 }
 
@@ -1897,6 +1940,8 @@ private struct EmotionGardenPlotView: View {
     let onSelect: () -> Void
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var isHovering = false
     @ScaledMetric(relativeTo: .body) private var plotMinWidth: CGFloat = 58
     @ScaledMetric(relativeTo: .body) private var plotMinHeight: CGFloat = 104
     @ScaledMetric(relativeTo: .body) private var plantFrameHeight: CGFloat = 78
@@ -1934,6 +1979,14 @@ private struct EmotionGardenPlotView: View {
         VStack(spacing: 6) {
             ZStack(alignment: .bottom) {
                 if let mood {
+                    if isSelected || isHovering {
+                        Circle()
+                            .stroke(mood.tint.opacity(isHovering ? 0.34 : 0.22), lineWidth: 1.4)
+                            .frame(width: 72, height: 72)
+                            .scaleEffect(isHovering && !reduceMotion ? 1.08 : 1)
+                            .accessibilityHidden(true)
+                    }
+
                     EmotionPlantView(mood: mood)
                         .scaleEffect(growthScale, anchor: .bottom)
                         .opacity(plantOpacity)
@@ -1969,6 +2022,11 @@ private struct EmotionGardenPlotView: View {
         .overlay {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(borderColor, lineWidth: isSelected ? 2 : 1)
+        }
+        .onHover { hovering in
+            withAnimation(reduceMotion ? .linear(duration: 0) : .easeInOut(duration: 0.18)) {
+                isHovering = hovering
+            }
         }
         .accessibilityLabel(accessibilityLabel)
         .accessibilityValue(accessibilityValue)
@@ -2016,6 +2074,8 @@ private struct EmotionGardenPlotView: View {
 
 private struct GardenPlantDetailView: View {
     let seed: GardenSeed
+    let dayIndex: Int
+    let totalCount: Int
     let isNewest: Bool
     let evolutionStage: SeedEvolutionStage
 
@@ -2095,6 +2155,15 @@ private struct GardenPlantDetailView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            MemoryStampView(
+                stamp: BloomMindJourney.memoryStamp(
+                    for: seed,
+                    dayIndex: dayIndex,
+                    totalCount: totalCount
+                ),
+                tint: mood.tint
+            )
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
@@ -2110,6 +2179,54 @@ private struct GardenPlantDetailView: View {
 
     private var detailTitle: String {
         isNewest ? "Newest \(mood.plantAccessibilityName)" : mood.plantAccessibilityName
+    }
+}
+
+private struct MemoryStampView: View {
+    let stamp: MemoryStamp
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(stamp.title, systemImage: "seal")
+                .font(.caption.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(stamp.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 6) {
+                    stampTokens
+                }
+
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 84), spacing: 6)], spacing: 6) {
+                    stampTokens
+                }
+            }
+        }
+        .padding(10)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(stamp.title)
+        .accessibilityValue("\(stamp.detail) \(stamp.tokens.joined(separator: ", "))")
+    }
+
+    @ViewBuilder
+    private var stampTokens: some View {
+        ForEach(stamp.tokens, id: \.self) { token in
+            Text(token)
+                .font(.caption2.bold())
+                .foregroundStyle(tint)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 5)
+                .background(tint.opacity(0.10), in: Capsule())
+        }
     }
 }
 

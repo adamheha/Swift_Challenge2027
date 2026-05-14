@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 5.1 Stage 12 - The BloomMind Journey Complete
+Current stage: BloomMind 5.2 Stage 13 - The Soul Details Complete
 
-Current branch: `codex/bloommind-5-1-journey`
+Current branch: `codex/bloommind-5-2-soul-details`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 5.2 Stage 13 - Applicant Story Finalization, Device Review, and Final Submission Rehearsal
+Next stage: BloomMind 5.3 Stage 14 - Applicant Story Finalization, Device Review, and Final Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -404,6 +404,45 @@ Definition of done:
 - Check-In supports both typing and wordless expression.
 - Preview Award Demo gives a stable 90-second evaluator path.
 - Weekly Bloom ends with film, ritual, artifact, and museum instead of only summary copy.
+
+## BloomMind 5.2 Stage 13 - The Soul Details
+
+Status: Complete
+
+Goal: Make BloomMind feel alive, authored, and memorable through tactile calibration, private memory stamps, consequence feedback, constellation naming, time-aware atmosphere, and a built-in evaluator script.
+
+Completed in this branch:
+
+- Added an Emotional Calibration Ring to Check-In so the student can express loud/quiet and heavy/light before picking a mood.
+- Connected calibration to the live storm profile, suggested mood, generated storm signal, and privacy-preserving seed memory stamp.
+- Added a judge-first opening choice so the first screen offers Begin Journey and 90-second Demo doors.
+- Added time-aware Home garden tone that responds to morning, afternoon, evening, incomplete check-ins, and completed days.
+- Added a visible carry seed on the Home lens after the Weekly Bloom ritual chooses a line to carry into next week.
+- Added "What changed because of me?" copy after planting so the garden explains how Now, Later, or Let go changed the world.
+- Added Memory Without Text stamps to seed details, using mood color, pressure layer/theme, lane consequence, day position, and calibration shape without displaying reflection text.
+- Added pressure constellation names for completed weeks.
+- Added emotional vocabulary unlocks to Weekly Bloom.
+- Added final submission story mode inside Weekly Bloom, turning school fragments into weather and seed imagery around the personal origin line.
+- Added built-in Award Demo Director captions so the 90-second evaluation path has short story beats.
+- Added micro-interactions: breathing artifacts, seed hover/tap air expansion, layer peel traces, and carry-seed lens glow.
+- Added unit tests for calibration/time tone, constellation naming, consequence copy, memory stamps, vocabulary unlocks, demo captions, and carry seed prompt override.
+- Refreshed `SubmissionBuild/BloomMind.swiftpm.zip` with Stage 13 sources; current ZIP size is 86,098 bytes.
+
+Remaining:
+
+- Rerun standalone `swift build` and the build step inside `bash Scripts/verify_submission_package.sh` when Swift/Clang module-cache permissions or external execution approval are available.
+- Replace the placeholder origin/personal meaning line with the applicant's true specific story before final submission.
+- Smoke check in full Xcode or Swift Playgrounds.
+- Smoke check on iPad or an iPad-sized simulator.
+- Refresh official Apple rules close to the real 2027 submission window.
+
+Definition of done:
+
+- `swift test` passes with Soul Details coverage.
+- Check-In feels tactile before mood selection.
+- Home visibly carries the next-week seed and responds to the day.
+- Weekly Bloom has a named constellation, vocabulary unlocks, final story mode, and private artifact ending.
+- No private reflection text is resurfaced in memory stamps, weekly copy, demo captions, or final story mode.
 
 ## Stage 0 - Award Research
 

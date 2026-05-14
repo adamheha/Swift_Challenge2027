@@ -625,7 +625,7 @@ import Testing
     state.wordlessSignal = WordlessStormSignal(intensity: 0.82, lane: .release)
 
     #expect(!state.canContinueToAction)
-    #expect(state.liveStormProfile.accessibilityValue.contains("General"))
+    #expect(state.liveStormProfile.accessibilityValue.contains("School"))
     #expect(state.wordlessSignal?.suggestedMood == .overwhelmed)
 
     state.selectedMood = state.wordlessSignal?.suggestedMood
@@ -682,6 +682,68 @@ import Testing
     #expect(!museum.accessibilityValue.localizedCaseInsensitiveContains("reflection text"))
     #expect(museum.craftedLine.contains("Connected:"))
     #expect(museum.carryLine == payoff.closingLine)
+}
+
+@Test func soulDetailsNameWeekAndExplainConsequences() {
+    let seeds = CheckInState.demoGardenSeeds
+    let constellation = BloomMindJourney.pressureConstellationName(for: seeds)
+    let change = BloomMindJourney.whatChangedBecauseOfMe(for: GardenSeed(mood: .stressed, lane: .release, theme: .pressure))
+    let stamp = BloomMindJourney.memoryStamp(
+        for: GardenSeed(mood: .focused, lane: .now, theme: .school),
+        dayIndex: 2,
+        totalCount: CheckInState.weeklyCheckInGoal,
+        calibration: EmotionalCalibrationSignal(loudness: 0.8, heaviness: 0.7)
+    )
+
+    #expect(!constellation.title.isEmpty)
+    #expect(change.title == "Because you chose Let go")
+    #expect(change.detail.contains("sky opened"))
+    #expect(stamp.tokens.contains("D3"))
+    #expect(stamp.tokens.contains("Focused"))
+    #expect(!stamp.detail.localizedCaseInsensitiveContains("reflection text"))
+}
+
+@Test func calibrationAndTimeToneCreateLocalSoulDetails() {
+    let calibration = EmotionalCalibrationSignal(loudness: 0.9, heaviness: 0.85)
+    let morning = BloomMindJourney.timeOfDayGardenTone(
+        date: Date(timeIntervalSince1970: 1_710_000_000),
+        calendar: Calendar(identifier: .gregorian),
+        hasCompletedToday: false,
+        completedCount: 2,
+        totalCount: CheckInState.weeklyCheckInGoal
+    )
+    let completed = BloomMindJourney.timeOfDayGardenTone(
+        hasCompletedToday: true,
+        completedCount: 2,
+        totalCount: CheckInState.weeklyCheckInGoal
+    )
+
+    #expect(calibration.suggestedMood == .overwhelmed)
+    #expect(calibration.generatedStormText.contains("loud"))
+    #expect(!morning.title.isEmpty)
+    #expect(completed.title == "Open air after planting")
+}
+
+@Test func vocabularyUnlocksAndDemoCaptionsSupportJudgingPath() {
+    let unlocks = BloomMindJourney.vocabularyUnlocks(for: CheckInState.demoGardenSeeds)
+    let captions = BloomMindJourney.guidedAwardDemoSteps().map(\.caption)
+
+    #expect(unlocks.count >= 3)
+    #expect(unlocks.contains { $0.line.contains("urgent") || $0.line.contains("sky") })
+    #expect(captions.contains("This is the week becoming memory."))
+    #expect(captions.last == "This is the ending becoming a beginning.")
+}
+
+@Test func carrySeedLineOverridesReturnTomorrowPrompt() {
+    let carry = "Carry this exact next seed."
+    let state = CheckInState(
+        completedCheckIns: CheckInState.weeklyCheckInGoal,
+        gardenMoods: CheckInState.demoGardenMoods,
+        gardenSeeds: CheckInState.demoGardenSeeds,
+        carrySeedLine: carry
+    )
+
+    #expect(state.returnTomorrowPrompt == carry)
 }
 
 @MainActor
