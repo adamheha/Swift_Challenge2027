@@ -73,6 +73,15 @@ struct EmotionGardenView: View {
 
                     GardenEcologyLineView(seeds: visibleSeeds)
 
+                    WeekShapeLandscapeView(
+                        summary: LocalActionEngine.weekShapeSummary(
+                            for: visibleSeeds,
+                            totalCount: safeTotalPlots
+                        ),
+                        seeds: visibleSeeds,
+                        totalCount: safeTotalPlots
+                    )
+
                     GardenVisionModePicker(
                         selectedMode: $gardenVisionMode,
                         tint: newestSeed.mood.tint
@@ -493,6 +502,327 @@ private struct GardenWorldZoneDetailView: View {
             "Let go choices become wind and starlight, so the garden can breathe."
         case .centerBloom:
             "When the week reaches seven seeds, the center bloom turns the whole pattern into an artifact."
+        }
+    }
+}
+
+private struct WeekShapeLandscapeView: View {
+    let summary: WeekShapeSummary
+    let seeds: [GardenSeed]
+    let totalCount: Int
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var tint: Color {
+        seeds.last?.mood.tint ?? .green
+    }
+
+    private var landscapeHeight: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 220 : 170
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "map")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .frame(width: 24)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(summary.title)
+                        .font(.subheadline.bold())
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(summary.detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+            }
+
+            WeekShapeCanvasView(
+                seeds: seeds,
+                totalCount: totalCount,
+                tint: tint,
+                reduceMotion: reduceMotion
+            )
+            .frame(height: landscapeHeight)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tint.opacity(0.20), lineWidth: 1)
+            }
+
+            Text(summary.terrainLine)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(Array(summary.landmarks.prefix(totalCount).enumerated()), id: \.offset) { index, landmark in
+                        WeekShapeLandmarkChip(
+                            index: index + 1,
+                            landmark: landmark,
+                            tint: seedTint(at: index)
+                        )
+                    }
+                }
+                .padding(.vertical, 1)
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(summary.title)
+        .accessibilityValue(summary.accessibilityValue)
+    }
+
+    private func seedTint(at index: Int) -> Color {
+        guard seeds.indices.contains(index) else {
+            return tint
+        }
+
+        return seeds[index].mood.tint
+    }
+}
+
+private struct WeekShapeCanvasView: View {
+    let seeds: [GardenSeed]
+    let totalCount: Int
+    let tint: Color
+    let reduceMotion: Bool
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            Canvas { context, size in
+                drawLandscape(
+                    in: &context,
+                    size: size,
+                    time: reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                )
+            }
+        }
+        .background {
+            LinearGradient(
+                colors: [
+                    Color(red: 0.04, green: 0.10, blue: 0.14),
+                    Color(red: 0.09, green: 0.12, blue: 0.18),
+                    tint.opacity(0.20)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+    }
+
+    private func drawLandscape(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let visibleTotal = max(totalCount, seeds.count, 1)
+        let points = terrainPoints(width: width, height: height, visibleTotal: visibleTotal, time: time)
+
+        drawSky(in: &context, size: size, time: time)
+
+        guard !points.isEmpty else {
+            drawEmptyHorizon(in: &context, width: width, height: height)
+            return
+        }
+
+        var fillPath = Path()
+        fillPath.move(to: CGPoint(x: points[0].x, y: height))
+        for point in points {
+            fillPath.addLine(to: point)
+        }
+        fillPath.addLine(to: CGPoint(x: points[points.count - 1].x, y: height))
+        fillPath.closeSubpath()
+
+        context.fill(
+            fillPath,
+            with: .linearGradient(
+                Gradient(colors: [
+                    tint.opacity(0.32),
+                    tint.opacity(0.08),
+                    Color.white.opacity(0.03)
+                ]),
+                startPoint: CGPoint(x: width * 0.5, y: height * 0.2),
+                endPoint: CGPoint(x: width * 0.5, y: height)
+            )
+        )
+
+        var terrainPath = Path()
+        terrainPath.move(to: points[0])
+        for point in points.dropFirst() {
+            terrainPath.addLine(to: point)
+        }
+
+        context.stroke(
+            terrainPath,
+            with: .color(Color.white.opacity(0.76)),
+            style: StrokeStyle(lineWidth: 2.4, lineCap: .round, lineJoin: .round)
+        )
+
+        for (index, point) in points.enumerated() {
+            let seed = seeds.indices.contains(index) ? seeds[index] : nil
+            let pointTint = seed?.mood.tint ?? Color.white.opacity(0.36)
+            let pointSize = seed == nil ? CGFloat(5) : CGFloat(9 + index % 2)
+
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: point.x - pointSize / 2,
+                    y: point.y - pointSize / 2,
+                    width: pointSize,
+                    height: pointSize
+                )),
+                with: .color(pointTint.opacity(seed == nil ? 0.38 : 0.92))
+            )
+
+            if let seed {
+                drawLaneMark(
+                    lane: seed.lane,
+                    at: CGPoint(x: point.x, y: min(height - 18, point.y + 20)),
+                    tint: pointTint,
+                    context: &context
+                )
+            }
+        }
+    }
+
+    private func terrainPoints(
+        width: CGFloat,
+        height: CGFloat,
+        visibleTotal: Int,
+        time: TimeInterval
+    ) -> [CGPoint] {
+        let horizontalPadding = width * 0.10
+        let availableWidth = width - horizontalPadding * 2
+
+        return (0..<visibleTotal).map { index in
+            let progress = visibleTotal == 1 ? 0.5 : CGFloat(index) / CGFloat(visibleTotal - 1)
+            let seed = seeds.indices.contains(index) ? seeds[index] : nil
+            let baseLevel = seed?.mood.terrainLevel ?? 0.58
+            let motion = reduceMotion ? 0 : CGFloat(sin(time * 0.8 + Double(index))) * 0.018
+            let x = horizontalPadding + availableWidth * progress
+            let y = height * (baseLevel + motion)
+            return CGPoint(x: x, y: y)
+        }
+    }
+
+    private func drawSky(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let starCount = 12
+
+        for index in 0..<starCount {
+            let x = width * CGFloat((index * 37) % 100) / 100
+            let y = height * CGFloat((index * 19) % 42) / 100 + 10
+            let opacity = 0.18 + 0.10 * ((sin(time + Double(index)) + 1) / 2)
+            context.fill(
+                Path(ellipseIn: CGRect(x: x, y: y, width: 2.2, height: 2.2)),
+                with: .color(Color.white.opacity(opacity))
+            )
+        }
+    }
+
+    private func drawEmptyHorizon(
+        in context: inout GraphicsContext,
+        width: CGFloat,
+        height: CGFloat
+    ) {
+        var path = Path()
+        path.move(to: CGPoint(x: width * 0.10, y: height * 0.62))
+        path.addLine(to: CGPoint(x: width * 0.90, y: height * 0.62))
+        context.stroke(
+            path,
+            with: .color(Color.white.opacity(0.34)),
+            style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [5, 6])
+        )
+    }
+
+    private func drawLaneMark(
+        lane: GrowthLane,
+        at point: CGPoint,
+        tint: Color,
+        context: inout GraphicsContext
+    ) {
+        switch lane {
+        case .now:
+            var root = Path()
+            root.move(to: point)
+            root.addQuadCurve(
+                to: CGPoint(x: point.x - 10, y: point.y + 14),
+                control: CGPoint(x: point.x - 5, y: point.y + 6)
+            )
+            root.move(to: point)
+            root.addQuadCurve(
+                to: CGPoint(x: point.x + 10, y: point.y + 14),
+                control: CGPoint(x: point.x + 5, y: point.y + 6)
+            )
+            context.stroke(root, with: .color(tint.opacity(0.70)), lineWidth: 1.4)
+        case .later:
+            context.stroke(
+                Path(ellipseIn: CGRect(x: point.x - 7, y: point.y - 6, width: 14, height: 12)),
+                with: .color(tint.opacity(0.66)),
+                lineWidth: 1.3
+            )
+        case .release:
+            var wind = Path()
+            wind.move(to: CGPoint(x: point.x - 12, y: point.y))
+            wind.addQuadCurve(
+                to: CGPoint(x: point.x + 12, y: point.y - 2),
+                control: CGPoint(x: point.x, y: point.y - 10)
+            )
+            context.stroke(
+                wind,
+                with: .color(tint.opacity(0.64)),
+                style: StrokeStyle(lineWidth: 1.4, lineCap: .round)
+            )
+        }
+    }
+}
+
+private struct WeekShapeLandmarkChip: View {
+    let index: Int
+    let landmark: String
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Day \(index)")
+                .font(.caption2.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(landmark.replacingOccurrences(of: "Day \(index): ", with: ""))
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.75)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(width: 118, alignment: .topLeading)
+        .frame(minHeight: 58, alignment: .topLeading)
+        .padding(8)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
         }
     }
 }
@@ -1964,5 +2294,22 @@ private struct WindBladeShape: Shape {
             control2: CGPoint(x: rect.midX + (lean * rect.width * 0.9), y: rect.maxY * 0.34)
         )
         return path
+    }
+}
+
+private extension Mood {
+    var terrainLevel: CGFloat {
+        switch self {
+        case .calm:
+            0.56
+        case .happy:
+            0.38
+        case .tired:
+            0.68
+        case .stressed:
+            0.30
+        case .unsure:
+            0.50
+        }
     }
 }

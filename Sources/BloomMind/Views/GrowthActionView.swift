@@ -656,6 +656,13 @@ private struct StormSortingView: View {
                 liveKeywords: liveKeywords
             )
 
+            StormSurgeryTableView(
+                fragments: fragments,
+                selectedLane: selectedLane,
+                tint: tint,
+                laneForFragment: currentLane
+            )
+
             LazyVGrid(columns: columns, spacing: 10) {
                 ForEach(GrowthLane.allCases) { lane in
                     StormLaneColumnView(
@@ -760,6 +767,288 @@ private struct DirectStormSortingHeaderView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Pull the storm apart")
         .accessibilityValue(liveKeywords.isEmpty ? "Use the generated fragments to sort the storm." : "Live storm words: \(liveKeywords.joined(separator: ", ")).")
+    }
+}
+
+private struct StormSurgeryTableView: View {
+    let fragments: [StormFragment]
+    let selectedLane: GrowthLane
+    let tint: Color
+    let laneForFragment: (StormFragment) -> GrowthLane
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var tableHeight: CGFloat {
+        dynamicTypeSize.isAccessibilitySize ? 260 : 220
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "scope")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .frame(width: 24)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Storm surgery table")
+                        .font(.subheadline.bold())
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text("Every fragment you move changes what the storm core becomes: root, bud, or wind.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+            }
+
+            GeometryReader { proxy in
+                ZStack {
+                    StormSurgeryCanvasView(
+                        fragments: fragments,
+                        selectedLane: selectedLane,
+                        tint: tint,
+                        laneForFragment: laneForFragment,
+                        reduceMotion: reduceMotion
+                    )
+
+                    ForEach(Array(fragments.prefix(7).enumerated()), id: \.element.id) { index, fragment in
+                        let lane = laneForFragment(fragment)
+                        StormSurgeryFragmentBadge(
+                            fragment: fragment,
+                            lane: lane,
+                            tint: lane.tint(primary: tint)
+                        )
+                        .position(
+                            surgeryBadgePosition(
+                                index: index,
+                                count: min(fragments.count, 7),
+                                size: proxy.size
+                            )
+                        )
+                    }
+                }
+            }
+            .frame(height: tableHeight)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(tint.opacity(0.20), lineWidth: 1)
+            }
+
+            HStack(spacing: 8) {
+                ForEach(GrowthLane.allCases) { lane in
+                    Label(lane.physicsTitle, systemImage: lane.physicsSymbolName)
+                        .font(.caption2.bold())
+                        .foregroundStyle(lane.tint(primary: tint))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 5)
+                        .background(lane.tint(primary: tint).opacity(0.08), in: Capsule())
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Storm surgery table")
+        .accessibilityValue(accessibilitySummary)
+    }
+
+    private func surgeryBadgePosition(
+        index: Int,
+        count: Int,
+        size: CGSize
+    ) -> CGPoint {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let radiusX = width * 0.34
+        let radiusY = height * 0.28
+        let angle = (Double(index) / Double(max(count, 1))) * .pi * 2 - .pi / 2
+
+        return CGPoint(
+            x: width * 0.5 + cos(angle) * radiusX,
+            y: height * 0.46 + sin(angle) * radiusY
+        )
+    }
+
+    private var accessibilitySummary: String {
+        let laneSummary = GrowthLane.allCases
+            .map { lane in
+                let count = fragments.filter { laneForFragment($0) == lane }.count
+                return "\(lane.title): \(count)"
+            }
+            .joined(separator: ", ")
+        return "Fragments orbit the storm core. \(laneSummary)."
+    }
+}
+
+private struct StormSurgeryCanvasView: View {
+    let fragments: [StormFragment]
+    let selectedLane: GrowthLane
+    let tint: Color
+    let laneForFragment: (StormFragment) -> GrowthLane
+    let reduceMotion: Bool
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            Canvas { context, size in
+                drawTable(
+                    in: &context,
+                    size: size,
+                    time: reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                )
+            }
+        }
+        .background {
+            LinearGradient(
+                colors: [
+                    tint.opacity(0.18),
+                    Color.blue.opacity(0.08),
+                    Color.orange.opacity(0.07)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+    }
+
+    private func drawTable(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let center = CGPoint(x: width * 0.5, y: height * 0.44)
+        let pulse = CGFloat((sin(time * 1.1) + 1) / 2)
+        let coreRadius = min(width, height) * 0.18
+        let coreRect = CGRect(
+            x: center.x - coreRadius,
+            y: center.y - coreRadius,
+            width: coreRadius * 2,
+            height: coreRadius * 2
+        )
+
+        for index in 0..<4 {
+            let radius = coreRadius + CGFloat(index) * 18 + pulse * 5
+            context.stroke(
+                Path(ellipseIn: CGRect(
+                    x: center.x - radius,
+                    y: center.y - radius,
+                    width: radius * 2,
+                    height: radius * 2
+                )),
+                with: .color(tint.opacity(0.18 - Double(index) * 0.025)),
+                style: StrokeStyle(lineWidth: 1, lineCap: .round)
+            )
+        }
+
+        context.fill(
+            Path(ellipseIn: coreRect),
+            with: .radialGradient(
+                Gradient(colors: [
+                    selectedLane.tint(primary: tint).opacity(0.62),
+                    tint.opacity(0.20),
+                    Color.black.opacity(0.06)
+                ]),
+                center: center,
+                startRadius: 3,
+                endRadius: coreRadius
+            )
+        )
+        context.stroke(
+            Path(ellipseIn: coreRect.insetBy(dx: -6, dy: -6)),
+            with: .color(Color.white.opacity(0.32)),
+            lineWidth: 1.4
+        )
+
+        let laneCenters: [(GrowthLane, CGPoint)] = [
+            (.now, CGPoint(x: width * 0.22, y: height * 0.84)),
+            (.later, CGPoint(x: width * 0.50, y: height * 0.89)),
+            (.release, CGPoint(x: width * 0.78, y: height * 0.84))
+        ]
+
+        for (lane, laneCenter) in laneCenters {
+            let laneTint = lane.tint(primary: tint)
+            var path = Path()
+            path.move(to: center)
+            path.addQuadCurve(
+                to: laneCenter,
+                control: CGPoint(
+                    x: (center.x + laneCenter.x) / 2,
+                    y: center.y + height * 0.18
+                )
+            )
+            context.stroke(
+                path,
+                with: .color(laneTint.opacity(selectedLane == lane ? 0.46 : 0.20)),
+                style: StrokeStyle(lineWidth: selectedLane == lane ? 2.4 : 1.2, lineCap: .round)
+            )
+
+            let wellRect = CGRect(x: laneCenter.x - 24, y: laneCenter.y - 16, width: 48, height: 32)
+            context.fill(
+                Path(roundedRect: wellRect, cornerRadius: 8),
+                with: .color(laneTint.opacity(selectedLane == lane ? 0.24 : 0.12))
+            )
+            context.stroke(
+                Path(roundedRect: wellRect, cornerRadius: 8),
+                with: .color(laneTint.opacity(0.34)),
+                lineWidth: 1
+            )
+        }
+
+        for (index, fragment) in fragments.prefix(7).enumerated() {
+            let lane = laneForFragment(fragment)
+            let angle = (Double(index) / Double(max(min(fragments.count, 7), 1))) * .pi * 2 + time * lane.orbitSpeed
+            let orbitRadius = coreRadius + 42 + CGFloat(index % 2) * 14
+            let point = CGPoint(
+                x: center.x + cos(angle) * orbitRadius,
+                y: center.y + sin(angle) * orbitRadius * 0.68
+            )
+
+            context.fill(
+                Path(ellipseIn: CGRect(x: point.x - 4, y: point.y - 4, width: 8, height: 8)),
+                with: .color(lane.tint(primary: tint).opacity(0.54))
+            )
+        }
+    }
+}
+
+private struct StormSurgeryFragmentBadge: View {
+    let fragment: StormFragment
+    let lane: GrowthLane
+    let tint: Color
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: lane.physicsSymbolName)
+                .font(.caption2.bold())
+                .foregroundStyle(tint)
+                .accessibilityHidden(true)
+
+            Text(fragment.shortText)
+                .font(.caption2.bold())
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .padding(.horizontal, 7)
+        .padding(.vertical, 5)
+        .background(Color.white.opacity(0.76), in: Capsule())
+        .overlay {
+            Capsule()
+                .stroke(tint.opacity(0.32), lineWidth: 1)
+        }
+        .shadow(color: tint.opacity(0.12), radius: 5, x: 0, y: 2)
     }
 }
 
@@ -1270,6 +1559,14 @@ private struct StormFragment: Identifiable, Hashable {
 
         return base
     }
+
+    var shortText: String {
+        if text.count <= 16 {
+            return text
+        }
+
+        return String(text.prefix(13)) + "..."
+    }
 }
 
 private extension GrowthLane {
@@ -1281,6 +1578,17 @@ private extension GrowthLane {
             1.4
         case .release:
             1.0
+        }
+    }
+
+    var orbitSpeed: Double {
+        switch self {
+        case .now:
+            0.10
+        case .later:
+            0.06
+        case .release:
+            -0.08
         }
     }
 

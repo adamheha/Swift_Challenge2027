@@ -11,10 +11,6 @@ struct HomeView: View {
         dynamicTypeSize.isAccessibilitySize ? 22 : 24
     }
 
-    private var latestMood: Mood? {
-        checkInState.gardenMoodsThisWeek.last
-    }
-
     private var gardenDisplayState: CheckInState {
         isPreviewingDemoWeek ? checkInState.demoWeekPreviewState() : checkInState
     }
@@ -63,11 +59,13 @@ struct HomeView: View {
     private var heroSection: some View {
         StormToBloomHeroView(
             isCompleteToday: checkInState.hasCompletedCheckInToday(),
-            latestMood: latestMood,
-            progressPercent: checkInState.bloomProgressPercent,
-            completedCount: checkInState.completedCheckInsThisWeek,
+            latestMood: gardenDisplayState.gardenMoodsThisWeek.last,
+            progressPercent: gardenDisplayState.bloomProgressPercent,
+            completedCount: gardenDisplayState.completedCheckInsThisWeek,
             goalCount: CheckInState.weeklyCheckInGoal,
-            prompt: checkInState.todayPrompt
+            prompt: checkInState.todayPrompt,
+            snapshot: gardenDisplayState.weatherObservatorySnapshot,
+            seeds: gardenDisplayState.gardenSeedsThisWeek
         )
     }
 
@@ -111,6 +109,10 @@ struct HomeView: View {
 
             if isPreviewingDemoWeek {
                 DemoPreviewNoticeView()
+
+                AwardDemoTheatreView(
+                    tint: gardenDisplayState.weeklyBloomPayoff.dominantMood?.tint ?? .green
+                )
             }
 
             primaryActionButton
@@ -188,6 +190,101 @@ private struct DemoPreviewNoticeView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(CheckInState.demoWeekPreviewTitle)
         .accessibilityValue("\(CheckInState.demoWeekPreviewDetail) This guided award demo shows storm, emotional physics, garden X-Ray, time-lapse, and Weekly Bloom.")
+    }
+}
+
+private struct AwardDemoTheatreView: View {
+    let tint: Color
+
+    private let beats = [
+        AwardDemoBeat(title: "Observatory", detail: "The week changes the sky before the first tap.", systemImage: "scope"),
+        AwardDemoBeat(title: "Live storm", detail: "Typing makes private pressure visible as safe weather.", systemImage: "tornado"),
+        AwardDemoBeat(title: "Surgery table", detail: "Fragments are pulled into Now, Later, or Let go.", systemImage: "hand.draw"),
+        AwardDemoBeat(title: "Planting ritual", detail: "The seed is dragged into soil and grows from the chosen lane.", systemImage: "camera.macro"),
+        AwardDemoBeat(title: "Garden X-Ray", detail: "Roots, buds, and wind show the consequence layer.", systemImage: "scope"),
+        AwardDemoBeat(title: "Week shape", detail: "Seven days become an emotional landscape.", systemImage: "map"),
+        AwardDemoBeat(title: "Artifact", detail: "The completed week is crafted and saved as a private specimen.", systemImage: "archivebox")
+    ]
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: 128), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Award demo theatre", systemImage: "play.rectangle")
+                .font(.subheadline.bold())
+                .foregroundStyle(tint)
+                .fixedSize(horizontal: false, vertical: true)
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(Array(beats.enumerated()), id: \.offset) { index, beat in
+                    AwardDemoBeatView(
+                        index: index + 1,
+                        beat: beat,
+                        tint: tint
+                    )
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Award demo theatre")
+    }
+}
+
+private struct AwardDemoBeat: Equatable {
+    let title: String
+    let detail: String
+    let systemImage: String
+}
+
+private struct AwardDemoBeatView: View {
+    let index: Int
+    let beat: AwardDemoBeat
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Text("\(index)")
+                    .font(.caption2.bold())
+                    .monospacedDigit()
+                    .foregroundStyle(.white)
+                    .frame(width: 20, height: 20)
+                    .background(tint, in: Circle())
+
+                Image(systemName: beat.systemImage)
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+                    .accessibilityHidden(true)
+            }
+
+            Text(beat.title)
+                .font(.caption.bold())
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(beat.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 98, alignment: .topLeading)
+        .padding(9)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.14), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(index). \(beat.title)")
+        .accessibilityValue(beat.detail)
     }
 }
 

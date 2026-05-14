@@ -188,6 +188,107 @@ enum LocalActionEngine {
         )
     }
 
+    static func pressureLayers(for seeds: [GardenSeed]) -> [PressureLayer] {
+        var seen = Set<PressureLayer>()
+        var layers: [PressureLayer] = []
+
+        for seed in seeds {
+            let layer = seed.theme.pressureLayer
+            guard !seen.contains(layer) else {
+                continue
+            }
+
+            seen.insert(layer)
+            layers.append(layer)
+        }
+
+        return layers.isEmpty ? [.weather] : layers
+    }
+
+    static func weatherObservatorySnapshot(
+        for seeds: [GardenSeed],
+        completedCount: Int,
+        totalCount: Int
+    ) -> WeatherObservatorySnapshot {
+        let visibleCount = min(max(completedCount, 0), max(totalCount, 0))
+        let dominantMood = dominantValue(in: seeds.map(\.mood))
+        let dominantLane = dominantValue(in: seeds.map(\.lane))
+        let layers = pressureLayers(for: seeds)
+
+        guard !seeds.isEmpty else {
+            return WeatherObservatorySnapshot(
+                title: "Weather Observatory",
+                detail: "No inner weather has been observed yet.",
+                skyLine: "The lens is clear, waiting for the first storm signal.",
+                lensLine: "Enter the storm to make one pressure layer visible.",
+                pressureLayers: layers,
+                dominantMood: nil,
+                dominantLane: nil,
+                completedCount: visibleCount,
+                totalCount: totalCount
+            )
+        }
+
+        let title = visibleCount >= totalCount
+            ? "The week has a sky"
+            : "The week is forming weather"
+        let detail = "\(visibleCount) of \(totalCount) storm signals have reached the observatory."
+        let skyLine = dominantMood?.observatorySkyLine ?? "Mixed weather is becoming readable."
+        let lensLine = dominantLane?.observatoryLensLine ?? "The lens is still deciding where the pressure wants to go."
+
+        return WeatherObservatorySnapshot(
+            title: title,
+            detail: detail,
+            skyLine: skyLine,
+            lensLine: lensLine,
+            pressureLayers: layers,
+            dominantMood: dominantMood,
+            dominantLane: dominantLane,
+            completedCount: visibleCount,
+            totalCount: totalCount
+        )
+    }
+
+    static func weekShapeSummary(
+        for seeds: [GardenSeed],
+        totalCount: Int
+    ) -> WeekShapeSummary {
+        guard let firstSeed = seeds.first else {
+            return WeekShapeSummary(
+                title: "No terrain yet",
+                detail: "The first seed will draw the first point on the emotional landscape.",
+                terrainLine: "The week has not made a line yet.",
+                landmarks: ["Seed 1 is waiting"],
+                completedCount: 0,
+                totalCount: totalCount
+            )
+        }
+
+        let latestSeed = seeds.last ?? firstSeed
+        let dominantMood = dominantValue(in: seeds.map(\.mood)) ?? latestSeed.mood
+        let dominantLane = dominantValue(in: seeds.map(\.lane)) ?? latestSeed.lane
+        let movementLine: String
+
+        if firstSeed.mood == latestSeed.mood {
+            movementLine = "The week kept returning to \(latestSeed.mood.rawValue.lowercased()), but the choices still changed its shape."
+        } else {
+            movementLine = "The week moved from \(firstSeed.mood.rawValue.lowercased()) toward \(latestSeed.mood.rawValue.lowercased())."
+        }
+
+        let landmarks = seeds.prefix(totalCount).enumerated().map { index, seed in
+            "Day \(index + 1): \(seed.theme.displayName) became \(seed.lane.title)"
+        }
+
+        return WeekShapeSummary(
+            title: "The week has terrain",
+            detail: "\(movementLine) \(dominantLane.title) was the strongest shaping force.",
+            terrainLine: "\(dominantMood.weekShapeTerrain) \(dominantLane.weekShapeForce)",
+            landmarks: landmarks,
+            completedCount: min(seeds.count, max(totalCount, 0)),
+            totalCount: totalCount
+        )
+    }
+
     static func weeklyArtifact(for seeds: [GardenSeed]) -> WeeklyBloomArtifact {
         let dominantMood = dominantValue(in: seeds.map(\.mood))
         let dominantLane = dominantValue(in: seeds.map(\.lane))
@@ -394,6 +495,23 @@ enum LocalActionEngine {
 }
 
 private extension ReflectionTheme {
+    var pressureLayer: PressureLayer {
+        switch self {
+        case .school:
+            .task
+        case .friendship:
+            .social
+        case .rest:
+            .body
+        case .pressure:
+            .task
+        case .uncertainty:
+            .future
+        case .general:
+            .weather
+        }
+    }
+
     var keywords: [String] {
         switch self {
         case .school:
@@ -631,6 +749,36 @@ private extension ReflectionTheme {
 }
 
 private extension Mood {
+    var observatorySkyLine: String {
+        switch self {
+        case .calm:
+            "The sky is steady enough to show the edges of each cloud."
+        case .happy:
+            "Warm light keeps breaking through the week instead of disappearing behind tasks."
+        case .tired:
+            "The sky is low and moonlit, asking the garden to grow more slowly."
+        case .stressed:
+            "Electrical clouds are visible now, which makes the storm less invisible."
+        case .unsure:
+            "Fog is still present, but the lens can find questions inside it."
+        }
+    }
+
+    var weekShapeTerrain: String {
+        switch self {
+        case .calm:
+            "The terrain settled into a steady field."
+        case .happy:
+            "The terrain rose into warm bright hills."
+        case .tired:
+            "The terrain dipped into a quieter night valley."
+        case .stressed:
+            "The terrain climbed into a pressure ridge."
+        case .unsure:
+            "The terrain crossed a fog bridge."
+        }
+    }
+
     var localActionTone: String {
         switch self {
         case .calm:
@@ -708,6 +856,28 @@ private extension Mood {
 }
 
 private extension GrowthLane {
+    var observatoryLensLine: String {
+        switch self {
+        case .now:
+            "The lens shows pressure becoming roots under one visible next step."
+        case .later:
+            "The lens shows pressure held in glass, visible but not urgent."
+        case .release:
+            "The lens shows pressure leaving as wind around the center bloom."
+        }
+    }
+
+    var weekShapeForce: String {
+        switch self {
+        case .now:
+            "Roots pulled the landscape into one next step."
+        case .later:
+            "Waiting buds made the landscape patient."
+        case .release:
+            "Open air widened the landscape."
+        }
+    }
+
     var weeklyInsightSentence: String {
         switch self {
         case .now:

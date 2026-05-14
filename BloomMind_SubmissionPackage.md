@@ -1,8 +1,8 @@
 # BloomMind Submission Package
 
-## Current 3.2 Direction
+## Current 4.0 Direction
 
-BloomMind 3.2 reframes the app around direct transformation with emotional physics. Instead of opening like a calm tracker, the app opens as an inner weather observatory with a moving storm of student-pressure fragments. The student's reflection changes that storm live, then becomes a privacy ritual: words become weather, and BloomMind remembers the shape, not the private words. The student names a mood, drags storm words into Now, Later, and Let go, plants the seed through a drag-to-soil ritual, and watches those choices change a private garden world with Surface and X-Ray views. A completed seven-seed week unlocks a Weekly Bloom payoff with an animated transformation, Week Artifact, and private museum shelf.
+BloomMind 4.0 reframes the app as a Weather Observatory for student pressure. Instead of opening like a calm tracker, the Today screen shows an inner weather lens with seed orbits, pressure layers, a sky line, and a lane-specific lens line. The student's reflection changes the storm live, then becomes a privacy ritual: words become weather, and BloomMind remembers the shape, not the private words. The student names a mood, drags storm words into Now, Later, and Let go, watches the Storm Surgery table change, plants the seed through a drag-to-soil ritual, and sees those choices alter a private garden world with Surface, Week Shape, X-Ray, and map views. A completed seven-seed week unlocks a Weekly Bloom payoff with animated transformation, artifact crafting, Week Artifact, and private museum shelf.
 
 The old 1.x submission path is preserved as a stable foundation, but the active award-level direction is now the 2.0 pressure-storm experience.
 
@@ -31,7 +31,7 @@ Official references:
 Target review time: 60 seconds.
 
 1. Open BloomMind.
-2. On the Today screen, notice the moving pressure-storm hero and the inner weather observatory cue.
+2. On the Today screen, notice the Weather Observatory hero, moving lens, pressure layers, and inner sky line.
 3. Tap Enter the Storm.
 4. Select Stressed.
 5. Enter this short reflection to exercise live storm typing and local theme detection:
@@ -45,21 +45,23 @@ Target review time: 60 seconds.
 
    `Make it tiny: choose one thing that can wait, then start only the next tiny step.`
 
-10. Confirm the seed commitment updates when a lane is selected, and note that Now feels rooted, Later hovers, and Let go lightens.
+10. Confirm the Storm Surgery table and seed commitment update when a lane is selected, and note that Now feels rooted, Later hovers, and Let go lightens.
 11. Select Now and start Focus Sprout, or continue directly.
 12. Drag the seed into the soil, or tap it as the fallback, and confirm the planting ritual changes based on Now, Later, or Let go.
 13. Return to Today and confirm the Inner Garden World shows mood weather, roots, buds, open air, and a mood-specific plant.
-14. Switch the garden from Surface to X-Ray and confirm roots, buds, wind trails, and center-bloom links are visible.
-15. Explore the Garden Map zones for Underground Roots, Waiting Path, Open Sky, and Center Bloom.
-16. Tap the newest seed and confirm the memory card shows theme, action, world change, and seed evolution state without reflection text.
-17. Tap Preview Award Demo to inspect a sample complete-week review garden without changing real check-ins.
-18. Confirm the Weekly Bloom payoff appears with a seven-seed reveal, animated time-lapse, week story, emotional literacy unlock, Week Artifact, closing ritual, next-week seed, privacy note, and private museum shelf.
+14. Inspect Week Shape and confirm the seven days read as emotional terrain with mood points, lane marks, and day landmarks.
+15. Switch the garden from Surface to X-Ray and confirm roots, buds, wind trails, and center-bloom links are visible.
+16. Explore the Garden Map zones for Underground Roots, Waiting Path, Open Sky, and Center Bloom.
+17. Tap the newest seed and confirm the memory card shows theme, action, world change, and seed evolution state without reflection text.
+18. Tap Preview Award Demo to inspect a sample complete-week review garden without changing real check-ins.
+19. Confirm Award Demo Theatre names the 90-second path through Observatory, Live Storm, Surgery Table, Planting Ritual, Garden X-Ray, Week Shape, and Artifact.
+20. Confirm the Weekly Bloom payoff appears with a seven-seed reveal, animated time-lapse, week story, artifact crafting, emotional literacy unlock, Week Artifact, closing ritual, next-week seed, privacy note, and private museum shelf.
 
 ## Submission Response Drafts
 
 ### App Summary
 
-BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school pressure into a living inner garden. The app opens as an inner weather observatory with a moving pressure storm that responds as the student types. The written moment becomes a privacy ritual: words become weather, while BloomMind remembers the shape, not the private words. The student names a mood, drags storm words into Now, Later, and Let go, starts an optional Focus Sprout for one tiny Now step, then plants the feeling through a drag-to-soil ritual. Each seed changes the garden world as roots, buds, or open air, and the garden can be explored through Surface, X-Ray, and map zones. After seven seeds, the app reveals a Weekly Bloom: a private animated time-lapse, week story, emotional literacy unlock, Week Artifact, closing line, next-week intention, and private museum shelf.
+BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school pressure into a living inner garden. The app opens as a Weather Observatory with a moving pressure storm, lens, pressure layers, and inner sky that respond as the student types. The written moment becomes a privacy ritual: words become weather, while BloomMind remembers the shape, not the private words. The student names a mood, drags storm words into Now, Later, and Let go, watches a Storm Surgery table change, starts an optional Focus Sprout for one tiny Now step, then plants the feeling through a drag-to-soil ritual. Each seed changes the garden world as roots, buds, or open air, and the garden can be explored through Surface, Week Shape, X-Ray, and map zones. After seven seeds, the app reveals a Weekly Bloom: a private animated time-lapse, week story, artifact crafting, emotional literacy unlock, Week Artifact, closing line, next-week intention, and private museum shelf.
 
 ### Personal Motivation
 
@@ -77,11 +79,11 @@ Stage 5 personal-story input needed:
 
 ### Creativity And Impact
 
-The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a storm of student-life fragments such as deadlines, grades, messages, and "too much." As the student writes, the storm surfaces live keywords and theme-colored weather. A privacy ritual turns the private reflection into fragments without replaying the full text. A check-in lets the student pull those fragments into Now, Later, and Let go, where each lane has different emotional physics: Now lands with weight, Later hovers, and Let go becomes air. The feeling then transforms through a drag-to-soil ritual. Each planted seed remembers the mood, local theme, and sorting choice, so Now becomes roots, Later becomes buds, and Let go becomes open air in the garden world. Surface, X-Ray, and Garden Map views make those consequences explorable. After seven seeds, the Weekly Bloom reveal turns the whole week into a constellation-style story, animated transformation, emotional literacy unlock, Week Artifact, closing ritual, next-week seed, and private museum shelf.
+The main creative idea is that pressure changes form. Instead of showing a generic checklist, BloomMind begins with a Weather Observatory: a storm of student-life fragments such as deadlines, grades, messages, and "too much" becomes an inner sky with pressure layers. As the student writes, the storm surfaces live keywords and theme-colored weather. A privacy ritual turns the private reflection into fragments without replaying the full text. A check-in lets the student pull those fragments into Now, Later, and Let go, where each lane has different emotional physics: Now lands with weight, Later hovers, and Let go becomes air. Storm Surgery makes that transformation visible around a storm core. The feeling then transforms through a drag-to-soil ritual. Each planted seed remembers the mood, local theme, and sorting choice, so Now becomes roots, Later becomes buds, and Let go becomes open air in the garden world. Surface, Week Shape, X-Ray, and Garden Map views make those consequences explorable. After seven seeds, the Weekly Bloom reveal turns the whole week into a constellation-style story, animated transformation, artifact crafting, emotional literacy unlock, Week Artifact, closing ritual, next-week seed, and private museum shelf.
 
 ### Technical Work
 
-BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. The pressure storm, privacy ritual, emotional physics sorting, Focus Sprout, inner garden world, Garden X-Ray, drag-to-plant ritual, garden map, and Weekly Bloom reveal are drawn with native SwiftUI `Canvas`, `TimelineView`, gradients, symbols, gestures, and shape drawing. A local action engine uses Apple's NaturalLanguage framework when available to assist local theme detection, with transparent keyword rules as a fallback. It analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty, then combines the detected theme with the selected mood to create live storm keywords, safe ritual fragments, thought fragments, one tiny action, animated tap-or-drag Now / Later / Let go sorting, an emotional literacy micro-explanation, a weekly literacy unlock, and a Week Artifact. The planted seed stores only mood, detected theme, and sorting lane, then the garden and Weekly Bloom use those local values to build the world, X-Ray layer, map zones, evolution states, memory cards, week story, time-lapse, artifact, museum shelf, and next-week intention. The reflection text stays local in the prototype and is not displayed again on the action screen or weekly summary.
+BloomMind is built with SwiftUI and local state. The app uses a typed navigation flow, responsive SwiftUI layouts, Dynamic Type support, VoiceOver labels and values, Reduce Motion handling, and unit-tested model logic. The pressure storm, Weather Observatory lens, Storm Surgery table, privacy ritual, emotional physics sorting, Focus Sprout, inner garden world, Week Shape, Garden X-Ray, drag-to-plant ritual, garden map, Artifact Crafting, and Weekly Bloom reveal are drawn with native SwiftUI `Canvas`, `TimelineView`, gradients, symbols, gestures, and shape drawing. A local action engine uses Apple's NaturalLanguage framework when available to assist local theme detection, with transparent keyword rules as a fallback. It analyzes simple reflection themes such as school, friendship, rest, pressure, and uncertainty, then combines the detected theme with the selected mood to create live storm keywords, pressure layers, safe ritual fragments, thought fragments, one tiny action, animated tap-or-drag Now / Later / Let go sorting, an emotional literacy micro-explanation, weekly landscape, weekly literacy unlock, and a Week Artifact. The planted seed stores only mood, detected theme, and sorting lane, then the garden and Weekly Bloom use those local values to build the world, Week Shape, X-Ray layer, map zones, evolution states, memory cards, week story, time-lapse, crafted artifact, museum shelf, and next-week intention. The reflection text stays local in the prototype and is not displayed again on the action screen or weekly summary.
 
 ### Privacy And Safety
 
@@ -100,19 +102,23 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm Growth Action shows the Reflection Privacy Ritual and does not repeat the full private reflection text.
 - Confirm Continue can also be tapped after selecting a mood when Reflection is empty.
 - Confirm the pressure storm stays readable in light and dark appearances.
+- Confirm the Weather Observatory lens, pressure layers, sky line, and lane line are readable on Home.
 - Confirm thought fragments appear on Growth Action and can move between Now, Later, and Let go by tap and drag/drop.
 - Confirm typed storm words appear as draggable live fragments on Growth Action.
+- Confirm Storm Surgery shows the storm core, orbiting fragments, and Now / Later / Let go consequence wells.
 - Confirm Now / Later / Let go fragments show distinct emotional physics.
 - Confirm Focus Sprout appears for Now and does not block planting.
 - Confirm the drag-to-plant ritual works, and confirm tap still plants as the fallback.
 - Confirm Preview Award Demo shows a complete sample week and the Week memory strip without changing real check-ins.
 - Confirm the weekly review card and Weekly Bloom payoff summarize the completed sample week.
 - Confirm the Inner Garden World shows roots, buds, open air, and mood weather.
+- Confirm Week Shape shows the emotional terrain line, mood points, lane marks, and day landmarks.
 - Confirm Garden Map zones explain Underground Roots, Waiting Path, Open Sky, and Center Bloom.
 - Confirm Garden X-Ray shows roots, waiting buds, wind trails, and completed-week center-bloom links.
 - Confirm seed memory cards show mood, theme, tiny action, world change, and evolution state without reflection text.
 - Confirm Weekly Bloom shows the animated storm-to-seeds-to-world-to-bloom time-lapse.
 - Confirm Weekly Bloom includes a named Week Artifact.
+- Confirm Weekly Bloom lets the completed week be Pressed, Released, or Connected before archive.
 - Confirm Weekly Bloom includes the private museum shelf.
 - Confirm Weekly Bloom does not display private reflection text.
 - Confirm the Home screen uses a two-column storm-and-garden layout on iPad/Mac review widths and falls back to a readable single column on narrow widths.
@@ -134,16 +140,16 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 3. Either leave Reflection empty to test the quick path, or type `I have a project deadline and too much to finish.` to test live storm typing and local theme detection.
 4. Confirm Continue becomes enabled after selecting a mood.
 5. Confirm the live storm responds to typed keywords.
-6. Confirm the Growth Action shows the privacy ritual, pressure-themed tiny action, emotional physics fragments, live storm words, and a Tiny idea explanation.
+6. Confirm the Growth Action shows the privacy ritual, pressure-themed tiny action, Storm Surgery table, emotional physics fragments, live storm words, and a Tiny idea explanation.
 7. Start Focus Sprout for Now, or continue directly.
 8. Drag the seed into the soil, or tap it as fallback, and return to Today.
-9. Switch the garden to X-Ray, tap Garden Map zones and the newest plant, then confirm the private memory card avoids reflection text.
-10. Tap Preview Award Demo and confirm the Week memory strip, weekly review card, Inner Garden World, Garden X-Ray, Garden Map, and Weekly Bloom payoff show a complete sample week without changing real check-ins.
-11. Confirm the Weekly Bloom payoff includes the constellation reveal, animated time-lapse, week story, literacy unlock, Week Artifact, closing ritual, next-week seed, privacy note, and private museum shelf.
-11. Rotate or resize to a wider iPad/Mac review width and confirm Home uses the two-column storm-and-garden layout.
-12. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
-13. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
-14. Turn on a larger text size and confirm the main flow remains scrollable and readable.
+9. Inspect Week Shape, switch the garden to X-Ray, tap Garden Map zones and the newest plant, then confirm the private memory card avoids reflection text.
+10. Tap Preview Award Demo and confirm the Award Demo Theatre, Week memory strip, weekly review card, Inner Garden World, Week Shape, Garden X-Ray, Garden Map, and Weekly Bloom payoff show a complete sample week without changing real check-ins.
+11. Confirm the Weekly Bloom payoff includes the constellation reveal, animated time-lapse, week story, artifact crafting, literacy unlock, Week Artifact, closing ritual, next-week seed, privacy note, and private museum shelf.
+12. Rotate or resize to a wider iPad/Mac review width and confirm Home uses the two-column storm-and-garden layout.
+13. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
+14. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
+15. Turn on a larger text size and confirm the main flow remains scrollable and readable.
 
 ## Packaging Notes
 
@@ -170,12 +176,11 @@ bash Scripts/collect_review_environment.sh
 Current generated package verification:
 
 - ZIP path: `SubmissionBuild/BloomMind.swiftpm.zip`
-- ZIP size: 54,258 bytes after the Stage 9 package refresh.
+- ZIP size: 62,089 bytes after the Stage 10 package refresh.
 - Contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The generated ZIP excludes `.DS_Store` and `__MACOSX`.
-- The generated `.swiftpm` package includes the Stage 9 Emotional Physics source files.
-- ZIP contents and source safety checks are clean.
-- The standalone build step in `bash Scripts/verify_submission_package.sh` is currently blocked by Swift/Clang module-cache permissions in this sandbox after external approval hit a usage-limit rejection.
+- The generated `.swiftpm` package includes the Stage 10 Weather Observatory source files.
+- ZIP contents, source safety checks, and standalone package build passed in `bash Scripts/verify_submission_package.sh`.
 
 3.1 readiness notes:
 

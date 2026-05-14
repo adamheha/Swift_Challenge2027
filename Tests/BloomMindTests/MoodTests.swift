@@ -185,6 +185,62 @@ import Testing
     #expect(GrowthLane.now.focusSproutLine == "Start one tiny minute. The root grows because beginning counts.")
 }
 
+@Test func weatherObservatorySnapshotReadsWeekAsPressureLayers() {
+    let preview = CheckInState().demoWeekPreviewState()
+    let snapshot = preview.weatherObservatorySnapshot
+
+    #expect(snapshot.title == "The week has a sky")
+    #expect(snapshot.completedCount == 7)
+    #expect(snapshot.totalCount == 7)
+    #expect(snapshot.dominantMood == .calm)
+    #expect(snapshot.dominantLane == .release)
+    #expect(snapshot.pressureLayers.contains(.task))
+    #expect(snapshot.pressureLayers.contains(.body))
+    #expect(snapshot.pressureLayers.contains(.future))
+    #expect(snapshot.pressureLayers.contains(.social))
+    #expect(snapshot.lensLine == "The lens shows pressure leaving as wind around the center bloom.")
+    #expect(snapshot.accessibilityValue.contains("Pressure layers"))
+}
+
+@Test func emptyWeatherObservatoryWaitsForFirstSignal() {
+    let snapshot = CheckInState().weatherObservatorySnapshot
+
+    #expect(snapshot.title == "Weather Observatory")
+    #expect(snapshot.pressureLayers == [.weather])
+    #expect(snapshot.completedCount == 0)
+    #expect(snapshot.lensLine == "Enter the storm to make one pressure layer visible.")
+}
+
+@Test func weekShapeSummaryKeepsPrivateTextOutOfLandscape() {
+    let reflection = "My private project deadline sentence should not reappear."
+    let seeds = [
+        GardenSeed(mood: .stressed, lane: .now, theme: .pressure),
+        GardenSeed(mood: .stressed, lane: .later, theme: .rest),
+        GardenSeed(mood: .calm, lane: .release, theme: .school)
+    ]
+    let summary = LocalActionEngine.weekShapeSummary(
+        for: seeds,
+        totalCount: CheckInState.weeklyCheckInGoal
+    )
+
+    #expect(summary.title == "The week has terrain")
+    #expect(summary.detail.contains("stressed toward calm"))
+    #expect(summary.terrainLine.contains("pressure ridge"))
+    #expect(summary.landmarks[0] == "Day 1: Pressure became Now")
+    #expect(!summary.detail.contains(reflection))
+    #expect(!summary.terrainLine.contains(reflection))
+    #expect(!summary.landmarks.joined().contains(reflection))
+}
+
+@Test func artifactCraftingChoicesCreateDifferentFinalGestures() {
+    let artifact = LocalActionEngine.weeklyArtifact(for: CheckInState.demoGardenSeeds)
+
+    #expect(ArtifactCraftingChoice.press.craftedLine(for: artifact).hasPrefix("Pressed:"))
+    #expect(ArtifactCraftingChoice.release.craftedLine(for: artifact).contains("next seed"))
+    #expect(ArtifactCraftingChoice.connect.craftedLine(for: artifact) == "Connected: This was a pressure week that learned to make air. The seven seeds become one sky.")
+    #expect(ArtifactCraftingChoice.connect.symbolName == "link.circle")
+}
+
 @Test func seedEvolutionStagesReflectWeekProgressAndLane() {
     let seeds = [
         GardenSeed(mood: .stressed, lane: .release, theme: .pressure),

@@ -27,6 +27,91 @@ struct ReflectionPrivacyRitual: Equatable {
     let accessibilityValue: String
 }
 
+enum PressureLayer: String, CaseIterable, Identifiable, Hashable {
+    case task
+    case social
+    case body
+    case future
+    case weather
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .task:
+            "Task pressure"
+        case .social:
+            "Social pressure"
+        case .body:
+            "Body pressure"
+        case .future:
+            "Future pressure"
+        case .weather:
+            "Unlabeled weather"
+        }
+    }
+
+    var detail: String {
+        switch self {
+        case .task:
+            "Deadlines, homework, projects, or grades are shaping the storm."
+        case .social:
+            "Messages, friends, teams, or belonging are shaping the storm."
+        case .body:
+            "Sleep, rest, energy, or physical tiredness are shaping the storm."
+        case .future:
+            "Unknowns, choices, and what-ifs are shaping the storm."
+        case .weather:
+            "The feeling is present before it has a precise label."
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .task:
+            "book.closed"
+        case .social:
+            "person.2"
+        case .body:
+            "moon"
+        case .future:
+            "questionmark.circle"
+        case .weather:
+            "cloud"
+        }
+    }
+}
+
+struct WeatherObservatorySnapshot: Equatable {
+    let title: String
+    let detail: String
+    let skyLine: String
+    let lensLine: String
+    let pressureLayers: [PressureLayer]
+    let dominantMood: Mood?
+    let dominantLane: GrowthLane?
+    let completedCount: Int
+    let totalCount: Int
+
+    var accessibilityValue: String {
+        let layers = pressureLayers.map(\.title).joined(separator: ", ")
+        return "\(detail) \(skyLine) \(lensLine) Pressure layers: \(layers). \(completedCount) of \(totalCount) seeds observed."
+    }
+}
+
+struct WeekShapeSummary: Equatable {
+    let title: String
+    let detail: String
+    let terrainLine: String
+    let landmarks: [String]
+    let completedCount: Int
+    let totalCount: Int
+
+    var accessibilityValue: String {
+        "\(detail) \(terrainLine) \(completedCount) of \(totalCount) seeds in this week's shape."
+    }
+}
+
 enum GrowthLane: String, CaseIterable, Identifiable {
     case now
     case later
@@ -325,6 +410,58 @@ struct WeeklyBloomPayoff: Equatable {
     }
 }
 
+enum ArtifactCraftingChoice: String, CaseIterable, Identifiable {
+    case press
+    case release
+    case connect
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .press:
+            "Press"
+        case .release:
+            "Release"
+        case .connect:
+            "Connect"
+        }
+    }
+
+    var detail: String {
+        switch self {
+        case .press:
+            "Keep the week as a quiet specimen."
+        case .release:
+            "Let the week become open air."
+        case .connect:
+            "Tie the seven seeds into one sky."
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .press:
+            "rectangle.compress.vertical"
+        case .release:
+            "wind"
+        case .connect:
+            "link.circle"
+        }
+    }
+
+    func craftedLine(for artifact: WeeklyBloomArtifact) -> String {
+        switch self {
+        case .press:
+            "Pressed: \(artifact.line) The week becomes a specimen you can keep without keeping the private words."
+        case .release:
+            "Released: \(artifact.line) The week leaves more room around the next seed."
+        case .connect:
+            "Connected: \(artifact.line) The seven seeds become one sky."
+        }
+    }
+}
+
 struct CheckInState {
     static let reflectionCharacterLimit = 160
     static let weeklyCheckInGoal = 7
@@ -480,6 +617,21 @@ struct CheckInState {
             detail: "\(completedCheckInsThisWeek) storms have become seeds. \(dominantMood.rawValue) is the clearest pattern so far.",
             accentMood: newestMood,
             completedCount: completedCheckInsThisWeek,
+            totalCount: Self.weeklyCheckInGoal
+        )
+    }
+
+    var weatherObservatorySnapshot: WeatherObservatorySnapshot {
+        LocalActionEngine.weatherObservatorySnapshot(
+            for: gardenSeedsThisWeek,
+            completedCount: completedCheckInsThisWeek,
+            totalCount: Self.weeklyCheckInGoal
+        )
+    }
+
+    var weekShapeSummary: WeekShapeSummary {
+        LocalActionEngine.weekShapeSummary(
+            for: gardenSeedsThisWeek,
             totalCount: Self.weeklyCheckInGoal
         )
     }

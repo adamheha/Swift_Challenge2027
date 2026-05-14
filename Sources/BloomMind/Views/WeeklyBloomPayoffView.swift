@@ -7,6 +7,7 @@ struct WeeklyBloomPayoffView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var reveal = false
+    @State private var craftingChoice: ArtifactCraftingChoice = .connect
 
     private var accentColor: Color {
         payoff.dominantMood?.tint ?? .green
@@ -81,10 +82,18 @@ struct WeeklyBloomPayoffView: View {
                 )
             }
 
+            ArtifactCraftingRitualView(
+                seeds: seeds,
+                tint: accentColor,
+                artifact: payoff.artifact,
+                selectedChoice: $craftingChoice
+            )
+
             PressedBloomArchivePreviewView(
                 seeds: seeds,
                 tint: accentColor,
-                artifact: payoff.artifact
+                artifact: payoff.artifact,
+                craftedLine: craftingChoice.craftedLine(for: payoff.artifact)
             )
 
             HStack(alignment: .top, spacing: 10) {
@@ -153,6 +162,135 @@ struct WeeklyBloomPayoffView: View {
 
             Spacer(minLength: 0)
         }
+    }
+}
+
+private struct ArtifactCraftingRitualView: View {
+    let seeds: [GardenSeed]
+    let tint: Color
+    let artifact: WeeklyBloomArtifact
+    @Binding var selectedChoice: ArtifactCraftingChoice
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 180 : 128), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(tint.opacity(0.14))
+
+                    Image(systemName: selectedChoice.symbolName)
+                        .font(.title3.bold())
+                        .foregroundStyle(tint)
+                        .accessibilityHidden(true)
+                }
+                .frame(width: 46, height: 46)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Craft the week artifact")
+                        .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text("Choose the final gesture for this completed week. The private words still stay private; only the shape becomes an artifact.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+            }
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(ArtifactCraftingChoice.allCases) { choice in
+                    Button {
+                        withAnimation(.spring(response: 0.34, dampingFraction: 0.82)) {
+                            selectedChoice = choice
+                        }
+                    } label: {
+                        ArtifactCraftChoiceButton(
+                            choice: choice,
+                            isSelected: selectedChoice == choice,
+                            tint: tint
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(selectedChoice == choice ? .isSelected : [])
+                }
+            }
+
+            HStack(alignment: .top, spacing: 10) {
+                ArtifactSpecimenView(
+                    seeds: seeds,
+                    tint: tint,
+                    artifact: artifact
+                )
+                .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(selectedChoice.title)
+                        .font(.subheadline.bold())
+                        .foregroundStyle(tint)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(selectedChoice.craftedLine(for: artifact))
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .layoutPriority(1)
+            }
+            .padding(10)
+            .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        }
+        .padding(12)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.18), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Craft the week artifact")
+        .accessibilityValue(selectedChoice.craftedLine(for: artifact))
+    }
+}
+
+private struct ArtifactCraftChoiceButton: View {
+    let choice: ArtifactCraftingChoice
+    let isSelected: Bool
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Image(systemName: choice.symbolName)
+                .font(.headline.bold())
+                .foregroundStyle(tint)
+                .accessibilityHidden(true)
+
+            Text(choice.title)
+                .font(.caption.bold())
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(choice.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 104, alignment: .topLeading)
+        .padding(10)
+        .background(tint.opacity(isSelected ? 0.17 : 0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(isSelected ? 0.56 : 0.14), lineWidth: isSelected ? 2 : 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(choice.title)
+        .accessibilityValue(choice.detail)
     }
 }
 
@@ -647,6 +785,7 @@ private struct PressedBloomArchivePreviewView: View {
     let seeds: [GardenSeed]
     let tint: Color
     let artifact: WeeklyBloomArtifact
+    let craftedLine: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -668,7 +807,7 @@ private struct PressedBloomArchivePreviewView: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Text(artifact.line)
+                    Text(craftedLine)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.primary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -689,7 +828,7 @@ private struct PressedBloomArchivePreviewView: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(artifact.title)
-        .accessibilityValue("\(artifact.detail) \(artifact.line)")
+        .accessibilityValue("\(artifact.detail) \(craftedLine)")
     }
 }
 

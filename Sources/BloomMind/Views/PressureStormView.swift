@@ -244,11 +244,17 @@ struct StormToBloomHeroView: View {
     let completedCount: Int
     let goalCount: Int
     let prompt: String
+    let snapshot: WeatherObservatorySnapshot
+    let seeds: [GardenSeed]
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var heroHeight: CGFloat {
-        dynamicTypeSize.isAccessibilitySize ? 360 : 300
+        dynamicTypeSize.isAccessibilitySize ? 440 : 360
+    }
+
+    private var observatoryTint: Color {
+        snapshot.dominantMood?.tint ?? latestMood?.tint ?? .green
     }
 
     var body: some View {
@@ -259,10 +265,17 @@ struct StormToBloomHeroView: View {
                 showsLabels: !isCompleteToday
             )
 
-            VStack {
-                HStack {
-                    Spacer()
+            WeatherObservatoryLensView(
+                snapshot: snapshot,
+                seeds: seeds,
+                tint: observatoryTint
+            )
+            .padding(16)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            .allowsHitTesting(false)
 
+            VStack(alignment: .leading) {
+                HStack {
                     Label("Inner weather observatory", systemImage: "sparkles")
                         .font(.caption.bold())
                         .foregroundStyle(.white.opacity(0.88))
@@ -270,6 +283,8 @@ struct StormToBloomHeroView: View {
                         .padding(.vertical, 7)
                         .background(Color.white.opacity(0.14), in: Capsule())
                         .shadow(color: .black.opacity(0.30), radius: 4, x: 0, y: 2)
+
+                    Spacer()
                 }
 
                 Spacer()
@@ -289,19 +304,25 @@ struct StormToBloomHeroView: View {
             .allowsHitTesting(false)
 
             VStack(alignment: .leading, spacing: 12) {
-                Text(isCompleteToday ? "A seed is already growing." : "Turn the storm into a seed.")
+                Text(snapshot.title)
+                    .font(.caption.bold())
+                    .foregroundStyle(observatoryTint.opacity(0.95))
+                    .textCase(.uppercase)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(isCompleteToday ? "A seed is already growing." : "Turn the storm into weather.")
                     .font(.largeTitle.bold())
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
                     .shadow(color: .black.opacity(0.5), radius: 8, x: 0, y: 3)
 
-                Text(prompt)
+                Text(snapshot.skyLine)
                     .font(.headline)
                     .foregroundStyle(.white.opacity(0.82))
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(isCompleteToday ? "The garden remembers the shape, not the private words." : "Enter once, pull the weather apart, and plant one small shape.")
+                Text(isCompleteToday ? "The garden remembers the shape, not the private words." : prompt)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.white.opacity(0.72))
                     .fixedSize(horizontal: false, vertical: true)
@@ -327,8 +348,185 @@ struct StormToBloomHeroView: View {
         }
         .shadow(color: Color.black.opacity(0.18), radius: 22, x: 0, y: 14)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(isCompleteToday ? "A seed is already growing" : "Turn the storm into a seed")
-        .accessibilityValue("\(progressPercent) percent, \(completedCount) of \(goalCount) check-ins complete")
+        .accessibilityLabel(isCompleteToday ? "A seed is already growing" : "Weather Observatory")
+        .accessibilityValue("\(snapshot.accessibilityValue) \(progressPercent) percent, \(completedCount) of \(goalCount) check-ins complete")
+    }
+}
+
+private struct WeatherObservatoryLensView: View {
+    let snapshot: WeatherObservatorySnapshot
+    let seeds: [GardenSeed]
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .trailing, spacing: 10) {
+            ObservatoryLensCanvasView(
+                snapshot: snapshot,
+                seeds: seeds,
+                tint: tint
+            )
+            .frame(width: 156, height: 156)
+            .accessibilityHidden(true)
+
+            VStack(alignment: .trailing, spacing: 6) {
+                Text(snapshot.detail)
+                    .font(.caption.bold())
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.trailing)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(snapshot.lensLine)
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(.white.opacity(0.76))
+                    .multilineTextAlignment(.trailing)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                WeatherLayerRackView(
+                    layers: snapshot.pressureLayers,
+                    tint: tint
+                )
+            }
+            .frame(maxWidth: 230, alignment: .trailing)
+            .padding(10)
+            .background(Color.black.opacity(0.30), in: RoundedRectangle(cornerRadius: 8))
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.white.opacity(0.18), lineWidth: 1)
+            }
+        }
+    }
+}
+
+private struct ObservatoryLensCanvasView: View {
+    let snapshot: WeatherObservatorySnapshot
+    let seeds: [GardenSeed]
+    let tint: Color
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            Canvas { context, size in
+                drawLens(
+                    in: &context,
+                    size: size,
+                    time: reduceMotion ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                )
+            }
+        }
+    }
+
+    private func drawLens(
+        in context: inout GraphicsContext,
+        size: CGSize,
+        time: TimeInterval
+    ) {
+        let width = max(size.width, 1)
+        let height = max(size.height, 1)
+        let center = CGPoint(x: width * 0.5, y: height * 0.5)
+        let radius = min(width, height) * 0.42
+        let pulse = CGFloat((sin(time * 0.8) + 1) / 2)
+        let lensRect = CGRect(
+            x: center.x - radius,
+            y: center.y - radius,
+            width: radius * 2,
+            height: radius * 2
+        )
+
+        context.fill(
+            Path(ellipseIn: lensRect),
+            with: .radialGradient(
+                Gradient(colors: [
+                    tint.opacity(0.34 + pulse * 0.08),
+                    Color.white.opacity(0.12),
+                    Color.black.opacity(0.18)
+                ]),
+                center: center,
+                startRadius: 4,
+                endRadius: radius
+            )
+        )
+
+        for ring in 0..<3 {
+            let inset = CGFloat(ring) * 18
+            context.stroke(
+                Path(ellipseIn: lensRect.insetBy(dx: inset, dy: inset)),
+                with: .color(Color.white.opacity(0.24 - Double(ring) * 0.04)),
+                style: StrokeStyle(lineWidth: ring == 0 ? 2.2 : 1.1, lineCap: .round)
+            )
+        }
+
+        let layerCount = max(snapshot.pressureLayers.count, 1)
+        for index in 0..<layerCount {
+            let angle = (Double(index) / Double(layerCount)) * .pi * 2 + time * 0.08
+            let end = CGPoint(
+                x: center.x + cos(angle) * radius * 0.86,
+                y: center.y + sin(angle) * radius * 0.86
+            )
+            var spoke = Path()
+            spoke.move(to: center)
+            spoke.addLine(to: end)
+            context.stroke(
+                spoke,
+                with: .color(Color.white.opacity(0.12)),
+                style: StrokeStyle(lineWidth: 1, lineCap: .round)
+            )
+        }
+
+        for (index, seed) in seeds.prefix(7).enumerated() {
+            let seedCount = Double(max(seeds.count, 1))
+            let orbitIndex = Double(index)
+            let orbitOffset = time * 0.04
+            let angle = (orbitIndex / seedCount) * Double.pi * 2 - Double.pi / 2 + orbitOffset
+            let radiusStep = CGFloat(index % 3) * 0.12
+            let pointRadius = radius * (0.46 + radiusStep)
+            let point = CGPoint(
+                x: center.x + cos(angle) * pointRadius,
+                y: center.y + sin(angle) * pointRadius
+            )
+            let dotSize = CGFloat(8 + index % 3 * 2)
+            context.fill(
+                Path(ellipseIn: CGRect(
+                    x: point.x - dotSize / 2,
+                    y: point.y - dotSize / 2,
+                    width: dotSize,
+                    height: dotSize
+                )),
+                with: .color(seed.mood.tint.opacity(0.86))
+            )
+        }
+
+        context.fill(
+            Path(ellipseIn: CGRect(x: center.x - 11, y: center.y - 11, width: 22, height: 22)),
+            with: .color(tint.opacity(0.88))
+        )
+        context.stroke(
+            Path(ellipseIn: CGRect(x: center.x - 18, y: center.y - 18, width: 36, height: 36)),
+            with: .color(Color.white.opacity(0.34)),
+            lineWidth: 1.2
+        )
+    }
+}
+
+private struct WeatherLayerRackView: View {
+    let layers: [PressureLayer]
+    let tint: Color
+
+    var body: some View {
+        HStack(spacing: 5) {
+            ForEach(layers.prefix(4)) { layer in
+                Image(systemName: layer.symbolName)
+                    .font(.caption2.bold())
+                    .foregroundStyle(.white)
+                    .frame(width: 24, height: 24)
+                    .background(tint.opacity(0.32), in: Circle())
+                    .accessibilityLabel(layer.title)
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Pressure layers")
+        .accessibilityValue(layers.map(\.title).joined(separator: ", "))
     }
 }
 

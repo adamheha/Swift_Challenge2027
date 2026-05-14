@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 3.2 Stage 9 - Emotional Physics Complete
+Current stage: BloomMind 4.0 Stage 10 - Weather Observatory Complete
 
-Current branch: `codex/bloommind-3-2-emotional-physics`
+Current branch: `codex/bloommind-4-weather-observatory`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 3.3 Stage 10 - Device Review, Personal Story, and Final Submission Rehearsal
+Next stage: BloomMind 4.1 Stage 11 - Personal Origin, Device Review, and Final Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -306,6 +306,35 @@ Definition of done:
 - Growth Action shows privacy ritual, emotional physics fragments, and Focus Sprout.
 - Home shows Garden X-Ray and the stronger first-five-seconds cue.
 - Weekly Bloom ends with an artifact that enters a private museum shelf.
+
+## BloomMind 4.0 Stage 10 - Weather Observatory
+
+Status: Complete
+
+Goal: Make BloomMind feel like entering a private emotional universe, with a stronger first impression, richer weekly meaning, and a more participatory ending.
+
+Completed in this branch:
+
+- Added `PressureLayer`, `WeatherObservatorySnapshot`, `WeekShapeSummary`, and `ArtifactCraftingChoice` so the new visuals are driven by local model logic.
+- Rebuilt the Home hero into a Weather Observatory with a moving lens, seed orbit, pressure layer rack, sky line, and lane-specific lens line.
+- Added Award Demo Theatre to Preview Award Demo so the evaluator path is visible: Observatory, Live Storm, Surgery Table, Planting Ritual, Garden X-Ray, Week Shape, and Artifact.
+- Added Storm Surgery to Growth Action so fragments orbit a storm core and connect to Now roots, Later suspension, and Let go wind.
+- Added Week Shape to the garden so the week becomes an emotional terrain line with mood points, lane marks, and day landmarks.
+- Added Artifact Crafting to Weekly Bloom so a completed week can be Pressed, Released, or Connected before entering the private museum shelf.
+- Added unit tests for observatory snapshots, pressure layers, week shape privacy, and artifact crafting gestures.
+
+Remaining:
+
+- Smoke check in full Xcode or Swift Playgrounds.
+- Smoke check on iPad or an iPad-sized simulator.
+- Replace the generic origin line with the applicant's true personal story.
+- Refresh official Apple rules close to the real 2027 submission window.
+
+Definition of done:
+
+- `swift test` passes.
+- Preview Award Demo shows the complete 90-second evaluator path through Weather Observatory, Storm Surgery, Week Shape, Artifact Crafting, and Weekly Bloom.
+- No private reflection text is resurfaced in weekly summaries, landscapes, or artifacts.
 
 ## Stage 0 - Award Research
 
