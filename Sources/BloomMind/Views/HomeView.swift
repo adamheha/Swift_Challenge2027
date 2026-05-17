@@ -8,6 +8,8 @@ struct HomeView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var isPreviewingDemoWeek = false
     @State private var isSoundscapeEnabled = false
+    @State private var isShowingObservatoryTools = false
+    @State private var isShowingIdeaStudio = false
 
     private var pageSpacing: CGFloat {
         dynamicTypeSize.isAccessibilitySize ? 22 : 24
@@ -23,6 +25,21 @@ struct HomeView: View {
             completedCount: gardenDisplayState.completedCheckInsThisWeek,
             totalCount: CheckInState.weeklyCheckInGoal
         )
+    }
+
+    private var experiencePlan: ExperienceSurfacePlan {
+        BloomMindExperienceOrchestrator.surfacePlan(
+            for: gardenDisplayState,
+            isPreviewingDemoWeek: isPreviewingDemoWeek
+        )
+    }
+
+    private var shouldShowObservatoryTools: Bool {
+        isShowingObservatoryTools || experiencePlan.showObservatoryTools
+    }
+
+    private var shouldShowIdeaStudio: Bool {
+        isShowingIdeaStudio || experiencePlan.showIdeaStudio
     }
 
     var body: some View {
@@ -89,25 +106,49 @@ struct HomeView: View {
 
     private var sensorySection: some View {
         VStack(spacing: 12) {
-            WeatherInstrumentPanelView(
-                readings: SensoryObservatory.weatherInstruments(
-                    for: gardenDisplayState.gardenSeedsThisWeek,
-                    completedCount: gardenDisplayState.completedCheckInsThisWeek,
-                    totalCount: CheckInState.weeklyCheckInGoal
-                ),
+            ExperienceFocusRailView(
+                moment: experiencePlan.moment,
+                cards: experiencePlan.focusCards,
                 tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green
             )
 
-            SoundscapeConsoleView(
-                profile: SensoryObservatory.soundscape(for: gardenDisplayState.gardenSeedsThisWeek),
-                tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green,
-                isEnabled: $isSoundscapeEnabled
-            )
-
-            IdeaCycleStudioView(
-                cycles: BloomMindIdeaCycles.completedCycles(),
+            ExperienceRevealControlsView(
+                isShowingObservatoryTools: shouldShowObservatoryTools,
+                isShowingIdeaStudio: shouldShowIdeaStudio,
                 tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green
-            )
+            ) {
+                withAnimation(.spring(response: 0.34, dampingFraction: 0.86)) {
+                    isShowingObservatoryTools.toggle()
+                }
+            } onToggleIdeaStudio: {
+                withAnimation(.spring(response: 0.34, dampingFraction: 0.86)) {
+                    isShowingIdeaStudio.toggle()
+                }
+            }
+
+            if shouldShowObservatoryTools {
+                WeatherInstrumentPanelView(
+                    readings: SensoryObservatory.weatherInstruments(
+                        for: gardenDisplayState.gardenSeedsThisWeek,
+                        completedCount: gardenDisplayState.completedCheckInsThisWeek,
+                        totalCount: CheckInState.weeklyCheckInGoal
+                    ),
+                    tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green
+                )
+
+                SoundscapeConsoleView(
+                    profile: SensoryObservatory.soundscape(for: gardenDisplayState.gardenSeedsThisWeek),
+                    tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green,
+                    isEnabled: $isSoundscapeEnabled
+                )
+            }
+
+            if shouldShowIdeaStudio {
+                IdeaCycleStudioView(
+                    cycles: BloomMindIdeaCycles.completedCycles(),
+                    tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green
+                )
+            }
         }
     }
 
@@ -220,6 +261,141 @@ struct HomeView: View {
                 ? CheckInState.showMyWeekActionAccessibilityHint
                 : CheckInState.previewDemoWeekActionAccessibilityHint
         )
+    }
+}
+
+private struct ExperienceFocusRailView: View {
+    let moment: ExperienceTriggerMoment
+    let cards: [ExperienceFocusCard]
+    let tint: Color
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: 146), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 10) {
+                Label(moment.title, systemImage: moment.symbolName)
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                Text("Smart trigger")
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(tint.opacity(0.12), in: Capsule())
+            }
+
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach(cards) { card in
+                    ExperienceFocusCardView(card: card, tint: tint)
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Smart trigger")
+        .accessibilityValue("\(moment.title). \(cards.count) focused surfaces are shown.")
+    }
+}
+
+private struct ExperienceFocusCardView: View {
+    let card: ExperienceFocusCard
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: card.symbolName)
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+                    .accessibilityHidden(true)
+
+                Text(card.surface)
+                    .font(.caption2.bold())
+                    .foregroundStyle(tint)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            }
+
+            Text(card.title)
+                .font(.caption.bold())
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(card.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 112, alignment: .topLeading)
+        .padding(10)
+        .background(tint.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.12), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(card.title)
+        .accessibilityValue("\(card.surface). \(card.detail)")
+    }
+}
+
+private struct ExperienceRevealControlsView: View {
+    let isShowingObservatoryTools: Bool
+    let isShowingIdeaStudio: Bool
+    let tint: Color
+    let onToggleObservatoryTools: () -> Void
+    let onToggleIdeaStudio: () -> Void
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) {
+                controls
+            }
+
+            VStack(spacing: 8) {
+                controls
+            }
+        }
+    }
+
+    private var controls: some View {
+        Group {
+            Button(action: onToggleObservatoryTools) {
+                Label(
+                    isShowingObservatoryTools ? "Hide observatory tools" : "Reveal observatory tools",
+                    systemImage: isShowingObservatoryTools ? "eye.slash" : "gauge"
+                )
+                .font(.caption.bold())
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .tint(tint)
+
+            Button(action: onToggleIdeaStudio) {
+                Label(
+                    isShowingIdeaStudio ? "Hide idea studio" : "Reveal idea studio",
+                    systemImage: isShowingIdeaStudio ? "eye.slash" : "wand.and.stars"
+                )
+                .font(.caption.bold())
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .tint(tint)
+        }
     }
 }
 

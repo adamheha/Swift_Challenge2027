@@ -814,6 +814,61 @@ import Testing
     #expect(resonance.detail.contains("50 sparks"))
 }
 
+@Test func experienceOrchestratorCreatesOneHundredSmartTriggerRules() {
+    let rules = BloomMindExperienceOrchestrator.allTriggerRules()
+    let ruleIDs = rules.map(\.id)
+    let momentCounts = Dictionary(grouping: rules, by: \.moment).mapValues(\.count)
+
+    #expect(rules.count == 100)
+    #expect(Set(ruleIDs).count == 100)
+    #expect(ExperienceTriggerMoment.allCases.count == 10)
+    #expect(momentCounts.values.allSatisfy { $0 == 10 })
+    #expect(rules.contains { $0.title == "One-minute promise" })
+    #expect(rules.contains { $0.title == "Memory-without-text seal" })
+}
+
+@Test func experienceOrchestratorGatesSurfacesByMoment() {
+    let empty = CheckInState()
+    let emptyPlan = BloomMindExperienceOrchestrator.surfacePlan(
+        for: empty,
+        isPreviewingDemoWeek: false
+    )
+    let partial = CheckInState(
+        completedCheckIns: 3,
+        gardenMoods: [.calm, .focused, .tired],
+        gardenSeeds: [
+            GardenSeed(mood: .calm, lane: .now, theme: .school),
+            GardenSeed(mood: .focused, lane: .now, theme: .pressure),
+            GardenSeed(mood: .tired, lane: .later, theme: .rest)
+        ]
+    )
+    let partialPlan = BloomMindExperienceOrchestrator.surfacePlan(
+        for: partial,
+        isPreviewingDemoWeek: false
+    )
+    let demoPlan = BloomMindExperienceOrchestrator.surfacePlan(
+        for: partial,
+        isPreviewingDemoWeek: true
+    )
+    let weekly = CheckInState().demoWeekPreviewState()
+    let weeklyPlan = BloomMindExperienceOrchestrator.surfacePlan(
+        for: weekly,
+        isPreviewingDemoWeek: false
+    )
+
+    #expect(emptyPlan.moment == .arrival)
+    #expect(emptyPlan.showObservatoryTools)
+    #expect(!emptyPlan.showIdeaStudio)
+    #expect(partialPlan.moment == .needsCheckIn)
+    #expect(partialPlan.showIdeaStudio)
+    #expect(partialPlan.focusCards.count == 3)
+    #expect(demoPlan.moment == .demoDirector)
+    #expect(demoPlan.showObservatoryTools)
+    #expect(demoPlan.showIdeaStudio)
+    #expect(weeklyPlan.moment == .weeklyBloom)
+    #expect(weeklyPlan.showWeeklyPayoff)
+}
+
 @MainActor
 @Test func stepProgressAccessibilityClampsOutOfRangeSteps() {
     let beforeFirstStep = StepProgressView(currentStep: 0)

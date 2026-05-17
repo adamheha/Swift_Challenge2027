@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 5.3 Stage 14 - Five Idea Cycles Complete
+Current stage: BloomMind 5.4 Stage 15 - Triggered Orchestration Complete
 
-Current branch: `codex/bloommind-5-3-five-idea-cycles`
+Current branch: `codex/bloommind-5-4-triggered-orchestration`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 5.4 Stage 15 - Applicant Story Finalization, Device Review, and Final Submission Rehearsal
+Next stage: BloomMind 5.5 Stage 16 - Applicant Story Finalization, Device Review, and Final Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -467,7 +467,7 @@ Completed in this branch:
 
 Remaining:
 
-- Decide which of the 50 sparks should become fully interactive production features in Stage 15 or later.
+- Decide which of the 50 sparks should become fully interactive production features in Stage 16 or later.
 - Replace the placeholder origin/personal meaning line with the applicant's true specific story before final submission.
 - Smoke check in full Xcode or Swift Playgrounds.
 - Smoke check on iPad or an iPad-sized simulator.
@@ -477,6 +477,38 @@ Definition of done:
 - `swift test` passes with five idea-cycle tests.
 - Home shows the Idea Cycle Studio and all five rounds.
 - The project now contains 50 concrete future-facing ideas in-app, not only in planning docs.
+
+## BloomMind 5.4 Stage 15 - Triggered Orchestration
+
+Status: Complete
+
+Goal: Make BloomMind feel intentionally composed instead of crowded by deciding when each rich surface should appear.
+
+Completed in this branch:
+
+- Added `ExperienceOrchestrator.swift`.
+- Added 100 smart trigger rules across 10 moments: first arrival, today needs a seed, calibration, sorting, post-planting, partial garden, almost bloom, weekly bloom, demo director, and quiet archive.
+- Added `ExperienceSurfacePlan` to decide when Observatory Tools, Idea Cycle Studio, garden depth, and Weekly Bloom should be visible.
+- Added a Smart Trigger rail on Home with three focused cards for the current moment.
+- Added contextual reveal controls so Observatory Tools and Idea Cycle Studio are available without always being on screen.
+- Moved the Home sensory area from always-show-everything to context-first reveal behavior.
+- Added unit coverage for the 100-rule trigger map and surface gating.
+- Added `BloomMind_Stage15TriggeredOrchestration.md` with the design rationale and verification notes.
+- Refreshed `SubmissionBuild/BloomMind.swiftpm.zip` with Stage 15 sources; current ZIP size is 95,751 bytes.
+
+Remaining:
+
+- Tune the exact trigger priorities after manual device review.
+- Replace the placeholder origin/personal meaning line with the applicant's true specific story before final submission.
+- Smoke check in full Xcode or Swift Playgrounds.
+- Smoke check on iPad or an iPad-sized simulator.
+
+Definition of done:
+
+- `swift test` passes with orchestration coverage.
+- Home no longer forces all rich systems onto the screen at once.
+- Demo mode still opens enough depth for judge review.
+- The 100 trigger rules are local, testable, and privacy-safe.
 
 ## Stage 0 - Award Research
 
