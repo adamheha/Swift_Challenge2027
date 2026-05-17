@@ -28,3 +28,28 @@ Implemented:
 Verification:
 
 - `swift test`: passed with 57 tests.
+
+## Round 2 - Return Hooks
+
+Ten ideas:
+
+1. Tomorrow postcard for the next self.
+2. No-shame streak language.
+3. Surprise seed after a completed week.
+4. Mini quest that asks the student to notice one small thing.
+5. Unfinished cloud at the garden edge.
+6. Weekly invitation toward the next artifact.
+7. Garden postcard inside the private app.
+8. Time-window whispers for morning, afternoon, and evening.
+9. Focus breadcrumb from a Now choice.
+10. Soft reminder script that sounds human instead of demanding.
+
+Implemented:
+
+- Added Round 2 to `IdeaCycleSystems.swift`.
+- The Home Idea Cycle Studio now supports multiple rounds and switches between them.
+- Added unit coverage confirming Round 2 adds exactly ten return-focused sparks and brings the total to twenty ideas.
+
+Verification:
+
+- `swift test`: passed with 58 tests.

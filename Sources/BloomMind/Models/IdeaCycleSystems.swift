@@ -23,7 +23,8 @@ struct IdeaCycleStage: Equatable, Identifiable {
 enum BloomMindIdeaCycles {
     static func completedCycles() -> [IdeaCycleStage] {
         [
-            livingMicroDetails
+            livingMicroDetails,
+            returnHooks
         ]
     }
 
@@ -107,6 +108,87 @@ enum BloomMindIdeaCycles {
                     detail: "The chosen weekly line can glow as a promise rather than sitting like normal text.",
                     dimension: "Ritual",
                     symbolName: "quote.bubble"
+                )
+            ]
+        )
+    }
+
+    static var returnHooks: IdeaCycleStage {
+        IdeaCycleStage(
+            id: "return-hooks",
+            title: "Round 2: Return Hooks",
+            focus: "Give the student gentle reasons to come back without streak pressure or shame.",
+            implementedResult: "The Idea Cycle Studio now includes a return-focused round that frames tomorrow as curiosity, not obligation.",
+            sparks: [
+                IdeaCycleSpark(
+                    id: "tomorrow-postcard",
+                    title: "Tomorrow postcard",
+                    detail: "After a check-in, the garden can send a tiny visual postcard to tomorrow's self.",
+                    dimension: "Return",
+                    symbolName: "postcard"
+                ),
+                IdeaCycleSpark(
+                    id: "no-shame-streak",
+                    title: "No-shame streak",
+                    detail: "Progress language can celebrate returns without punishing missed days.",
+                    dimension: "Trust",
+                    symbolName: "calendar.badge.clock"
+                ),
+                IdeaCycleSpark(
+                    id: "surprise-seed",
+                    title: "Surprise seed",
+                    detail: "A completed week can leave one hidden seed that opens only after the next check-in.",
+                    dimension: "Wonder",
+                    symbolName: "gift"
+                ),
+                IdeaCycleSpark(
+                    id: "mini-quest",
+                    title: "Mini quest",
+                    detail: "The next visit can ask the student to notice one small thing, not complete a task list.",
+                    dimension: "Content",
+                    symbolName: "flag.checkered"
+                ),
+                IdeaCycleSpark(
+                    id: "unfinished-cloud",
+                    title: "Unfinished cloud",
+                    detail: "If the day is not checked in, a soft cloud waits at the edge of the garden.",
+                    dimension: "Visual",
+                    symbolName: "cloud"
+                ),
+                IdeaCycleSpark(
+                    id: "weekly-invitation",
+                    title: "Weekly invitation",
+                    detail: "The Home lens can invite the student toward the next emotional artifact.",
+                    dimension: "Story",
+                    symbolName: "arrow.forward.circle"
+                ),
+                IdeaCycleSpark(
+                    id: "garden-postcard",
+                    title: "Garden postcard",
+                    detail: "A tiny share-free postcard can summarize the week privately inside the app.",
+                    dimension: "Memory",
+                    symbolName: "photo"
+                ),
+                IdeaCycleSpark(
+                    id: "time-window-whisper",
+                    title: "Time-window whisper",
+                    detail: "Morning, afternoon, and evening can each offer a different one-line invitation.",
+                    dimension: "Timing",
+                    symbolName: "clock"
+                ),
+                IdeaCycleSpark(
+                    id: "focus-breadcrumb",
+                    title: "Focus breadcrumb",
+                    detail: "A Now choice can leave a breadcrumb that helps restart without rereading the reflection.",
+                    dimension: "Action",
+                    symbolName: "point.topleft.down.curvedto.point.bottomright.up"
+                ),
+                IdeaCycleSpark(
+                    id: "soft-reminder-script",
+                    title: "Soft reminder script",
+                    detail: "Reminder copy can sound like a kind older student instead of an app demanding activity.",
+                    dimension: "Voice",
+                    symbolName: "bell.badge"
                 )
             ]
         )

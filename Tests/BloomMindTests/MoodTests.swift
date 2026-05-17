@@ -747,16 +747,26 @@ import Testing
 }
 
 @Test func ideaCycleRoundOneCreatesTenLivingMicroDetails() {
-    let cycles = BloomMindIdeaCycles.completedCycles()
-    let firstCycle = cycles[0]
+    let firstCycle = BloomMindIdeaCycles.livingMicroDetails
 
-    #expect(cycles.count == 1)
-    #expect(BloomMindIdeaCycles.totalIdeaCount == 10)
     #expect(firstCycle.title == "Round 1: Living Micro-Details")
     #expect(firstCycle.sparks.count == 10)
     #expect(firstCycle.sparks.contains { $0.id == "thought-fireflies" })
     #expect(firstCycle.sparks.contains { $0.dimension == "Ritual" })
     #expect(firstCycle.accessibilityValue.contains("10 ideas"))
+}
+
+@Test func ideaCycleRoundTwoAddsTenReturnHooks() {
+    let cycles = BloomMindIdeaCycles.completedCycles()
+    let secondCycle = BloomMindIdeaCycles.returnHooks
+
+    #expect(cycles.count == 2)
+    #expect(BloomMindIdeaCycles.totalIdeaCount == 20)
+    #expect(secondCycle.title == "Round 2: Return Hooks")
+    #expect(secondCycle.sparks.count == 10)
+    #expect(secondCycle.sparks.contains { $0.id == "no-shame-streak" })
+    #expect(secondCycle.sparks.contains { $0.dimension == "Return" })
+    #expect(secondCycle.implementedResult.contains("tomorrow"))
 }
 
 @MainActor
