@@ -79,3 +79,28 @@ Implemented:
 Verification:
 
 - `swift test`: passed with 59 tests.
+
+## Round 4 - Narrative Depth
+
+Ten ideas:
+
+1. Origin fragments that feel like real student life.
+2. Turning-point marker when storm reveals seed.
+3. Scene titles for major steps.
+4. Protagonist voice in copy.
+5. Before/after sky in Weekly Bloom.
+6. Choice trail through the week.
+7. Artifact footnote explaining what formed it.
+8. Weekly conflict described as transformed tension.
+9. Quiet narrator captions in the demo.
+10. Applicant story adapter for the final real origin.
+
+Implemented:
+
+- Added Round 4 to `IdeaCycleSystems.swift`.
+- The Home Idea Cycle Studio now exposes a narrative-focused round beside visual, return, and sensory rounds.
+- Added unit coverage confirming Round 4 adds exactly ten story sparks and brings the total to forty ideas.
+
+Verification:
+
+- `swift test`: passed with 60 tests.

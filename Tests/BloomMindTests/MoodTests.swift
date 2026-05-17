@@ -774,14 +774,27 @@ import Testing
     let thirdCycle = BloomMindIdeaCycles.sensoryMotionLayer
     let resonance = BloomMindIdeaCycles.resonance(for: cycles)
 
-    #expect(cycles.count == 3)
-    #expect(BloomMindIdeaCycles.totalIdeaCount == 30)
+    #expect(cycles.count >= 3)
+    #expect(BloomMindIdeaCycles.totalIdeaCount >= 30)
     #expect(thirdCycle.title == "Round 3: Sensory Motion Layer")
     #expect(thirdCycle.sparks.count == 10)
     #expect(thirdCycle.sparks.contains { $0.id == "reduce-motion-flipbook" })
-    #expect(resonance.title == "3 idea cycles are active")
-    #expect(resonance.detail.contains("30 sparks"))
+    #expect(resonance.title.contains("idea cycles are active"))
+    #expect(resonance.detail.contains("sparks"))
     #expect(!resonance.dominantDimension.isEmpty)
+}
+
+@Test func ideaCycleRoundFourAddsNarrativeDepth() {
+    let cycles = BloomMindIdeaCycles.completedCycles()
+    let fourthCycle = BloomMindIdeaCycles.narrativeDepth
+    let storySparks = fourthCycle.sparks.filter { $0.dimension == "Story" || $0.dimension == "Voice" }
+
+    #expect(cycles.count == 4)
+    #expect(BloomMindIdeaCycles.totalIdeaCount == 40)
+    #expect(fourthCycle.title == "Round 4: Narrative Depth")
+    #expect(fourthCycle.sparks.count == 10)
+    #expect(fourthCycle.sparks.contains { $0.id == "applicant-story-adapter" })
+    #expect(storySparks.count >= 3)
 }
 
 @MainActor

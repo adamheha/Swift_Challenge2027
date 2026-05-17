@@ -32,7 +32,8 @@ enum BloomMindIdeaCycles {
         [
             livingMicroDetails,
             returnHooks,
-            sensoryMotionLayer
+            sensoryMotionLayer,
+            narrativeDepth
         ]
     }
 
@@ -290,6 +291,87 @@ enum BloomMindIdeaCycles {
                     detail: "The newest artifact can receive a soft spotlight so archive history feels curated.",
                     dimension: "Archive",
                     symbolName: "lightbulb"
+                )
+            ]
+        )
+    }
+
+    static var narrativeDepth: IdeaCycleStage {
+        IdeaCycleStage(
+            id: "narrative-depth",
+            title: "Round 4: Narrative Depth",
+            focus: "Make the experience feel like a short emotional story with a beginning, turning point, and memory.",
+            implementedResult: "The studio now carries a story-focused round so future polish can target narrative beats, not only UI elements.",
+            sparks: [
+                IdeaCycleSpark(
+                    id: "origin-fragments",
+                    title: "Origin fragments",
+                    detail: "Opening pressure pieces can feel like real student life before they become weather.",
+                    dimension: "Story",
+                    symbolName: "doc.text"
+                ),
+                IdeaCycleSpark(
+                    id: "turning-point-marker",
+                    title: "Turning-point marker",
+                    detail: "The exact moment a storm reveals a seed can be marked as the story's turn.",
+                    dimension: "Drama",
+                    symbolName: "arrow.triangle.turn.up.right.circle"
+                ),
+                IdeaCycleSpark(
+                    id: "scene-title",
+                    title: "Scene title",
+                    detail: "Each major step can have a short cinematic title instead of generic instruction copy.",
+                    dimension: "Voice",
+                    symbolName: "text.quote"
+                ),
+                IdeaCycleSpark(
+                    id: "protagonist-voice",
+                    title: "Protagonist voice",
+                    detail: "Copy can sound like the student is moving through the story, not being managed by an app.",
+                    dimension: "Voice",
+                    symbolName: "person"
+                ),
+                IdeaCycleSpark(
+                    id: "before-after-sky",
+                    title: "Before/after sky",
+                    detail: "Weekly Bloom can contrast the first storm sky with the final garden sky.",
+                    dimension: "Visual",
+                    symbolName: "arrow.left.and.right"
+                ),
+                IdeaCycleSpark(
+                    id: "choice-trail",
+                    title: "Choice trail",
+                    detail: "Now, Later, and Let go choices can leave a visible path through the week.",
+                    dimension: "Memory",
+                    symbolName: "point.topleft.down.to.point.bottomright.curvepath"
+                ),
+                IdeaCycleSpark(
+                    id: "artifact-footnote",
+                    title: "Artifact footnote",
+                    detail: "Each artifact can carry one small line about what made it form.",
+                    dimension: "Archive",
+                    symbolName: "note.text"
+                ),
+                IdeaCycleSpark(
+                    id: "weekly-conflict",
+                    title: "Weekly conflict",
+                    detail: "A week can be described as a tension that changed shape, not a score.",
+                    dimension: "Content",
+                    symbolName: "bolt.horizontal"
+                ),
+                IdeaCycleSpark(
+                    id: "quiet-narrator",
+                    title: "Quiet narrator captions",
+                    detail: "The 90-second demo can use sparse captions that feel like story beats.",
+                    dimension: "Demo",
+                    symbolName: "captions.bubble"
+                ),
+                IdeaCycleSpark(
+                    id: "applicant-story-adapter",
+                    title: "Applicant story adapter",
+                    detail: "The final origin moment can be swapped from scaffold to the applicant's exact real story.",
+                    dimension: "Submission",
+                    symbolName: "person.text.rectangle"
                 )
             ]
         )
