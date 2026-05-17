@@ -103,6 +103,11 @@ struct HomeView: View {
                 tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green,
                 isEnabled: $isSoundscapeEnabled
             )
+
+            IdeaCycleStudioView(
+                cycles: BloomMindIdeaCycles.completedCycles(),
+                tint: gardenDisplayState.gardenSeedsThisWeek.last?.mood.tint ?? .green
+            )
         }
     }
 
@@ -435,6 +440,139 @@ private struct SoundscapeWaveformView: View {
                 style: StrokeStyle(lineWidth: 3, lineCap: .round)
             )
         }
+    }
+}
+
+private struct IdeaCycleStudioView: View {
+    let cycles: [IdeaCycleStage]
+    let tint: Color
+
+    @State private var selectedCycleID: String?
+
+    private var selectedCycle: IdeaCycleStage? {
+        let fallback = cycles.first
+        guard let selectedCycleID else {
+            return fallback
+        }
+        return cycles.first { $0.id == selectedCycleID } ?? fallback
+    }
+
+    private var columns: [GridItem] {
+        [GridItem(.adaptive(minimum: 132), spacing: 8)]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 10) {
+                Label("Idea cycle studio", systemImage: "wand.and.stars")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(tint)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                Text("\(BloomMindIdeaCycles.totalIdeaCount) sparks")
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(tint.opacity(0.12), in: Capsule())
+            }
+
+            if cycles.count > 1 {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(cycles) { cycle in
+                            Button {
+                                withAnimation(.spring(response: 0.34, dampingFraction: 0.86)) {
+                                    selectedCycleID = cycle.id
+                                }
+                            } label: {
+                                Text(cycle.title.replacingOccurrences(of: "Round ", with: "R"))
+                                    .font(.caption.bold())
+                                    .lineLimit(1)
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                            .tint(cycle.id == selectedCycle?.id ? tint : .secondary)
+                        }
+                    }
+                }
+            }
+
+            if let selectedCycle {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(selectedCycle.title)
+                        .font(.headline)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(selectedCycle.focus)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(selectedCycle.implementedResult)
+                        .font(.caption.bold())
+                        .foregroundStyle(tint)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                LazyVGrid(columns: columns, spacing: 8) {
+                    ForEach(selectedCycle.sparks) { spark in
+                        IdeaSparkCardView(spark: spark, tint: tint)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(tint.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.16), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Idea cycle studio")
+    }
+}
+
+private struct IdeaSparkCardView: View {
+    let spark: IdeaCycleSpark
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: spark.symbolName)
+                    .font(.caption.bold())
+                    .foregroundStyle(tint)
+                    .accessibilityHidden(true)
+
+                Text(spark.dimension)
+                    .font(.caption2.bold())
+                    .foregroundStyle(tint)
+                    .lineLimit(1)
+            }
+
+            Text(spark.title)
+                .font(.caption.bold())
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(spark.detail)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, minHeight: 118, alignment: .topLeading)
+        .padding(10)
+        .background(tint.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(tint.opacity(0.14), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spark.title)
+        .accessibilityValue("\(spark.dimension). \(spark.detail)")
     }
 }
 

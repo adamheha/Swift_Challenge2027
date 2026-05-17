@@ -746,6 +746,19 @@ import Testing
     #expect(state.returnTomorrowPrompt == carry)
 }
 
+@Test func ideaCycleRoundOneCreatesTenLivingMicroDetails() {
+    let cycles = BloomMindIdeaCycles.completedCycles()
+    let firstCycle = cycles[0]
+
+    #expect(cycles.count == 1)
+    #expect(BloomMindIdeaCycles.totalIdeaCount == 10)
+    #expect(firstCycle.title == "Round 1: Living Micro-Details")
+    #expect(firstCycle.sparks.count == 10)
+    #expect(firstCycle.sparks.contains { $0.id == "thought-fireflies" })
+    #expect(firstCycle.sparks.contains { $0.dimension == "Ritual" })
+    #expect(firstCycle.accessibilityValue.contains("10 ideas"))
+}
+
 @MainActor
 @Test func stepProgressAccessibilityClampsOutOfRangeSteps() {
     let beforeFirstStep = StepProgressView(currentStep: 0)
