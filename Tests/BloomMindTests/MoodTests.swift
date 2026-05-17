@@ -760,13 +760,28 @@ import Testing
     let cycles = BloomMindIdeaCycles.completedCycles()
     let secondCycle = BloomMindIdeaCycles.returnHooks
 
-    #expect(cycles.count == 2)
-    #expect(BloomMindIdeaCycles.totalIdeaCount == 20)
+    #expect(cycles.count >= 2)
+    #expect(BloomMindIdeaCycles.totalIdeaCount >= 20)
     #expect(secondCycle.title == "Round 2: Return Hooks")
     #expect(secondCycle.sparks.count == 10)
     #expect(secondCycle.sparks.contains { $0.id == "no-shame-streak" })
     #expect(secondCycle.sparks.contains { $0.dimension == "Return" })
     #expect(secondCycle.implementedResult.contains("tomorrow"))
+}
+
+@Test func ideaCycleRoundThreeAddsSensoryMotionResonance() {
+    let cycles = BloomMindIdeaCycles.completedCycles()
+    let thirdCycle = BloomMindIdeaCycles.sensoryMotionLayer
+    let resonance = BloomMindIdeaCycles.resonance(for: cycles)
+
+    #expect(cycles.count == 3)
+    #expect(BloomMindIdeaCycles.totalIdeaCount == 30)
+    #expect(thirdCycle.title == "Round 3: Sensory Motion Layer")
+    #expect(thirdCycle.sparks.count == 10)
+    #expect(thirdCycle.sparks.contains { $0.id == "reduce-motion-flipbook" })
+    #expect(resonance.title == "3 idea cycles are active")
+    #expect(resonance.detail.contains("30 sparks"))
+    #expect(!resonance.dominantDimension.isEmpty)
 }
 
 @MainActor

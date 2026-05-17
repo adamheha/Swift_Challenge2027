@@ -479,6 +479,11 @@ private struct IdeaCycleStudioView: View {
                     .background(tint.opacity(0.12), in: Capsule())
             }
 
+            IdeaCycleResonanceView(
+                resonance: BloomMindIdeaCycles.resonance(for: cycles),
+                tint: tint
+            )
+
             if cycles.count > 1 {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
@@ -532,6 +537,36 @@ private struct IdeaCycleStudioView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Idea cycle studio")
+    }
+}
+
+private struct IdeaCycleResonanceView: View {
+    let resonance: IdeaCycleResonance
+    let tint: Color
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: resonance.symbolName)
+                .font(.headline.bold())
+                .foregroundStyle(tint)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(resonance.title)
+                    .font(.caption.bold())
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(resonance.detail)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(10)
+        .background(tint.opacity(0.06), in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(resonance.title)
+        .accessibilityValue(resonance.detail)
     }
 }
 

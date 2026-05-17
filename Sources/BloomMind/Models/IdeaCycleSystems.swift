@@ -20,16 +20,36 @@ struct IdeaCycleStage: Equatable, Identifiable {
     }
 }
 
+struct IdeaCycleResonance: Equatable {
+    let title: String
+    let detail: String
+    let symbolName: String
+    let dominantDimension: String
+}
+
 enum BloomMindIdeaCycles {
     static func completedCycles() -> [IdeaCycleStage] {
         [
             livingMicroDetails,
-            returnHooks
+            returnHooks,
+            sensoryMotionLayer
         ]
     }
 
     static var totalIdeaCount: Int {
         completedCycles().reduce(0) { $0 + $1.sparks.count }
+    }
+
+    static func resonance(for cycles: [IdeaCycleStage] = completedCycles()) -> IdeaCycleResonance {
+        let dimensions = cycles.flatMap(\.sparks).map(\.dimension)
+        let dominant = dominantDimension(in: dimensions) ?? "World"
+
+        return IdeaCycleResonance(
+            title: "\(cycles.count) idea cycles are active",
+            detail: "\(cycles.reduce(0) { $0 + $1.sparks.count }) sparks are pulling BloomMind toward \(dominant.lowercased()) depth.",
+            symbolName: "waveform.path.ecg",
+            dominantDimension: dominant
+        )
     }
 
     static var livingMicroDetails: IdeaCycleStage {
@@ -192,5 +212,100 @@ enum BloomMindIdeaCycles {
                 )
             ]
         )
+    }
+
+    static var sensoryMotionLayer: IdeaCycleStage {
+        IdeaCycleStage(
+            id: "sensory-motion-layer",
+            title: "Round 3: Sensory Motion Layer",
+            focus: "Make motion feel meaningful and sound-like even when the app stays quiet.",
+            implementedResult: "The studio now summarizes all active idea cycles with a resonance line, turning the brainstorm into a visible product direction.",
+            sparks: [
+                IdeaCycleSpark(
+                    id: "ambient-metronome",
+                    title: "Ambient metronome",
+                    detail: "A barely visible rhythm can help the storm feel alive without becoming distracting.",
+                    dimension: "Motion",
+                    symbolName: "metronome"
+                ),
+                IdeaCycleSpark(
+                    id: "pressure-tint-drift",
+                    title: "Pressure tint drift",
+                    detail: "Stress-heavy weeks can slowly tint the sky before the garden clears it.",
+                    dimension: "Visual",
+                    symbolName: "cloud.bolt"
+                ),
+                IdeaCycleSpark(
+                    id: "haptic-visual-pulse",
+                    title: "Haptic visual pulse",
+                    detail: "A planting pulse can look tactile even without relying on real haptics.",
+                    dimension: "Feeling",
+                    symbolName: "dot.radiowaves.left.and.right"
+                ),
+                IdeaCycleSpark(
+                    id: "silent-chime",
+                    title: "Silent chime",
+                    detail: "A small ring of light can replace sound when Local sound is muted.",
+                    dimension: "Sound",
+                    symbolName: "bell"
+                ),
+                IdeaCycleSpark(
+                    id: "bloom-chord-palette",
+                    title: "Bloom chord palette",
+                    detail: "Each mood can contribute a note-like color to the final weekly bloom.",
+                    dimension: "Color",
+                    symbolName: "music.note"
+                ),
+                IdeaCycleSpark(
+                    id: "orbit-tempo",
+                    title: "Orbit tempo",
+                    detail: "The storm's orbit speed can reflect calibration loudness and week density.",
+                    dimension: "Motion",
+                    symbolName: "circle.dashed"
+                ),
+                IdeaCycleSpark(
+                    id: "reduce-motion-flipbook",
+                    title: "Reduce Motion flipbook",
+                    detail: "Motion-heavy reveals can become clear step cards when Reduce Motion is on.",
+                    dimension: "Accessibility",
+                    symbolName: "rectangle.stack"
+                ),
+                IdeaCycleSpark(
+                    id: "reflection-ink-ripple",
+                    title: "Reflection ink ripple",
+                    detail: "Typed words can ripple once before becoming safe weather fragments.",
+                    dimension: "Privacy",
+                    symbolName: "drop"
+                ),
+                IdeaCycleSpark(
+                    id: "constellation-hum",
+                    title: "Constellation hum",
+                    detail: "The weekly constellation can pulse like a quiet chord while staying visual-first.",
+                    dimension: "Weekly",
+                    symbolName: "sparkles"
+                ),
+                IdeaCycleSpark(
+                    id: "museum-spotlight",
+                    title: "Museum spotlight",
+                    detail: "The newest artifact can receive a soft spotlight so archive history feels curated.",
+                    dimension: "Archive",
+                    symbolName: "lightbulb"
+                )
+            ]
+        )
+    }
+
+    private static func dominantDimension(in dimensions: [String]) -> String? {
+        var counts: [String: Int] = [:]
+        for dimension in dimensions {
+            counts[dimension, default: 0] += 1
+        }
+
+        return counts.max { left, right in
+            if left.value == right.value {
+                return left.key > right.key
+            }
+            return left.value < right.value
+        }?.key
     }
 }

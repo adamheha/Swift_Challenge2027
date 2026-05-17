@@ -53,3 +53,29 @@ Implemented:
 Verification:
 
 - `swift test`: passed with 58 tests.
+
+## Round 3 - Sensory Motion Layer
+
+Ten ideas:
+
+1. Ambient metronome for gentle visual rhythm.
+2. Pressure tint drift in stress-heavy weeks.
+3. Haptic-like visual pulse during planting.
+4. Silent chime when sound is muted.
+5. Bloom chord palette built from mood colors.
+6. Orbit tempo based on calibration and week density.
+7. Reduce Motion flipbook for cinematic reveals.
+8. Reflection ink ripple before words become weather.
+9. Constellation hum as a visual-first pulse.
+10. Museum spotlight for the newest artifact.
+
+Implemented:
+
+- Added Round 3 to `IdeaCycleSystems.swift`.
+- Added `IdeaCycleResonance`, a local summary that turns all active rounds into one visible product-direction line.
+- Added a resonance card to Home's Idea Cycle Studio.
+- Added unit coverage confirming Round 3 brings the stage to thirty ideas and generates resonance copy.
+
+Verification:
+
+- `swift test`: passed with 59 tests.
