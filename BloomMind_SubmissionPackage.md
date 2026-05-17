@@ -1,8 +1,8 @@
 # BloomMind Submission Package
 
-## Current 5.2 Direction
+## Current 5.3 Direction
 
-BloomMind 5.2 reframes the app as a sensory Weather Observatory for student pressure with small authored details throughout the journey. Instead of opening like a calm tracker, the app offers Begin Journey and 90-second Demo doors, then Today shows an inner weather lens with a visible carry seed, seed orbits, pressure layers, time-aware garden tone, weather instruments, and an optional local soundscape. The student's reflection changes the storm live, while the Emotional Calibration Ring lets them express loud/quiet and heavy/light before mood selection. The written moment becomes a privacy ritual: words become weather, and BloomMind remembers the shape, not the private words. The student chooses from eight moods, drags storm words into Now, Later, and Let go, watches the Storm Surgery table change, plants the seed through a drag-to-soil ritual, and sees those choices alter a private garden world with a "What changed because of me?" panel, Memory Without Text stamps, Surface, scrub-able Week Shape, Emotional Atlas, X-Ray, and map views. A completed seven-seed week unlocks a Weekly Bloom payoff with animated transformation, pressure constellation name, artifact crafting, vocabulary unlocks, final story mode, Week Artifact, emotional season context, carry seed, and private museum shelf.
+BloomMind 5.3 reframes the app as a sensory Weather Observatory for student pressure with a visible creative engine inside the product. Instead of opening like a calm tracker, the app offers Begin Journey and 90-second Demo doors, then Today shows an inner weather lens with a visible carry seed, seed orbits, pressure layers, time-aware garden tone, weather instruments, optional local soundscape, and an Idea Cycle Studio containing five rounds of ten future-facing sparks. The student's reflection changes the storm live, while the Emotional Calibration Ring lets them express loud/quiet and heavy/light before mood selection. The written moment becomes a privacy ritual: words become weather, and BloomMind remembers the shape, not the private words. The student chooses from eight moods, drags storm words into Now, Later, and Let go, watches the Storm Surgery table change, plants the seed through a drag-to-soil ritual, and sees those choices alter a private garden world with a "What changed because of me?" panel, Memory Without Text stamps, Surface, scrub-able Week Shape, Emotional Atlas, X-Ray, and map views. A completed seven-seed week unlocks a Weekly Bloom payoff with animated transformation, pressure constellation name, artifact crafting, vocabulary unlocks, final story mode, Week Artifact, emotional season context, carry seed, and private museum shelf.
 
 The old 1.x submission path is preserved as a stable foundation, but the active award-level direction is now the 2.0 pressure-storm experience.
 
@@ -31,7 +31,7 @@ Official references:
 Target review time: 60 seconds.
 
 1. Open BloomMind and choose Begin Journey or 90-second Demo from the Opening Origin Scene.
-2. On the Today screen, notice the Weather Observatory hero, moving lens, carry seed, time-aware garden tone, weather instruments, pressure layers, local soundscape console, and next seed.
+2. On the Today screen, notice the Weather Observatory hero, moving lens, carry seed, time-aware garden tone, weather instruments, pressure layers, local soundscape console, Idea Cycle Studio, and next seed.
 3. Tap Enter the Storm.
 4. Drag the Emotional Calibration Ring to set loud/quiet and heavy/light, then select Stressed, Overwhelmed, Focused, or another one of the eight moods.
 5. Enter this short reflection to exercise live storm typing and local theme detection, or use Wordless Mode to press, drag, and release the storm signal:
@@ -56,13 +56,14 @@ Target review time: 60 seconds.
 18. Confirm the "What changed because of me?" panel explains how the chosen lane changed roots, buds, or open air.
 19. Tap Preview Award Demo to inspect a sample complete-week review garden without changing real check-ins.
 20. Confirm Award Demo Director spotlights the 90-second path through Origin, Observatory, Live Storm, Wordless Check-In, Surgery, Planting, Week Film, and Museum, with short captions for each story beat.
-21. Confirm the Weekly Bloom payoff appears with a seven-seed reveal, pressure constellation name, animated time-lapse, Play Week Film, week story, artifact crafting, emotional literacy and vocabulary unlocks, carry-forward ritual, final story mode, next-week seed, privacy note, and private museum exhibit.
+21. Confirm the Idea Cycle Studio contains five rounds and 50 sparks, then continue to Weekly Bloom.
+22. Confirm the Weekly Bloom payoff appears with a seven-seed reveal, pressure constellation name, animated time-lapse, Play Week Film, week story, artifact crafting, emotional literacy and vocabulary unlocks, carry-forward ritual, final story mode, next-week seed, privacy note, and private museum exhibit.
 
 ## Submission Response Drafts
 
 ### App Summary
 
-BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school pressure into a living inner garden. The app opens as a sensory Weather Observatory with a moving pressure storm, lens, visible carry seed, weather instruments, pressure layers, time-aware garden tone, and local sound cues that respond to the week's pattern. Before choosing a mood, the student can use an Emotional Calibration Ring to express whether the feeling is loud or quiet, heavy or light. The written moment becomes a privacy ritual: words become weather, while BloomMind remembers the shape, not the private words. The student chooses from eight moods, drags storm words into Now, Later, and Let go, watches a Storm Surgery table change, starts an optional Focus Sprout for one tiny Now step, then plants the feeling through a drag-to-soil ritual. Each seed changes the garden world as roots, buds, or open air, and the garden can be explored through a consequence panel, Memory Without Text stamps, Surface, scrub-able Week Shape, Emotional Atlas, X-Ray, and map zones. After seven seeds, the app reveals a Weekly Bloom: a private animated time-lapse, pressure constellation name, week story, artifact crafting, emotional literacy and vocabulary unlocks, final story mode, Week Artifact, closing line, next-week intention, carry seed, and private museum shelf.
+BloomMind is a privacy-first SwiftUI app playground that helps students turn overwhelming school pressure into a living inner garden. The app opens as a sensory Weather Observatory with a moving pressure storm, lens, visible carry seed, weather instruments, pressure layers, time-aware garden tone, local sound cues, and an Idea Cycle Studio that makes five rounds of future creative sparks visible inside the app. Before choosing a mood, the student can use an Emotional Calibration Ring to express whether the feeling is loud or quiet, heavy or light. The written moment becomes a privacy ritual: words become weather, while BloomMind remembers the shape, not the private words. The student chooses from eight moods, drags storm words into Now, Later, and Let go, watches a Storm Surgery table change, starts an optional Focus Sprout for one tiny Now step, then plants the feeling through a drag-to-soil ritual. Each seed changes the garden world as roots, buds, or open air, and the garden can be explored through a consequence panel, Memory Without Text stamps, Surface, scrub-able Week Shape, Emotional Atlas, X-Ray, and map zones. After seven seeds, the app reveals a Weekly Bloom: a private animated time-lapse, pressure constellation name, week story, artifact crafting, emotional literacy and vocabulary unlocks, final story mode, Week Artifact, closing line, next-week intention, carry seed, and private museum shelf.
 
 ### Personal Motivation
 
@@ -106,6 +107,7 @@ AI assistance was used to help brainstorm, organize documentation, and review im
 - Confirm the Weather Observatory lens, pressure layers, sky line, and lane line are readable on Home.
 - Confirm the Home Weather Instruments show barometer, compass, clock, fog, and air readings.
 - Confirm Local sound can be toggled and the waveform remains useful when sound is off.
+- Confirm Home shows the Idea Cycle Studio with 5 rounds and 50 sparks.
 - Confirm the Emotional Calibration Ring changes the live storm before mood selection.
 - Confirm Check-In offers 8 mood choices.
 - Confirm thought fragments appear on Growth Action and can move between Now, Later, and Let go by tap and drag/drop.
@@ -158,12 +160,13 @@ Use this checklist when the final `BloomMind.swiftpm` package is available in th
 8. Drag the seed into the soil, or tap it as fallback, and return to Today.
 9. Scrub Week Shape, inspect Emotional Atlas, switch the garden to X-Ray, tap Garden Map zones and the newest plant, then confirm the private memory card and Memory Without Text stamp avoid reflection text.
 10. Confirm the "What changed because of me?" panel and time-aware garden tone are visible on Home.
-11. Tap Preview Award Demo and confirm the Award Demo Theatre captions, Week memory strip, weekly review card, Inner Garden World, Week Shape, Emotional Atlas, Garden X-Ray, Garden Map, and Weekly Bloom payoff show a complete sample week without changing real check-ins.
-12. Confirm the Weekly Bloom payoff includes the constellation reveal, pressure constellation name, animated time-lapse, week story, artifact crafting, literacy and vocabulary unlocks, final story mode, Week Artifact, closing ritual, next-week seed, privacy note, and private museum shelf.
-13. Rotate or resize to a wider iPad/Mac review width and confirm Home uses the two-column storm-and-garden layout.
-14. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
-15. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
-16. Turn on a larger text size and confirm the main flow remains scrollable and readable.
+11. Confirm the Idea Cycle Studio shows five rounds and fifty sparks.
+12. Tap Preview Award Demo and confirm the Award Demo Theatre captions, Week memory strip, weekly review card, Inner Garden World, Week Shape, Emotional Atlas, Garden X-Ray, Garden Map, and Weekly Bloom payoff show a complete sample week without changing real check-ins.
+13. Confirm the Weekly Bloom payoff includes the constellation reveal, pressure constellation name, animated time-lapse, week story, artifact crafting, literacy and vocabulary unlocks, final story mode, Week Artifact, closing ritual, next-week seed, privacy note, and private museum shelf.
+14. Rotate or resize to a wider iPad/Mac review width and confirm Home uses the two-column storm-and-garden layout.
+15. Switch the device or simulator to dark appearance and confirm text, panels, storm scenes, buttons, and garden notes remain readable.
+16. Turn on Reduce Motion and confirm the garden remains understandable without relying on animation.
+17. Turn on a larger text size and confirm the main flow remains scrollable and readable.
 
 ## Packaging Notes
 
@@ -190,12 +193,11 @@ bash Scripts/collect_review_environment.sh
 Current generated package verification:
 
 - ZIP path: `SubmissionBuild/BloomMind.swiftpm.zip`
-- ZIP size: 86,098 bytes after the Stage 13 Soul Details package refresh.
+- ZIP size: 91,935 bytes after the Stage 14 Five Idea Cycles package refresh.
 - Contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The generated ZIP excludes `.DS_Store` and `__MACOSX`.
-- The generated `.swiftpm` package includes the Stage 13 Soul Details source files.
-- ZIP contents and source safety checks passed before the standalone package build step.
-- Standalone `swift build` and the build step inside `bash Scripts/verify_submission_package.sh` are currently blocked in this sandbox by Swift/Clang module-cache permissions; external execution approval was unavailable due usage-limit rejection.
+- The generated `.swiftpm` package includes the Stage 14 Five Idea Cycles source files.
+- ZIP contents, source safety checks, and standalone package build passed in `bash Scripts/verify_submission_package.sh`.
 
 Xcode warning note:
 

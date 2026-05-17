@@ -789,12 +789,29 @@ import Testing
     let fourthCycle = BloomMindIdeaCycles.narrativeDepth
     let storySparks = fourthCycle.sparks.filter { $0.dimension == "Story" || $0.dimension == "Voice" }
 
-    #expect(cycles.count == 4)
-    #expect(BloomMindIdeaCycles.totalIdeaCount == 40)
+    #expect(cycles.count >= 4)
+    #expect(BloomMindIdeaCycles.totalIdeaCount >= 40)
     #expect(fourthCycle.title == "Round 4: Narrative Depth")
     #expect(fourthCycle.sparks.count == 10)
     #expect(fourthCycle.sparks.contains { $0.id == "applicant-story-adapter" })
     #expect(storySparks.count >= 3)
+}
+
+@Test func ideaCycleRoundFiveCompletesFiftyAwardPolishIdeas() {
+    let cycles = BloomMindIdeaCycles.completedCycles()
+    let fifthCycle = BloomMindIdeaCycles.awardPolishSecretGarden
+    let allSparkIDs = cycles.flatMap(\.sparks).map(\.id)
+    let resonance = BloomMindIdeaCycles.resonance(for: cycles)
+
+    #expect(cycles.count == 5)
+    #expect(BloomMindIdeaCycles.totalIdeaCount == 50)
+    #expect(Set(allSparkIDs).count == 50)
+    #expect(fifthCycle.title == "Round 5: Award Polish")
+    #expect(fifthCycle.sparks.count == 10)
+    #expect(fifthCycle.sparks.contains { $0.id == "accessibility-jewel" })
+    #expect(fifthCycle.sparks.contains { $0.dimension == "Trust" })
+    #expect(resonance.title == "5 idea cycles are active")
+    #expect(resonance.detail.contains("50 sparks"))
 }
 
 @MainActor

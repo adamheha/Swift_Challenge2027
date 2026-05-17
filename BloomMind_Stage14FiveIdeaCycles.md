@@ -104,3 +104,43 @@ Implemented:
 Verification:
 
 - `swift test`: passed with 60 tests.
+
+## Round 5 - Award Polish / Secret Garden
+
+Ten ideas:
+
+1. Secret atlas room after a completed week.
+2. Judge readiness compass for the 90-second path.
+3. One-minute promise in the opening.
+4. Aha marker when pressure becomes a seed.
+5. Final rehearsal trail for submission practice.
+6. Student-made texture in small authored lines.
+7. Personal story slot for the applicant's real moment.
+8. Backstage health card for local-only trust.
+9. Completion sparkline beside the weekly artifact.
+10. Accessibility jewel designed specifically for VoiceOver.
+
+Implemented:
+
+- Added Round 5 to `IdeaCycleSystems.swift`.
+- The Home Idea Cycle Studio now contains five completed idea rounds and fifty total sparks.
+- Added unit coverage confirming all fifty spark IDs are unique and the final resonance line reflects five active cycles.
+
+Verification:
+
+- `swift test`: passed with 61 tests.
+- `swift build`: passed after running with external module-cache access.
+- `bash Scripts/create_submission_package.sh`: passed.
+- `bash Scripts/verify_submission_package.sh`: passed after running with external module-cache access.
+- ZIP size: 91,935 bytes.
+
+## Stage Result
+
+The five requested loops are now represented in the app as a real, explorable creative layer:
+
+- 5 idea rounds.
+- 50 new ideas.
+- A Home Idea Cycle Studio.
+- A resonance summary that turns brainstorming into product direction.
+- Unit tests for every round.
+- A refreshed `.swiftpm` package that includes the five-cycle source updates.

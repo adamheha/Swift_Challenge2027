@@ -33,7 +33,8 @@ enum BloomMindIdeaCycles {
             livingMicroDetails,
             returnHooks,
             sensoryMotionLayer,
-            narrativeDepth
+            narrativeDepth,
+            awardPolishSecretGarden
         ]
     }
 
@@ -372,6 +373,87 @@ enum BloomMindIdeaCycles {
                     detail: "The final origin moment can be swapped from scaffold to the applicant's exact real story.",
                     dimension: "Submission",
                     symbolName: "person.text.rectangle"
+                )
+            ]
+        )
+    }
+
+    static var awardPolishSecretGarden: IdeaCycleStage {
+        IdeaCycleStage(
+            id: "award-polish-secret-garden",
+            title: "Round 5: Award Polish",
+            focus: "Add the kinds of final details that make a judge feel the app has craft, depth, and a hidden life.",
+            implementedResult: "The studio now closes with a fifth round, giving BloomMind fifty concrete future-facing sparks inside the product itself.",
+            sparks: [
+                IdeaCycleSpark(
+                    id: "secret-atlas-room",
+                    title: "Secret atlas room",
+                    detail: "A completed week can unlock a quieter atlas corner that feels discovered, not assigned.",
+                    dimension: "Explore",
+                    symbolName: "map"
+                ),
+                IdeaCycleSpark(
+                    id: "readiness-compass",
+                    title: "Judge readiness compass",
+                    detail: "A private rehearsal card can show whether the 90-second path has origin, interaction, payoff, and privacy.",
+                    dimension: "Demo",
+                    symbolName: "safari"
+                ),
+                IdeaCycleSpark(
+                    id: "one-minute-promise",
+                    title: "One-minute promise",
+                    detail: "The opening can promise that one honest minute is enough to change the weather.",
+                    dimension: "Voice",
+                    symbolName: "timer"
+                ),
+                IdeaCycleSpark(
+                    id: "aha-marker",
+                    title: "Aha marker",
+                    detail: "The moment pressure visibly becomes a seed can receive a brighter visual accent.",
+                    dimension: "Impact",
+                    symbolName: "lightbulb.max"
+                ),
+                IdeaCycleSpark(
+                    id: "final-rehearsal-trail",
+                    title: "Final rehearsal trail",
+                    detail: "The demo path can leave a simple trail so submission practice feels reliable.",
+                    dimension: "Submission",
+                    symbolName: "figure.walk.motion"
+                ),
+                IdeaCycleSpark(
+                    id: "student-made-texture",
+                    title: "Student-made texture",
+                    detail: "Small handwritten-feeling lines can make the app feel authored by a student, not a template.",
+                    dimension: "Identity",
+                    symbolName: "pencil.and.outline"
+                ),
+                IdeaCycleSpark(
+                    id: "personal-story-slot",
+                    title: "Personal story slot",
+                    detail: "The final origin line can expose one clear place to insert the applicant's true school-pressure moment.",
+                    dimension: "Story",
+                    symbolName: "person.text.rectangle"
+                ),
+                IdeaCycleSpark(
+                    id: "backstage-health-card",
+                    title: "Backstage health card",
+                    detail: "A tiny local-only readiness card can reassure that there are no accounts, tracking, or network calls.",
+                    dimension: "Trust",
+                    symbolName: "lock.shield"
+                ),
+                IdeaCycleSpark(
+                    id: "completion-sparkline",
+                    title: "Completion sparkline",
+                    detail: "The seven-day arc can appear as a small living line beside the final artifact.",
+                    dimension: "Weekly",
+                    symbolName: "chart.line.uptrend.xyaxis"
+                ),
+                IdeaCycleSpark(
+                    id: "accessibility-jewel",
+                    title: "Accessibility jewel",
+                    detail: "One beautiful detail can be designed specifically for VoiceOver, proving accessibility is part of the art.",
+                    dimension: "Accessibility",
+                    symbolName: "accessibility"
                 )
             ]
         )

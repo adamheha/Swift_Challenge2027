@@ -4,13 +4,13 @@ This roadmap keeps the project organized around stage-sized work. For BloomMind 
 
 ## Current Status
 
-Current stage: BloomMind 5.2 Stage 13 - The Soul Details Complete
+Current stage: BloomMind 5.3 Stage 14 - Five Idea Cycles Complete
 
-Current branch: `codex/bloommind-5-2-soul-details`
+Current branch: `codex/bloommind-5-3-five-idea-cycles`
 
 Stage boundary rule: when a stage is complete, start the next stage in a new chat/thread so planning, commits, and decisions stay easy to review.
 
-Next stage: BloomMind 5.3 Stage 14 - Applicant Story Finalization, Device Review, and Final Submission Rehearsal
+Next stage: BloomMind 5.4 Stage 15 - Applicant Story Finalization, Device Review, and Final Submission Rehearsal
 
 ## Version 1.x Baseline
 
@@ -443,6 +443,40 @@ Definition of done:
 - Home visibly carries the next-week seed and responds to the day.
 - Weekly Bloom has a named constellation, vocabulary unlocks, final story mode, and private artifact ending.
 - No private reflection text is resurfaced in memory stamps, weekly copy, demo captions, or final story mode.
+
+## BloomMind 5.3 Stage 14 - Five Idea Cycles
+
+Status: Complete
+
+Goal: Run five idea-generation and implementation loops so BloomMind keeps growing as a creative world rather than stopping at a static feature set.
+
+Completed in this branch:
+
+- Created five rounds of ten ideas each: Living Micro-Details, Return Hooks, Sensory Motion Layer, Narrative Depth, and Award Polish.
+- Added `IdeaCycleSystems.swift` as a structured local idea system with `IdeaCycleStage`, `IdeaCycleSpark`, and `IdeaCycleResonance`.
+- Added a Home Idea Cycle Studio that makes all completed idea rounds visible inside the app.
+- Added a resonance summary that turns the active idea cycles into one product-direction line.
+- Added Round 1 sparks for micro-interactions such as thought fireflies, hover halos, weather crumbs, and carry-line glow.
+- Added Round 2 sparks for return hooks such as tomorrow postcards, no-shame streaks, mini quests, and soft reminder language.
+- Added Round 3 sparks for sensory motion such as ambient metronome, silent chime, orbit tempo, and Reduce Motion flipbook.
+- Added Round 4 sparks for narrative depth such as turning-point markers, before/after sky, choice trail, and applicant story adapter.
+- Added Round 5 sparks for award polish such as secret atlas room, judge readiness compass, one-minute promise, backstage health card, and accessibility jewel.
+- Added unit coverage for every round, the total 50-spark count, unique spark IDs, and resonance copy.
+- Added `BloomMind_Stage14FiveIdeaCycles.md` with per-round idea lists and verification notes.
+- Refreshed `SubmissionBuild/BloomMind.swiftpm.zip` with Stage 14 sources; current ZIP size is 91,935 bytes.
+
+Remaining:
+
+- Decide which of the 50 sparks should become fully interactive production features in Stage 15 or later.
+- Replace the placeholder origin/personal meaning line with the applicant's true specific story before final submission.
+- Smoke check in full Xcode or Swift Playgrounds.
+- Smoke check on iPad or an iPad-sized simulator.
+
+Definition of done:
+
+- `swift test` passes with five idea-cycle tests.
+- Home shows the Idea Cycle Studio and all five rounds.
+- The project now contains 50 concrete future-facing ideas in-app, not only in planning docs.
 
 ## Stage 0 - Award Research
 

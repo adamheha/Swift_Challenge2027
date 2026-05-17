@@ -4,7 +4,7 @@
 
 BloomMind is a SwiftUI app concept for the Swift Student Challenge 2027.
 
-The 5.2 direction turns BloomMind into a richer emotional world with small soul details: a tactile calibration ring before mood selection, a visible carry seed on the Home lens, memory stamps that remember shape without text, pressure constellation names, time-aware garden atmosphere, consequence explanations, vocabulary unlocks, and a final story mode that ties the project back to why it exists.
+The 5.3 direction adds a visible creative engine to BloomMind: five idea-generation cycles now live inside the app as an Idea Cycle Studio, giving the project 50 concrete sparks across micro-interactions, return hooks, sensory motion, narrative depth, and award polish.
 
 ## Current Files
 
@@ -23,6 +23,7 @@ The 5.2 direction turns BloomMind into a richer emotional world with small soul 
 - `BloomMind_Stage11SensoryObservatory.md`: BloomMind 5.0 Sensory Observatory, eight moods, local soundscape, instruments, rare blooms, atlas, and Xcode warning note.
 - `BloomMind_Stage12Journey.md`: BloomMind 5.1 Journey, origin scene, guided demo director, wordless check-in, layer peeling, Week Film, carry seed ritual, and private museum upgrade.
 - `BloomMind_Stage13SoulDetails.md`: BloomMind 5.2 Soul Details, calibration ring, memory stamps, constellation names, time-aware garden, and final story mode notes.
+- `BloomMind_Stage14FiveIdeaCycles.md`: BloomMind 5.3 five idea cycles, 50 sparks, Home Idea Cycle Studio, and staged verification notes.
 - `Packaging/BloomMindSubmissionPackage.swift`: submission-only Swift package manifest.
 - `Scripts/create_submission_package.sh`: repeatable `.swiftpm` ZIP packaging script.
 - `Scripts/verify_submission_package.sh`: repeatable submission ZIP verification script.
@@ -34,9 +35,9 @@ The 5.2 direction turns BloomMind into a richer emotional world with small soul 
 
 ## Current Stage
 
-BloomMind 5.2 Stage 13: The Soul Details - complete.
+BloomMind 5.3 Stage 14: Five Idea Cycles - complete.
 
-Active branch: `codex/bloommind-5-2-soul-details`
+Active branch: `codex/bloommind-5-3-five-idea-cycles`
 
 Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. BloomMind 2.0 starts from that foundation and pushes the app toward a more memorable Swift Student Challenge experience.
 
@@ -52,6 +53,7 @@ Stage 0 research through Stage 9 are now treated as the stable 1.x foundation. B
 - Local Sensory Observatory model for sound cues, weather instruments, rare blooms, emotional atlas cards, and emotional seasons.
 - Home Weather Instruments: Inner Barometer, Root Compass, Weather Clock, Fog Meter, and Air Gauge.
 - Local soundscape console with optional system sound cues and a visual waveform fallback.
+- Home Idea Cycle Studio with five completed idea rounds, 50 sparks, and a resonance summary that makes future creative direction visible inside the app.
 - Live Storm Typing that changes storm intensity, theme color, and visible keywords as the user writes a reflection.
 - Reflection Privacy Ritual that turns the written moment into safe storm fragments and states that BloomMind remembers the shape, not the private words.
 - Growth action screen with local mood-and-theme suggested actions, Direct Storm Sorting, live reflection words, Now / Later / Let go lanes, seed commitment, and a private theme explanation.
@@ -133,6 +135,7 @@ BloomMind should become more than a mood tracker. The strongest 2.0 version shou
 - BloomMind 5.0 Stage 11: Sensory Observatory - complete.
 - BloomMind 5.1 Stage 12: The BloomMind Journey - complete.
 - BloomMind 5.2 Stage 13: The Soul Details - complete.
+- BloomMind 5.3 Stage 14: Five Idea Cycles - complete.
 
 ## BloomMind 2.0 Goal
 
@@ -410,14 +413,13 @@ The generated package lives at:
 SubmissionBuild/BloomMind.swiftpm.zip
 ```
 
-Current Stage 13 package refresh:
+Current Stage 14 package refresh:
 
-- ZIP size: 86,098 bytes.
+- ZIP size: 91,935 bytes.
 - ZIP contents: `BloomMind.swiftpm/Package.swift` plus `BloomMind.swiftpm/Sources/`.
 - The ZIP excludes `.DS_Store` and `__MACOSX`.
-- The generated package includes the Soul Details source updates.
-- ZIP contents and source safety checks passed before the standalone package build step.
-- Standalone `swift build` and the build step inside `bash Scripts/verify_submission_package.sh` are currently blocked in this sandbox by Swift/Clang module-cache permissions; external execution approval was unavailable due usage-limit rejection.
+- The generated package includes the Five Idea Cycles source updates.
+- ZIP contents, source safety checks, and standalone package build passed in `bash Scripts/verify_submission_package.sh`.
 
 Xcode warning note:
 
